@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     xml_node<> *textNode;
 
 
-    int counter = 0;
+    int counter = 10;
     while(currentPage != NULL)
     {
         textNode = currentPage->first_node("revision")->first_node("text");
