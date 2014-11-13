@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     int counter = 0;
     while(currentPage != NULL)
     {
-        xml_node<> *textNode = currentPage->first_node("revision")->first_node("text");
+        textNode = currentPage->first_node("revision")->first_node("text");
         cout << textNode->value() << "\n\n\n\n\n\n" << endl;
         currentPage = currentPage->next_sibling();
         ++counter;
