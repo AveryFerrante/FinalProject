@@ -18,8 +18,11 @@ int main(int argc, char *argv[])
     xml_node<> *currentPage = mainNode->first_node()->next_sibling("page");
     xml_node<> *textNode;
 
+    char* textBody = currentPage->first_node("revision")->first_node("text")->value();
+    cout << textBody << endl;
 
-    int counter = 0;
+
+    int counter = 100;
     while(currentPage != NULL)
     {
         textNode = currentPage->first_node("revision")->first_node("text");
@@ -28,5 +31,6 @@ int main(int argc, char *argv[])
         ++counter;
     }
     cout << counter << endl;
+
     return 0;
 }
