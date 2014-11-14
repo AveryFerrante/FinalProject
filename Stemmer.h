@@ -51,6 +51,7 @@
    Note that only lower case sequences are stemmed. Forcing to lower case
    should be done before stem(...) is called.
 */
+namespace Stemmer {
 
 static char * b;       /* buffer for word to be stemmed */
 static int k,k0,j;     /* j is a general offset into the string */
@@ -331,5 +332,7 @@ int stem(char * p, int i, int j)
    }
    return k;
 }
+
+} // Close namespace stemmer
 
 /*--------------------stemmer definition ends here------------------------*/

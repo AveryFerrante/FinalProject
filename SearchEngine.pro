@@ -17,11 +17,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     word.cpp \
-    document.cpp
+    document.cpp \
+    parser.cpp
 
 HEADERS += \
     pugixml/src/pugixml.hpp \
     rapidxml-1.13/rapidxml.hpp \
     word.h \
     document.h \
-    Stemmer.h
+    Stemmer.h \
+    parser.h
