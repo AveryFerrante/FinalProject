@@ -1,0 +1,4 @@
+#ifndef INDEXINTERFACE_H
+#define INDEXINTERFACE_H
+
+#endif // INDEXINTERFACE_H
