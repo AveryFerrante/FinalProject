@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     cout << textBody << endl;
 
     int counter = 10;
+
     while(currentPage != NULL)
     {
         textNode = currentPage->first_node("revision")->first_node("text");
