@@ -23,4 +23,5 @@ HEADERS += \
     pugixml/src/pugixml.hpp \
     rapidxml-1.13/rapidxml.hpp \
     word.h \
-    document.h
+    document.h \
+    Stemmer.h

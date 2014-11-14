@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <cstring>
+#include "Stemmer.h"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 
@@ -10,7 +10,6 @@ using namespace rapidxml;
 
 int main(int argc, char *argv[])
 {
-
     file<> xmlFile("test.xml");
     xml_document<> doc;
     doc.parse<0>(xmlFile.data());
@@ -18,11 +17,10 @@ int main(int argc, char *argv[])
     xml_node<> *currentPage = mainNode->first_node()->next_sibling("page");
     xml_node<> *textNode;
 
-    char* textBody = currentPage->first_node("revision")->first_node("text")->value();
-    cout << textBody << endl;
 
-    int counter = 10;
-
+    /*
+    int counter = 0;
+>>>>>>> f7786a86e42f7973b582d0ad4ad9c97289b70c55
     while(currentPage != NULL)
     {
         textNode = currentPage->first_node("revision")->first_node("text");
@@ -31,6 +29,6 @@ int main(int argc, char *argv[])
         ++counter;
     }
     cout << counter << endl;
-
+    */
     return 0;
 }
