@@ -4,6 +4,7 @@
 class Word
 {
 private:
+
     char* word;
     Document* docList;
     int totalFrequency;
@@ -12,6 +13,7 @@ private:
 
 
 public:
+
     Word(char *&, Document &);
     ~Word();
     char*& getWord();
