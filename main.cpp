@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <ctype.h>
+#include <algorithm>
 #include "Stemmer.h"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
@@ -13,10 +15,12 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 
-    //Parser parse(argv[1]);
-    //parse.printNodeContents();
-    //parse.cleanBodyContents();
+    Parser parse(argv[1]);
+    parse.update();
 
+
+
+    /*
 
         avltree<int> at ;
         AVLNode* avl = NULL ;
@@ -36,7 +40,7 @@ int main(int argc, char *argv[])
             at.setroot(avl);
             cout << endl;
             at.display(avl);
-
+    */
 
 
     return 0;

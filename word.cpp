@@ -1,6 +1,6 @@
 #include "word.h"
 
-Word::Word(char *&wordToAdd, Parser::Document &doc)
+Word::Word(char *wordToAdd, Parser::Document &doc)
 {
     word = wordToAdd;
     totalFrequency = 1;
@@ -14,6 +14,7 @@ Word::Word(char *&wordToAdd, Parser::Document &doc)
 Word::~Word()
 {
     delete [] word;
+    delete [] docList;
 }
 
 void Word::addDocument(Parser::Document &doc)
@@ -22,6 +23,7 @@ void Word::addDocument(Parser::Document &doc)
         resizeDocs();
 
     docList[size] = doc;
+    ++size;
 }
 
 void Word::resizeDocs()

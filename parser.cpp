@@ -1,5 +1,6 @@
 #include "parser.h"
 #include <iostream>
+#include <algorithm> //For the remove function
 
 using namespace rapidxml;
 using namespace std;
@@ -18,13 +19,11 @@ Parser::Parser(char *&xmlFileName)
 
 void Parser::update() // Just a function for testing the class, not needed
 {
-    printNodeContents();
     getNextPage();
     while(currentPage != NULL)
     {
         getText();
-        getTitle();
-        printNodeContents();
+        cleanBodyContents();
         getNextPage();
     }
 }
@@ -39,7 +38,7 @@ void Parser::printNodeContents()
 
 
 
-void Parser::cleanBodyContents()
+void Parser::cleanBodyContents(/*this will eventually take a Document as an arg since this will be a util function*/)
 {
     char *bodyContents = bodyOfFile->value();
     char *whatsLeft = strchr(bodyContents, ' '); // Gets occurence to first space in the body
@@ -47,13 +46,15 @@ void Parser::cleanBodyContents()
     Document *thisDoc = new Document;
     thisDoc->title = titleOfFile->value();
 
+    // POTENTIAL REMOVAL IDEAS: IF VALUE SIZE IS LESS THAN A NUMBER (220?)
     while(whatsLeft != NULL)
     {
         // Logic for removing bogus characters/maybe even entire words
 
         *whatsLeft = '\0'; // Sets the word. bodyContents now is now a null terminated word.
 
-         // bodyContents[Stemmer::stem(bodyContents, 0, strlen(bodyContents))] = '\0'; NEED STEMMER TO WORK
+        removeNonAlphaCharacters(bodyContents);
+        // bodyContents[Stemmer::stem(bodyContents, 0, strlen(bodyContents))] = '\0'; NEED STEMMER TO WORK
 
         thisDoc->body.push_back(bodyContents); // Adds the single word to the vector
         bodyContents = ++whatsLeft; // Point to beginning of next word
@@ -67,12 +68,35 @@ void Parser::cleanBodyContents()
 }
 
 
-
+void Parser::createWordObjs(Document &currentDoc)
+{
+    for(int i = 0; i < currentDoc.body.size(); ++i)
+    {
+        // Logic to see if word is in the structure
+        Word *thisWord = new Word(currentDoc.body[i], currentDoc);
+        // Pass word to the data structure
+    }
+}
 
 
 
 
 // **********UTILITY FUNCTIONS**********
+void Parser::removeNonAlphaCharacters(char *&word)
+{
+    for(int i = 0; i < strlen(word); ++i)
+    {
+        word[i] = tolower(word[i]);
+
+        if(!isalpha(word[i]))
+            *(std::remove(word, word + strlen(word), word[i--])) = 0;
+    }
+}
+
+
+
+
+
 void Parser::getText() { bodyOfFile = currentPage->first_node("revision")->first_node("text"); }
 void Parser::getTitle() { titleOfFile = currentPage->first_node("title"); }
 void Parser::getNextPage() { currentPage = currentPage->next_sibling(); }
