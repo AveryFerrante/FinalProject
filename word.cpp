@@ -1,37 +1,17 @@
 #include "word.h"
 
-Word::Word(char *wordToAdd, Parser::Document &doc)
-{
-    word = wordToAdd;
-    totalFrequency = 1;
-
-    capacity = 5;
-    docList = new Parser::Document[capacity];
-    docList[0] = doc;
-    size = 1;
-}
+Word::Word(char *wordToAdd, int freq, char *id)
+    : word(wordToAdd) { frequency.push_back(freq);
+                        idList.push_back(id); }
 
 Word::~Word()
 {
     delete [] word;
-    delete [] docList;
+    idList.clear();
+    frequency.clear();
 }
 
-void Word::addDocument(Parser::Document &doc)
-{
-    if(size == capacity)
-        resizeDocs();
-
-    docList[size] = doc;
-    ++size;
-}
-
-void Word::resizeDocs()
-{
-
-}
-
-
+void Word::addDoc(char *id, int freq) { idList.push_back(id); frequency.push_back(freq); }
 
 char*& Word::getWord() { return word; }
 

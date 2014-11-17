@@ -1,6 +1,6 @@
 #ifndef WORD_H
 #define WORD_H
-#include "parser.h"
+#include <vector>
 
 
 
@@ -9,19 +9,16 @@ class Word
 private:
 
     char *word;
-    Parser::Document *docList;
-    int totalFrequency;
-    int capacity;
-    int size;
+    std::vector<char *> idList;
+    std::vector<int> frequency; // Parallel to idList, holds # of time word appears in document
 
 
 public:
 
-    Word(char *, Parser::Document &);
+    Word(char *, int, char *);
     ~Word();
     char*& getWord();
-    void addDocument(Parser::Document &);
-    void resizeDocs();
+    void addDoc(char *, int);
 
 };
 
