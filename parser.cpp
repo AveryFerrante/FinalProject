@@ -1,6 +1,4 @@
 #include "parser.h"
-#include <iostream>
-#include <algorithm> //For the remove function
 
 using namespace rapidxml;
 using namespace std;
@@ -15,17 +13,15 @@ Parser::Parser(char *&xmlFileName)
     initializeCurrentPage();
     getText();
     getTitle();
+
+    numberOfDocumentsInFile = 0;
 }
 
-void Parser::update() // Just a function for testing the class, not needed
+void Parser::getPageInfo() // Just a function for testing the class, not needed
 {
-    getNextPage();
-    while(currentPage != NULL)
-    {
-        getText();
-        cleanBodyContents();
-        getNextPage();
-    }
+    getText();
+    getTitle();
+    getId();
 }
 
 
@@ -43,41 +39,59 @@ void Parser::cleanBodyContents(/*this will eventually take a Document as an arg 
     char *bodyContents = bodyOfFile->value();
     char *whatsLeft = strchr(bodyContents, ' '); // Gets occurence to first space in the body
 
-    Document *thisDoc = new Document;
-    thisDoc->title = titleOfFile->value();
 
-    // POTENTIAL REMOVAL IDEAS: IF VALUE SIZE IS LESS THAN A NUMBER (220?)
     while(whatsLeft != NULL)
     {
         // Logic for removing bogus characters/maybe even entire words
 
-        *whatsLeft = '\0'; // Sets the word. bodyContents now is now a null terminated word.
+        *whatsLeft = '\0';
 
+        int beginning = strlen(bodyContents);
         removeNonAlphaCharacters(bodyContents);
         // bodyContents[Stemmer::stem(bodyContents, 0, strlen(bodyContents))] = '\0'; NEED STEMMER TO WORK
+        int end = strlen(bodyContents);
 
-        thisDoc->body.push_back(bodyContents); // Adds the single word to the vector
+        *(whatsLeft - (beginning - end)) = ' '; // Never actually alter bodyContents, just temporarily. Still need to alphabetize
         bodyContents = ++whatsLeft; // Point to beginning of next word
         whatsLeft = strchr(bodyContents, ' ');
     }
 
-    for(int i = 0; i < thisDoc->body.size(); ++i)
-        cout << thisDoc->body[i] << " ";
-
-    //CREATE WORD OBJECT HERE SOMEWHERE
 }
 
-
-void Parser::createWordObjs(Document &currentDoc)
+void Parser::parse(int splitNumber)
 {
-    for(int i = 0; i < currentDoc.body.size(); ++i)
-    {
-        // Logic to see if word is in the structure
-        Word *thisWord = new Word(currentDoc.body[i], currentDoc);
-        // Pass word to the data structure
-    }
-}
+    char fileNames = 'a';
+    string indexFileName = "index.txt";
+    ofstream currentOutputFile(&fileNames);
+    ofstream indexOutputFile(indexFileName.c_str());
 
+    while(currentPage != NULL)
+    {
+        getPageInfo();
+
+        writeToFile(currentOutputFile);
+        ++numberOfDocumentsInFile;
+
+        cleanBodyContents();
+        printNodeContents();
+
+        if(numberOfDocumentsInFile == splitNumber)
+        {
+            indexOutputFile << fileNames << "\n" << idOfFile->value() << endl;
+            ++fileNames;
+            numberOfDocumentsInFile = 0;
+            currentOutputFile.close();
+            currentOutputFile.open(&fileNames);
+        }
+        getNextPage();
+    }
+
+    currentOutputFile.close();
+
+    indexOutputFile << fileNames << "\n" << idOfFile->value() << endl;
+    indexOutputFile.close();
+
+}
 
 
 
@@ -93,6 +107,12 @@ void Parser::removeNonAlphaCharacters(char *&word)
     }
 }
 
+void Parser::writeToFile(ofstream &outFile)
+{
+    outFile << idOfFile->value() << "\n" << titleOfFile->value()
+            << "\n" << bodyOfFile->value() << "\n~" << endl;
+}
+
 
 
 
@@ -100,5 +120,6 @@ void Parser::removeNonAlphaCharacters(char *&word)
 void Parser::getText() { bodyOfFile = currentPage->first_node("revision")->first_node("text"); }
 void Parser::getTitle() { titleOfFile = currentPage->first_node("title"); }
 void Parser::getNextPage() { currentPage = currentPage->next_sibling(); }
+void Parser::getId() { idOfFile = currentPage->first_node("id"); }
 void Parser::initializeCurrentPage() { currentPage = mainNode->first_node()->next_sibling("page"); }
 void Parser::initializeMainNode() { mainNode = xmlFile.first_node(); }

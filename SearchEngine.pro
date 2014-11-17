@@ -17,15 +17,18 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     word.cpp \
+<<<<<<< HEAD
     document.cpp \
     parser.cpp \
     avltree.cpp
+=======
+    parser.cpp
+>>>>>>> a4b30b808e9ebed28bca3691a110c700818663fc
 
 HEADERS += \
     pugixml/src/pugixml.hpp \
     rapidxml-1.13/rapidxml.hpp \
     word.h \
-    document.h \
     Stemmer.h \
     parser.h \
     avltree.h
