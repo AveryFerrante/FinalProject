@@ -1,8 +1,10 @@
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
-#include<constream.h>
 #define FALSE 0
 #define TRUE 1
+
+using namespace std;
+
 struct AVLNode
 {
     int data ;
