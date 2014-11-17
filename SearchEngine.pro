@@ -18,7 +18,8 @@ TEMPLATE = app
 SOURCES += main.cpp \
     word.cpp \
     document.cpp \
-    parser.cpp
+    parser.cpp \
+    avltree.cpp
 
 HEADERS += \
     pugixml/src/pugixml.hpp \
@@ -26,4 +27,5 @@ HEADERS += \
     word.h \
     document.h \
     Stemmer.h \
-    parser.h
+    parser.h \
+    avltree.h
