@@ -9,17 +9,16 @@ class Word
 private:
 
     char *word;
-    std::vector<char *> idList;
-    std::vector<int> frequency; // Parallel to idList, holds # of time word appears in document
+    std::vector<int> lengthOfDoc; // Holds the length to extract from my user created file
+    std::vector<int> beginningPos; // These are all parallel!
+    std::vector<int> frequency;
 
 
 public:
 
-    Word(char *, int, char *);
+    Word(char *, int, int, int);
     ~Word();
-    char*& getWord();
-    void addDoc(char *, int);
-
+    char *getWord();
 };
 
 #endif // WORD_H
