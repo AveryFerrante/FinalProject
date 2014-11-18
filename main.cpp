@@ -10,39 +10,16 @@
 #include "parser.h"
 
 using namespace std;
-
+using namespace rapidxml;
 
 int main(int argc, char *argv[])
 {
-
-    //DID THIS PUSH WORK!!!!!
     Parser parse(argv[1]);
-    parse.parse(10);
-
-    /* JUST TEST STUFF IGNORE THIS BUT PLEASE DONT DELETE
-    char *word = new char[5];
-    word[0] = 'a';
-    word[1] = '#';
-    word[2] = ' ';
-    word[3] = 'g';
-    word[4] = '\0';
-
-    int beg = strlen(word);
-    cout << word << endl;
-    char *stuff = strchr(word, ' ');
-    *stuff = '\0';
-    for(int i = 0; i < strlen(word); ++i)
-    {
-        if(!isalpha(word[i]))
-            *(std::remove(word, word + strlen(word), word[i--])) = 0;
-    }
-    int end = strlen(word);
-    *(stuff - (beg - end)) = ' ';
-    cout << word << endl;
-    */
+    parse.initializeStopWordList(argv[2]);
+    parse.parse();
+    parse.getFile(20);
 
     /*
-
         avltree<int> at ;
         AVLNode* avl = NULL ;
         int h ;
@@ -63,7 +40,9 @@ int main(int argc, char *argv[])
             at.display(avl);
     */
 
+
     //IndexInterface testIndex;
+
 
 
     return 0;

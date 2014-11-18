@@ -1,18 +1,21 @@
 #include "word.h"
 
-Word::Word(char *wordToAdd, int freq, char *id)
-    : word(wordToAdd) { frequency.push_back(freq);
-                        idList.push_back(id); }
+Word::Word(char *wordToAdd, int freq, int docLength, int startPos)
+    : word(wordToAdd)
+{
+    frequency.push_back(freq);
+    beginningPos.push_back(startPos);
+    lengthOfDoc.push_back(docLength);
+}
 
 Word::~Word()
 {
     delete [] word;
-    idList.clear();
+    beginningPos.clear();
     frequency.clear();
+    lengthOfDoc.clear();
 }
 
-void Word::addDoc(char *id, int freq) { idList.push_back(id); frequency.push_back(freq); }
-
-char*& Word::getWord() { return word; }
+char* Word::getWord() { return word; }
 
 

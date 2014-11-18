@@ -16,6 +16,7 @@ class Parser
 private: // Member Variables
 
     //Variables related to rapidxml
+    rapidxml::file<> *xFile; // Must be a pointer else I will lose the file once it leaves the scope of the constructor
     rapidxml::xml_node<> *mainNode;
     rapidxml::xml_node<> *currentPage;
     rapidxml::xml_node<> *bodyOfFile;
@@ -23,7 +24,12 @@ private: // Member Variables
     rapidxml::xml_node<> *idOfFile;
     rapidxml::xml_document<> xmlFile;
 
-    int numberOfDocumentsInFile;
+    int seekPosition;
+    std::vector<char *> stopWords;
+
+    std::vector<std::string> fileBodies;
+    std::vector<std::string> fileTitles;
+    std::vector<int> fileStartPosition;
 
 private: // Utility Functions
 
@@ -33,19 +39,23 @@ private: // Utility Functions
     void getTitle();
     void getText();
     void getId();
+    void getPageInfo();
 
     void removeNonAlphaCharacters(char *&);
-    void writeToFile(std::ofstream &);
+    void writeDataToVectors();
 
 public:
-    Parser(char *&);
+    Parser(char *);
+    bool isStopWord(char *) const;
 
     void printNodeContents();
-    void getPageInfo();
     void cleanBodyContents();
     void createWordObjs();
+    void initializeStopWordList(const char *);
 
-    void parse(int);
+    void parse();
+
+    void getFile(int);
 };
 
 #endif // PARSER_H
