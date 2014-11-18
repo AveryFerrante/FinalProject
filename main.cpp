@@ -63,6 +63,8 @@ int main(int argc, char *argv[])
             at.display(avl);
     */
 
+    //IndexInterface testIndex;
+
 
     return 0;
 }
