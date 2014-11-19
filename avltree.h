@@ -1,31 +1,39 @@
+//Source code posted by Ranjith on electrofriends.com
+//http://electrofriends.com/source-codes/software-programs/cpp-programs/cpp-data-structure/c-program-to-implement-avl-tree-its-operations/
+
+
 #ifndef AVLTREE_H
 #define AVLTREE_H
 #include <iostream>
 //#include<constream>
+#include "IndexInterface.h"
 #define FALSE 0
 #define TRUE 1
 
-//Struct for an AVLNode
-struct AVLNode
-{
-    //The data held by the node
-    int data ;
-
-    //The "balance factor"... essentially the different in height of left and right trees. Can be -1, 0, or 1
-    int balfact ;
-
-    //Pointers to the left and right nodes/children/trees
-    AVLNode *left ;
-    AVLNode *right ;
-} ;
 
 template<typename T>
-class avltree
+class avltree: public IndexInterface
 {
+    private:
+        //Struct for an AVLNode
+        struct AVLNode
+        {
+            //The data held by the node
+            T data ;
+
+            //The "balance factor"... essentially the different in height of left and right trees. Can be -1, 0, or 1
+            int balfact ;
+
+            //Pointers to the left and right nodes/children/trees
+            AVLNode *left ;
+            AVLNode *right ;
+        } ;
+
+
     private :
         AVLNode *root ;
-    public :
 
+    public :
 
 
         //Constructor. Creates an AVLTree with no nodes
@@ -34,8 +42,7 @@ class avltree
             root = NULL ;
         }
 
-
-        AVLNode*  insert ( int data, int *h )
+        AVLNode*  insert ( T data, int *h )
         {
             root = buildtree ( root, data, h ) ;
             return root ;
@@ -45,7 +52,7 @@ class avltree
          * The root  of the tree may be different every time a new node is inserted. This is where rebalancing occurs,
          * and is appropriately recursive
         **/
-        static AVLNode* buildtree ( AVLNode *root, int data, int *h )
+        static AVLNode* buildtree ( AVLNode *root, T data, int *h )
         {
             AVLNode *node1, *node2 ;
 
@@ -180,7 +187,7 @@ class avltree
                 display ( root -> right ) ;
             }
         }
-        AVLNode* deldata ( AVLNode* root, int data, int *h ) {
+        AVLNode* deldata ( AVLNode* root, T data, int *h ) {
 
             AVLNode *node ;
             if ( root -> data == 13 )
@@ -384,6 +391,17 @@ class avltree
             }
             delete ( root ) ;
         }
+
+        std::vector<Document> getDocumentsForWord(Word word)
+        {
+
+        }
+
+        void addWordToIndex(Word word)
+        {
+
+        }
+
 } ;
 
 #endif // AVLTREE_H
