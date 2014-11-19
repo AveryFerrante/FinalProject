@@ -3,7 +3,6 @@
 #include <cstring>
 #include <ctype.h>
 #include <algorithm>
-#include "Stemmer.h"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "avltree.h"
@@ -17,7 +16,7 @@ int main(int argc, char *argv[])
     Parser parse(argv[1]);
     parse.initializeStopWordList(argv[2]);
     parse.parse();
-    parse.getFile(20);
+   // parse.getFile(0);
 
     /*
         avltree<int> at ;

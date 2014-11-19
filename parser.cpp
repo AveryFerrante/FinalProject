@@ -36,7 +36,6 @@ void Parser::cleanBodyContents(/*this will eventually take a Document as an arg 
         *whatsLeft = '\0';
         if(isStopWord(bodyContents)) // Skip this word
         {
-            cout << "Found stop word." << endl;
             bodyContents = ++whatsLeft; // Point to beginning of next word
             whatsLeft = strchr(bodyContents, ' ');
             continue;
@@ -44,7 +43,8 @@ void Parser::cleanBodyContents(/*this will eventually take a Document as an arg 
 
 
         removeNonAlphaCharacters(bodyContents);
-        // bodyContents[Stemmer::stem(bodyContents, 0, strlen(bodyContents))] = '\0'; NEED STEMMER TO WORK
+        //bodyContents[Stemmer::stem(bodyContents, 0, strlen(bodyContents))] = '\0';
+
 
 
         *whatsLeft = ' '; // Never actually alter bodyContents, just temporarily. Still need to alphabetize
@@ -61,7 +61,6 @@ void Parser::parse()
         getPageInfo();
         if(bodyOfFile->value_size() < 100)
         {
-            cout << "Skipped a file." << endl;
             getNextPage();
             continue;
         }
@@ -69,23 +68,24 @@ void Parser::parse()
         cleanBodyContents();
         getNextPage();
     }
-
-    fileStartPosition.push_back(seekPosition);
-    ofstream outputFile("file.txt");
+    ofstream outputFile("file.txt", ios::binary);
+    fileStartPosition.push_back(seekPosition); // Give a 0 for starting
     for(int i = 0; i < fileBodies.size(); ++i)
     {
         outputFile << fileTitles[i] << endl;
         outputFile << fileBodies[i] << endl;
+        fileStartPosition.push_back(outputFile.tellp());
     }
+    fileStartPosition.push_back(outputFile.tellp());
     outputFile.close();
 }
 
 void Parser::getFile(int index)
 {
-    ifstream outputFile("file.txt");
+    ifstream outputFile("file.txt", ios::binary);
     int length = fileStartPosition[index + 1] - fileStartPosition[index];
-    char *word = new char[length + 1];
-    outputFile.seekg(fileStartPosition[index] );
+    char *word = new char[length];
+    outputFile.seekg(fileStartPosition[index]);
     outputFile.read(word, length);
     word[length] = '\0';
     cout << word << endl;
@@ -155,9 +155,6 @@ void Parser::writeDataToVectors()
 {
     fileBodies.push_back(string(bodyOfFile->value()));
     fileTitles.push_back(string(titleOfFile->value()));
-    fileStartPosition.push_back(seekPosition);
-
-    seekPosition += (bodyOfFile->value_size() + titleOfFile->value_size() + 1);
 }
 
 void Parser::getPageInfo() // Just a function for testing the class, not needed
