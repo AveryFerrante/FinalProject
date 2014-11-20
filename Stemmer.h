@@ -39,7 +39,7 @@
 */
 
 #include <cstring>  /* for memmove */
-
+namespace pstem {
 #define TRUE 1
 #define FALSE 0
 
@@ -332,4 +332,5 @@ int stem(char * p, int i, int j)
    }
    return k;
 }
+} // close namespace
 /*--------------------stemmer definition ends here------------------------*/

@@ -1,5 +1,6 @@
 #include "avltree.h"
 #include "parser.h"
+#include "documentindex.h"
 #include <chrono>
 #include <ctime>
 
@@ -12,16 +13,14 @@ int main(int argc, char *argv[])
     chrono::time_point<std::chrono::system_clock> start, end;
     start = chrono::system_clock::now();
 
+    DocumentIndex documentIndexObject;
     Parser parse(argv[1], argv[2]);
-    parse.parse();
+    parse.parse(documentIndexObject);
+    documentIndexObject.getDocument(32);
 
     end = chrono::system_clock::now();
     chrono::duration<double> elapsed_seconds = end-start;
     cout << "Elapsed file load time: " << elapsed_seconds.count() << endl;
-
-    //parse.initializeStopWordList(argv[2]);
-    //parse.parse();
-    //parse.getFile(32);
 
     /*
         avltree<int> at ;

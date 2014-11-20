@@ -3,9 +3,11 @@
 #include <iostream>
 #include <cstring>
 #include <algorithm> //For the remove function
+#include "Stemmer.h"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "word.h"
+#include "documentindex.h"
 
 class Parser
 {
@@ -21,11 +23,10 @@ private: // Member Variables
     rapidxml::xml_node<> *idOfFile;
     rapidxml::xml_document<> xmlFile;
 
-    int seekPosition;
     std::vector<char *> stopWords;
 
-    std::vector<std::string> fileBodies;
-    std::vector<std::string> fileTitles;
+    std::vector<std::string *> fileBodies;
+    std::vector<std::string *> fileTitles;
     std::vector<int> fileStartPosition;
 
 private: // Utility Functions
@@ -38,21 +39,22 @@ private: // Utility Functions
     void getId();
     void getPageInfo();
 
-    void removeNonAlphaCharacters(char *&);
     void writeDataToVectors();
     void initializeStopWordList(const char *);
 
+    // Thses deal with cleaning words from the body of the files
+    void cleanBodyContents();
+    bool isStopWord(char *) const;
+    void removeNonAlphaCharacters(char *&);
+
 public:
     Parser(char *, char *);
-    bool isStopWord(char *) const;
+
 
     void printNodeContents();
-    void cleanBodyContents();
     void createWordObjs();
 
-    void parse();
-
-    void getFile(int);
+    void parse(DocumentIndex &);
 };
 
 #endif // PARSER_H
