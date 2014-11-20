@@ -3,7 +3,7 @@
 using namespace rapidxml;
 using namespace std;
 
-Parser::Parser(char *xmlFileName)
+Parser::Parser(char *xmlFileName, char *stopWordList)
 {
     xFile = new file<>(xmlFileName);
     xmlFile.parse<0>((*xFile).data());
@@ -12,7 +12,10 @@ Parser::Parser(char *xmlFileName)
     initializeMainNode();
     initializeCurrentPage();
 
-    seekPosition = 0;
+    //Sets the other nodes to contain values
+    getPageInfo();
+
+    initializeStopWordList(stopWordList);
 }
 
 void Parser::printNodeContents()
@@ -22,76 +25,36 @@ void Parser::printNodeContents()
 }
 
 
-
-void Parser::cleanBodyContents(/*this will eventually take a Document as an arg since this will be a util function*/)
+void Parser::parse(DocumentIndex &documentIndexObject)
 {
-    char *bodyContents = bodyOfFile->value();
-    char *whatsLeft = strchr(bodyContents, ' '); // Gets occurence to first space in the body
-
-
-    while(whatsLeft != NULL)
-    {
-        // Logic for removing bogus characters/maybe even entire words
-
-        *whatsLeft = '\0';
-        if(isStopWord(bodyContents)) // Skip this word
-        {
-            cout << "Found stop word." << endl;
-            bodyContents = ++whatsLeft; // Point to beginning of next word
-            whatsLeft = strchr(bodyContents, ' ');
-            continue;
-        }
-
-
-        removeNonAlphaCharacters(bodyContents);
-        // bodyContents[Stemmer::stem(bodyContents, 0, strlen(bodyContents))] = '\0'; NEED STEMMER TO WORK
-
-
-        *whatsLeft = ' '; // Never actually alter bodyContents, just temporarily. Still need to alphabetize
-        bodyContents = ++whatsLeft; // Point to beginning of next word
-        whatsLeft = strchr(bodyContents, ' ');
-    }
-
-}
-
-void Parser::parse()
-{
+    int docCounter = 0;
     while(currentPage != NULL)
     {
         getPageInfo();
         if(bodyOfFile->value_size() < 100)
         {
-            cout << "Skipped a file." << endl;
             getNextPage();
             continue;
         }
+
         writeDataToVectors();
         cleanBodyContents();
         getNextPage();
+        ++docCounter;
     }
+    cout << "Kept " << docCounter << " documents." << endl;
 
-    fileStartPosition.push_back(seekPosition);
-    ofstream outputFile("file.txt");
+    ofstream outputFile("file.txt", ios::binary);
+    documentIndexObject.addDoc(0);
     for(int i = 0; i < fileBodies.size(); ++i)
     {
-        outputFile << fileTitles[i] << endl;
-        outputFile << fileBodies[i] << endl;
+        outputFile << *fileTitles[i] << endl;
+        outputFile << *fileBodies[i] << endl;
+        documentIndexObject.addDoc(outputFile.tellp());
     }
+    documentIndexObject.addDoc(outputFile.tellp());
     outputFile.close();
 }
-
-void Parser::getFile(int index)
-{
-    ifstream outputFile("file.txt");
-    int length = fileStartPosition[index + 1] - fileStartPosition[index];
-    char *word = new char[length + 1];
-    outputFile.seekg(fileStartPosition[index] );
-    outputFile.read(word, length);
-    word[length] = '\0';
-    cout << word << endl;
-
-}
-
 
 void Parser::initializeStopWordList(const char *fileName)
 {
@@ -101,7 +64,7 @@ void Parser::initializeStopWordList(const char *fileName)
     while(!wordList.eof())
     {
         wordList.getline(buffer, 80);
-        char *temp = new char[strlen(buffer) + 1];
+        char *temp = new char[strlen(buffer)];
         strcpy(temp, buffer);
         stopWords.push_back(temp);
     }
@@ -112,9 +75,7 @@ void Parser::initializeStopWordList(const char *fileName)
 
 
 
-
-
-// **********UTILITY FUNCTIONS**********
+// ********************************UTILITY FUNCTIONS****************************************************************************
 void Parser::removeNonAlphaCharacters(char *&word)
 {
     for(size_t i = 0; i < strlen(word); ++i)
@@ -126,10 +87,33 @@ void Parser::removeNonAlphaCharacters(char *&word)
     }
 }
 
+void Parser::cleanBodyContents()
+{
+    char *bodyContents = bodyOfFile->value();
+    char *whatsLeft = strchr(bodyContents, ' '); // Gets occurence to first space in the body
+
+    while(whatsLeft != NULL)
+    {
+        *whatsLeft = '\0';
+
+        if(strlen(bodyContents) > 22 || isStopWord(bodyContents)) // Skip this word
+        {
+            bodyContents = ++whatsLeft; // Point to beginning of next word
+            whatsLeft = strchr(bodyContents, ' ');
+            continue;
+        }
+
+        removeNonAlphaCharacters(bodyContents);
+        bodyContents[stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
+
+        bodyContents = ++whatsLeft; // Point to beginning of next word
+        whatsLeft = strchr(bodyContents, ' ');
+    }
+}
+
 bool Parser::isStopWord(char *word) const
 {
     int  left = 0, right = stopWords.size() - 1, mid;
-
     while (left <= right)
     {
         mid = ((left + right) / 2);
@@ -153,11 +137,8 @@ bool Parser::isStopWord(char *word) const
 
 void Parser::writeDataToVectors()
 {
-    fileBodies.push_back(string(bodyOfFile->value()));
-    fileTitles.push_back(string(titleOfFile->value()));
-    fileStartPosition.push_back(seekPosition);
-
-    seekPosition += (bodyOfFile->value_size() + titleOfFile->value_size() + 1);
+    fileBodies.push_back(new string(bodyOfFile->value()));
+    fileTitles.push_back(new string(titleOfFile->value()));
 }
 
 void Parser::getPageInfo() // Just a function for testing the class, not needed
