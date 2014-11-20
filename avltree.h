@@ -394,7 +394,8 @@ class avltree: public IndexInterface
 
         std::vector<Document> getDocumentsForWord(Word word)
         {
-
+            //AVLNode* temp = this->root;
+            //if(temp)
         }
 
         void addWordToIndex(Word word)

@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     */
 
 
-    //IndexInterface testIndex;
+    IndexInterface* testIndex = new avltree<Word>;
 
 
 
