@@ -34,6 +34,7 @@ void Parser::cleanBodyContents(/*this will eventually take a Document as an arg 
     {
 
         *whatsLeft = '\0';
+
         if(strlen(bodyContents) > 22 || isStopWord(bodyContents)) // Skip this word
         {
             bodyContents = ++whatsLeft; // Point to beginning of next word
@@ -41,15 +42,16 @@ void Parser::cleanBodyContents(/*this will eventually take a Document as an arg 
             continue;
         }
 
-
+        cout << "On word: " << bodyContents << endl;
         removeNonAlphaCharacters(bodyContents);
+        cout << "After removing characters: " << bodyContents << endl;
         //bodyContents[stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
 
 
         bodyContents = ++whatsLeft; // Point to beginning of next word
         whatsLeft = strchr(bodyContents, ' ');
     }
-
+    cout << "Exited while loop " << endl;
 }
 
 void Parser::parse()
@@ -58,14 +60,19 @@ void Parser::parse()
     while(currentPage != NULL)
     {
         getPageInfo();
+        cout << "Got page info" << endl;
         if(bodyOfFile->value_size() < 100)
         {
+            cout << "Less than 100" << endl;
             getNextPage();
             continue;
         }
+        if (docCounter == 1) cout << "Debug" << endl;
         writeDataToVectors();
+        cout << "Wrote data to vectors." << endl;
         cleanBodyContents();
         getNextPage();
+        cout << "Got the next page" << endl;
         ++docCounter;
     }
     cout << "Kept " << docCounter << " documents." << endl;
@@ -116,7 +123,7 @@ void Parser::initializeStopWordList(const char *fileName)
 
 
 
-// **********UTILITY FUNCTIONS**********
+// **********UTILITY FUNCTIONS****************************************************************************
 void Parser::removeNonAlphaCharacters(char *&word)
 {
     for(size_t i = 0; i < strlen(word); ++i)
