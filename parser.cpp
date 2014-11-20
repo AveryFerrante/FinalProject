@@ -3,7 +3,7 @@
 using namespace rapidxml;
 using namespace std;
 
-Parser::Parser(char *xmlFileName)
+Parser::Parser(char *xmlFileName, char *stopWordList)
 {
     xFile = new file<>(xmlFileName);
     xmlFile.parse<0>((*xFile).data());
@@ -11,8 +11,9 @@ Parser::Parser(char *xmlFileName)
     //Set the two nodes up
     initializeMainNode();
     initializeCurrentPage();
+    getPageInfo();
 
-    seekPosition = 0;
+    initializeStopWordList(stopWordList);
 }
 
 void Parser::printNodeContents()
@@ -31,10 +32,9 @@ void Parser::cleanBodyContents(/*this will eventually take a Document as an arg 
 
     while(whatsLeft != NULL)
     {
-        // Logic for removing bogus characters/maybe even entire words
 
         *whatsLeft = '\0';
-        if(isStopWord(bodyContents)) // Skip this word
+        if(strlen(bodyContents) > 22 || isStopWord(bodyContents)) // Skip this word
         {
             bodyContents = ++whatsLeft; // Point to beginning of next word
             whatsLeft = strchr(bodyContents, ' ');
@@ -43,11 +43,9 @@ void Parser::cleanBodyContents(/*this will eventually take a Document as an arg 
 
 
         removeNonAlphaCharacters(bodyContents);
-        //bodyContents[Stemmer::stem(bodyContents, 0, strlen(bodyContents))] = '\0';
+        //bodyContents[stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
 
 
-
-        *whatsLeft = ' '; // Never actually alter bodyContents, just temporarily. Still need to alphabetize
         bodyContents = ++whatsLeft; // Point to beginning of next word
         whatsLeft = strchr(bodyContents, ' ');
     }
@@ -56,6 +54,7 @@ void Parser::cleanBodyContents(/*this will eventually take a Document as an arg 
 
 void Parser::parse()
 {
+    int docCounter = 0;
     while(currentPage != NULL)
     {
         getPageInfo();
@@ -67,7 +66,9 @@ void Parser::parse()
         writeDataToVectors();
         cleanBodyContents();
         getNextPage();
+        ++docCounter;
     }
+    cout << "Kept " << docCounter << " documents." << endl;
     ofstream outputFile("file.txt", ios::binary);
     fileStartPosition.push_back(seekPosition); // Give a 0 for starting
     for(int i = 0; i < fileBodies.size(); ++i)
@@ -78,6 +79,7 @@ void Parser::parse()
     }
     fileStartPosition.push_back(outputFile.tellp());
     outputFile.close();
+
 }
 
 void Parser::getFile(int index)
@@ -101,7 +103,7 @@ void Parser::initializeStopWordList(const char *fileName)
     while(!wordList.eof())
     {
         wordList.getline(buffer, 80);
-        char *temp = new char[strlen(buffer) + 1];
+        char *temp = new char[strlen(buffer)];
         strcpy(temp, buffer);
         stopWords.push_back(temp);
     }

@@ -1,22 +1,27 @@
-#include <iostream>
-#include <fstream>
-#include <cstring>
-#include <ctype.h>
-#include <algorithm>
-#include "rapidxml-1.13/rapidxml.hpp"
-#include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "avltree.h"
 #include "parser.h"
+#include <chrono>
+#include <ctime>
 
 using namespace std;
 using namespace rapidxml;
 
 int main(int argc, char *argv[])
 {
-    Parser parse(argv[1]);
-    parse.initializeStopWordList(argv[2]);
+
+    chrono::time_point<std::chrono::system_clock> start, end;
+    start = chrono::system_clock::now();
+
+    Parser parse(argv[1], argv[2]);
     parse.parse();
-   // parse.getFile(0);
+
+    end = chrono::system_clock::now();
+    chrono::duration<double> elapsed_seconds = end-start;
+    cout << "Elapsed file load time: " << elapsed_seconds.count() << endl;
+
+    //parse.initializeStopWordList(argv[2]);
+    //parse.parse();
+    //parse.getFile(32);
 
     /*
         avltree<int> at ;

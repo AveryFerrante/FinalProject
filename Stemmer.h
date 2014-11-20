@@ -38,7 +38,7 @@
        steps after step1ab unless k > k0.
 */
 
-#include <string.h>  /* for memmove */
+#include <cstring>  /* for memmove */
 
 #define TRUE 1
 #define FALSE 0
@@ -332,5 +332,4 @@ int stem(char * p, int i, int j)
    }
    return k;
 }
-
 /*--------------------stemmer definition ends here------------------------*/
