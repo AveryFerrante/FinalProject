@@ -15,6 +15,7 @@ Word::~Word()
 {
     delete [] word;
 }
+
 std::vector<int> & Word::getIndex() { return index; }
 void Word::addDocIndex(int docIndex) { index.push_back(docIndex); }
 int Word::getDocIndex(int docIndex) { return index[docIndex]; }
