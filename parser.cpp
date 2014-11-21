@@ -25,7 +25,7 @@ void Parser::printNodeContents()
 }
 
 
-void Parser::parse(DocumentIndex &documentIndexObject)
+void Parser::parse(DocumentIndex &documentIndexObject, IndexInterface &dataStructure)
 {
     int docCounter = 0;
     while(currentPage != NULL)
@@ -38,12 +38,10 @@ void Parser::parse(DocumentIndex &documentIndexObject)
         }
 
         writeDataToVectors();
-        cleanBodyContents();
+        cleanBodyContents(dataStructure);
         getNextPage();
         ++docCounter;
     }
-    cout << "Kept " << docCounter << " documents." << endl;
-
     ofstream outputFile("file.txt", ios::binary);
     documentIndexObject.addDoc(0);
     for(int i = 0; i < fileBodies.size(); ++i)
@@ -87,7 +85,7 @@ void Parser::removeNonAlphaCharacters(char *&word)
     }
 }
 
-void Parser::cleanBodyContents()
+void Parser::cleanBodyContents(IndexInterface &dataStructure)
 {
     char *bodyContents = bodyOfFile->value();
     char *whatsLeft = strchr(bodyContents, ' '); // Gets occurence to first space in the body
@@ -105,6 +103,13 @@ void Parser::cleanBodyContents()
 
         removeNonAlphaCharacters(bodyContents);
         //bodyContents[pstem::stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
+        if(!dataStructure.alreadyContains(bodyContents))
+        {
+            Word *temp = new Word(bodyContents, 20, 20);
+            int h = 1;
+            dataStructure.addWordToIndex(temp, &h);
+        }
+
         bodyContents = ++whatsLeft; // Point to beginning of next word
         whatsLeft = strchr(bodyContents, ' ');
     }
@@ -132,6 +137,11 @@ bool Parser::isStopWord(char *word) const
     }
 
     return false;
+}
+
+void Parser::createWordObjs(IndexInterface &dataStructure)
+{
+
 }
 
 void Parser::writeDataToVectors()

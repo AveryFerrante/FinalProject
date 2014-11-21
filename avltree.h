@@ -9,7 +9,7 @@
 
 struct AVLNode
 {
-    Word data ;
+    Word *data ;
     int balfact ;
     AVLNode *left ;
     AVLNode *right ;
@@ -21,11 +21,10 @@ class avltree : public IndexInterface
         AVLNode *root ;
     public :
         avltree( ) ;
-        void  insert ( Word& data, int *h ) ;
         AVLNode* getRoot() ;
-        static AVLNode* buildtree ( AVLNode *root, Word& data, int *h ) ;
+        static AVLNode* buildtree ( AVLNode *root, Word *data, int *h ) ;
         void display( AVLNode* root ) ;
-        AVLNode* deldata ( AVLNode* root, Word& data, int *h ) ;
+        AVLNode* deldata ( AVLNode* root, Word *data, int *h ) ;
         static AVLNode* del ( AVLNode *node, AVLNode* root, int *h ) ;
         static AVLNode* balright ( AVLNode *root, int *h ) ;
         static AVLNode* balleft ( AVLNode* root, int *h ) ;
@@ -33,7 +32,7 @@ class avltree : public IndexInterface
         ~avltree( ) ;
         static void deltree ( AVLNode *root ) ;
 
-        virtual void addWordToIndex(Word& word);
+        virtual void addWordToIndex(Word *word, int *h);
         virtual bool alreadyContains(char*& word);
         virtual std::vector<int>& getDocumentsForWord(char* &word);
 } ;

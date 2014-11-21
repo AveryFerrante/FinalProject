@@ -7,6 +7,7 @@
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "word.h"
 #include "documentindex.h"
+#include "IndexInterface.h"
 
 class Parser
 {
@@ -42,18 +43,19 @@ private: // Utility Functions
     void initializeStopWordList(const char *);
 
     // Thses deal with cleaning words from the body of the files
-    void cleanBodyContents();
+    void cleanBodyContents(IndexInterface &);
     bool isStopWord(char *) const;
     void removeNonAlphaCharacters(char *&);
+
+    void createWordObjs(IndexInterface &);
 
 public:
     Parser(char *, char *);
 
 
     void printNodeContents();
-    void createWordObjs();
 
-    void parse(DocumentIndex &);
+    void parse(DocumentIndex &, IndexInterface &);
 };
 
 #endif // PARSER_H

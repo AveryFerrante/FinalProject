@@ -1,4 +1,3 @@
-#include "avltree.h"
 #include "parser.h"
 #include "documentindex.h"
 #include "avltree.h"
@@ -10,6 +9,12 @@ using namespace rapidxml;
 
 int main(int argc, char *argv[])
 {
+    DocumentIndex documentIndexObject;
+    avltree *dataStruct = new avltree;
+    Parser parse(argv[1], argv[2]);
+    parse.parse(documentIndexObject, *dataStruct);
+    dataStruct->display(dataStruct->getRoot());
+
     /*
     chrono::time_point<std::chrono::system_clock> start, end;
     start = chrono::system_clock::now();
@@ -43,13 +48,6 @@ int main(int argc, char *argv[])
             cout << endl;
             at.display(avl);
     */
-
-
-
-    IndexInterface* testIndex = new avltree();
-
-
-
 
     return 0;
 }
