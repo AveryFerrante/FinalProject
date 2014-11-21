@@ -132,18 +132,15 @@ void avltree :: display ( AVLNode* root )
     if ( root != NULL )
     {
         display ( root -> left ) ;
-        cout << root -> data << "\t" ;
+        //cout << root -> data << "\t" ;
         display ( root -> right ) ;
     }
 }
 AVLNode* avltree :: deldata ( AVLNode *root, Word& data, int *h )
 {
     AVLNode *node ;
-    if ( root -> data == 13 )
-        cout << root -> data ;
     if ( root == NULL )
     {
-        cout << "\nNo such data." ;
         return ( root ) ;
     }
     else
@@ -360,9 +357,9 @@ std::vector<int>& avltree::getDocumentsForWord(char*& word)
 bool avltree::alreadyContains(char*& word){
     AVLNode* temp = this->root;
     while(temp != NULL){
-        if(strcmp(temp->data->getWord(), word) == 0)
+        if(strcmp(temp->data.getWord(), word) == 0)
             return true;
-        else if(strcmp(temp->data->getWord(), word) < 0)
+        else if(strcmp(temp->data.getWord(), word) < 0)
             temp = temp->right;
         else
             temp = temp->left;

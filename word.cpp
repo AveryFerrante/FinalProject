@@ -16,6 +16,19 @@ Word::~Word()
     delete [] word;
 }
 
+bool Word::operator<(Word &source)
+{
+    if(strcmp(word, source.getWord()) < 0)
+        return true;
+    else
+        return false;
+}
+
+bool Word::operator>(Word &source)
+{
+    return !(*this < source);
+}
+
 std::vector<int> & Word::getIndex() { return index; }
 void Word::addDocIndex(int docIndex) { index.push_back(docIndex); }
 int Word::getDocIndex(int docIndex) { return index[docIndex]; }

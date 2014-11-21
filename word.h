@@ -23,6 +23,9 @@ public:
     void addDocIndex(int);
     int getDocIndex(int);
     std::vector<int> & getIndex();
+
+    bool operator<(Word &);
+    bool operator>(Word &);
 };
 
 #endif // WORD_H

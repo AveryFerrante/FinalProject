@@ -1,10 +1,12 @@
+#ifndef AVLTREE_H
+#define AVLTREE_H
 #include <iostream>
 #include <stdlib.h>
 #include "word.h"
 #include "IndexInterface.h"
-//#include<constream.h>
 #define FALSE 0
 #define TRUE 1
+
 struct AVLNode
 {
     Word data ;
@@ -13,7 +15,7 @@ struct AVLNode
     AVLNode *right ;
 } ;
 
-class avltree: public IndexInterface
+class avltree : public IndexInterface
 {
     private :
         AVLNode *root ;
@@ -34,3 +36,5 @@ class avltree: public IndexInterface
         virtual bool alreadyContains(char*& word);
         virtual std::vector<int>& getDocumentsForWord(char* &word);
 } ;
+
+#endif // AVLTREE_H
