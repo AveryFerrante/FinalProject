@@ -4,11 +4,11 @@
 #include "document.h"
 #include "word.h"
 
-//template<typename T>
+//template<typename Tt>
 class IndexInterface{
 public:
 
-    virtual void addWordToIndex(Word word) = 0;
+    virtual void addWordToIndex(Word &) = 0;
     //virtual std::vector<Document> getDocumentsForWord(Word word) = 0;
     virtual ~IndexInterface();
 };

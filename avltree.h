@@ -392,14 +392,21 @@ class avltree: public IndexInterface
             delete ( root ) ;
         }
 
-        //std::vector<Document> getDocumentsForWord(Word word)
-        //{
-            //AVLNode* temp = this->root;
-            //if(temp)
-        //}
-
-        void addWordToIndex(Word word)
+        std::vector<Document> getDocumentsForWord(char *wordToFind)
         {
+            AVLNode* temp = this->root;
+            if(strcmp(temp->data.getWord(), wordToFind));
+
+        }
+
+        void addWordToIndex(Word &data)
+        {
+
+        }
+
+        bool doesExist(T &data)
+        {
+            AVLNode *temp = root;
 
         }
 

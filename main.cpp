@@ -1,6 +1,7 @@
 #include "avltree.h"
 #include "parser.h"
 #include "documentindex.h"
+#include "avltree.h"
 #include <chrono>
 #include <ctime>
 
@@ -9,7 +10,6 @@ using namespace rapidxml;
 
 int main(int argc, char *argv[])
 {
-
     chrono::time_point<std::chrono::system_clock> start, end;
     start = chrono::system_clock::now();
 
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     */
 
 
-    IndexInterface* testIndex = new avltree<Word>;
+    IndexInterface *testIndex = new avltree<Word>;
 
 
 

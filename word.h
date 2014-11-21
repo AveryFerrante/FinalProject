@@ -22,6 +22,7 @@ public:
 
     void addDocIndex(int);
     int getDocIndex(int);
+    std::vector<int> & getIndex();
 };
 
 #endif // WORD_H
