@@ -1,45 +1,18 @@
-#include <iostream>
-#include <stdlib.h>
-#define FALSE 0
-#define TRUE 1
+#include "avltree.h"
 
 using namespace std;
 
-struct AVLNode
-{
-    int data ;
-    int balfact ;
-    AVLNode *left ;
-    AVLNode *right ;
-} ;
-
-class avltree
-{
-    private :
-        AVLNode *root ;
-    public :
-        avltree( ) ;
-        AVLNode*  insert ( int data, int *h ) ;
-        static AVLNode* buildtree ( AVLNode *root, int data, int *h ) ;
-        void display( AVLNode *root ) ;
-        AVLNode* deldata ( AVLNode* root, int data, int *h ) ;
-        static AVLNode* del ( AVLNode *node, AVLNode* root, int *h ) ;
-        static AVLNode* balright ( AVLNode *root, int *h ) ;
-        static AVLNode* balleft ( AVLNode* root, int *h ) ;
-        void setroot ( AVLNode *avl ) ;
-        ~avltree( ) ;
-        static void deltree ( AVLNode *root ) ;
-} ;
 avltree :: avltree( )
 {
     root = NULL ;
 }
-AVLNode* avltree :: insert ( int data, int *h )
+
+AVLNode* avltree :: insert ( Word& data, int *h )
 {
     root = buildtree ( root, data, h ) ;
     return root ;
 }
-AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
+AVLNode* avltree :: buildtree ( AVLNode *root, Word& data, int *h )
 {
     AVLNode *node1, *node2 ;
 
@@ -163,7 +136,7 @@ void avltree :: display ( AVLNode* root )
         display ( root -> right ) ;
     }
 }
-AVLNode* avltree :: deldata ( AVLNode *root, int data, int *h )
+AVLNode* avltree :: deldata ( AVLNode *root, Word& data, int *h )
 {
     AVLNode *node ;
     if ( root -> data == 13 )
@@ -365,4 +338,35 @@ void avltree :: deltree ( AVLNode *root )
         deltree ( root -> right ) ;
     }
     delete ( root ) ;
+}
+
+void avltree:: addWordToIndex(Word& word){
+
+}
+
+std::vector<int>& avltree::getDocumentsForWord(char*& word)
+{
+    AVLNode* temp = root;
+    while(temp != NULL){
+        if(strcmp(temp->data.getWord(), word) == 0)
+            return temp->data.getIndex();
+        else if(strcmp(temp->data.getWord(), word) < 0)
+            return temp->data.getIndex();
+        else
+            return temp->data.getIndex();
+    }
+}
+
+bool avltree::alreadyContains(char*& word){
+    AVLNode* temp = this->root;
+    while(temp != NULL){
+        if(strcmp(temp->data->getWord(), word) == 0)
+            return true;
+        else if(strcmp(temp->data->getWord(), word) < 0)
+            temp = temp->right;
+        else
+            temp = temp->left;
+    }
+
+    return false;
 }

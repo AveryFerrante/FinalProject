@@ -104,7 +104,7 @@ void Parser::cleanBodyContents()
         }
 
         removeNonAlphaCharacters(bodyContents);
-        bodyContents[pstem::stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
+        //bodyContents[pstem::stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
         bodyContents = ++whatsLeft; // Point to beginning of next word
         whatsLeft = strchr(bodyContents, ' ');
     }

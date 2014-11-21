@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cstring>
 #include <algorithm> //For the remove function
-#include "Stemmer.h"
+//#include "Stemmer.h"
 #include "rapidxml-1.13/rapidxml.hpp"
 #include "rapidxml-1.13/rapidxml_utils.hpp"
 #include "word.h"
