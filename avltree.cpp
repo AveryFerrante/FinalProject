@@ -7,10 +7,11 @@ avltree :: avltree( )
     root = NULL ;
 }
 
-AVLNode* avltree :: insert ( Word& data, int *h )
+void avltree :: insert ( Word& data, int *h )
 {
     root = buildtree ( root, data, h ) ;
-    return root ;
+    setroot( root );
+    //return root ;
 }
 AVLNode* avltree :: buildtree ( AVLNode *root, Word& data, int *h )
 {
@@ -127,12 +128,15 @@ AVLNode* avltree :: buildtree ( AVLNode *root, Word& data, int *h )
     }
     return ( root ) ;
 }
-void avltree :: display ( AVLNode* root )
+
+AVLNode* avltree :: getRoot() { return root; }
+
+void avltree :: display (AVLNode* root)
 {
     if ( root != NULL )
     {
         display ( root -> left ) ;
-        //cout << root -> data << "\t" ;
+        cout << root -> data.getWord() << "\t" ;
         display ( root -> right ) ;
     }
 }
@@ -344,7 +348,8 @@ void avltree:: addWordToIndex(Word& word){
 std::vector<int>& avltree::getDocumentsForWord(char*& word)
 {
     AVLNode* temp = root;
-    while(temp != NULL){
+    while(temp != NULL)
+    {
         if(strcmp(temp->data.getWord(), word) == 0)
             return temp->data.getIndex();
         else if(strcmp(temp->data.getWord(), word) < 0)
@@ -356,7 +361,8 @@ std::vector<int>& avltree::getDocumentsForWord(char*& word)
 
 bool avltree::alreadyContains(char*& word){
     AVLNode* temp = this->root;
-    while(temp != NULL){
+    while(temp != NULL)
+    {
         if(strcmp(temp->data.getWord(), word) == 0)
             return true;
         else if(strcmp(temp->data.getWord(), word) < 0)

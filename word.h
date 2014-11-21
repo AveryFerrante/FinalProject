@@ -15,7 +15,7 @@ private:
 
 
 public:
-
+    Word();
     Word(char *, int, int);
     ~Word();
     char *getWord();

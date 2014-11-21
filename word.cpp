@@ -1,5 +1,6 @@
 #include "word.h"
 
+Word::Word() {}
 Word::Word(char *wordToAdd, int freq, int documentIndex)
 {
     int length = strlen(wordToAdd);

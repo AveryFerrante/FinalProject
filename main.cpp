@@ -10,6 +10,7 @@ using namespace rapidxml;
 
 int main(int argc, char *argv[])
 {
+    /*
     chrono::time_point<std::chrono::system_clock> start, end;
     start = chrono::system_clock::now();
 
@@ -21,7 +22,7 @@ int main(int argc, char *argv[])
     end = chrono::system_clock::now();
     chrono::duration<double> elapsed_seconds = end-start;
     cout << "Elapsed file load time: " << elapsed_seconds.count() << endl;
-
+`*/
     /*
         avltree<int> at ;
         AVLNode* avl = NULL ;

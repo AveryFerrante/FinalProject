@@ -21,9 +21,10 @@ class avltree : public IndexInterface
         AVLNode *root ;
     public :
         avltree( ) ;
-        AVLNode*  insert ( Word& data, int *h ) ;
+        void  insert ( Word& data, int *h ) ;
+        AVLNode* getRoot() ;
         static AVLNode* buildtree ( AVLNode *root, Word& data, int *h ) ;
-        void display( AVLNode *root ) ;
+        void display( AVLNode* root ) ;
         AVLNode* deldata ( AVLNode* root, Word& data, int *h ) ;
         static AVLNode* del ( AVLNode *node, AVLNode* root, int *h ) ;
         static AVLNode* balright ( AVLNode *root, int *h ) ;
