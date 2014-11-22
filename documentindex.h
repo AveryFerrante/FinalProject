@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <string>
 
 class DocumentIndex
 {
@@ -14,6 +15,9 @@ public:
     void addDoc(int);
 
     void getDocument(int);
+    void getTitle(int);
+
+
 
 };
 

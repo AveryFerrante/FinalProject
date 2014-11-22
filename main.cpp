@@ -21,6 +21,26 @@ int main(int argc, char *argv[])
     chrono::duration<double> elapsed_seconds = end-start;
     cout << "Elapsed file load time: " << elapsed_seconds.count() << endl;
 
+    cout << "Input a word to search for." << endl;
+    string userWord;
+    cin >> userWord;
+    const char *word = userWord.c_str();
+    vector<int> *docList = dataStruct.getDocumentsForWord(word);
+
+    for(int i = 0; i < docList->size(); ++i)
+    {
+        cout << i + 1 << ": ";
+        documentIndexObject.getTitle((*docList)[i]);
+    }
+
+    int userInput;
+    cout << "Enter the number of the document you would like to see." << endl;
+    cin >> userInput;
+
+    documentIndexObject.getDocument((*docList)[userInput - 1]);
+
+
+
     /*
         avltree<int> at ;
         AVLNode* avl = NULL ;

@@ -342,7 +342,7 @@ void avltree :: deltree ( AVLNode *root )
     delete ( root ) ;
 }
 
-std::vector<int>* avltree::getDocumentsForWord(char*& word)
+std::vector<int>* avltree::getDocumentsForWord(const char *&word)
 {
     AVLNode* temp = root;
     while(temp != NULL)
