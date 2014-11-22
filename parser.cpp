@@ -27,6 +27,7 @@ void Parser::printNodeContents()
 
 void Parser::parse(DocumentIndex &documentIndexObject, IndexInterface &dataStructure)
 {
+    int documentNumber = 0;
     while(currentPage != NULL)
     {
         getPageInfo();
@@ -37,12 +38,9 @@ void Parser::parse(DocumentIndex &documentIndexObject, IndexInterface &dataStruc
         }
 
         writeDataToVectors();
-        cout << "wrote to vectors" << endl;
-        cleanBodyContents(dataStructure);
-        cout << "Cleaned body." << endl;
+        cleanBodyContents(dataStructure, documentNumber);
         getNextPage();
-        cout << "getNextPage()" << endl;
-        Word::increaseDocNumber(); // Update static variable
+        ++documentNumber;
     }
     ofstream outputFile("file.txt", ios::binary);
     documentIndexObject.addDoc(0);
@@ -85,7 +83,7 @@ void Parser::removeNonAlphaCharacters(char *&word)
     }
 }
 
-void Parser::cleanBodyContents(IndexInterface &dataStructure)
+void Parser::cleanBodyContents(IndexInterface &dataStructure, int documentNumber)
 {
     char *bodyContents = bodyOfFile->value();
     char *whatsLeft = strchr(bodyContents, ' '); // Gets occurence to first space in the body
@@ -102,15 +100,15 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure)
         }
 
         removeNonAlphaCharacters(bodyContents);
-        //bodyContents[pstem::stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
-        cout << "On word " << bodyContents << endl;
-        if(strcmp(bodyContents, "material") == 0)
-            cout << endl;
-        if(!dataStructure.alreadyContains(bodyContents))
+        if(strcmp(bodyContents, "") == 0) // Possible for words to literally be empty, don't want to index those
         {
-            Word *temp = new Word(bodyContents);
-            dataStructure.addWordToIndex(temp);
+            bodyContents = ++whatsLeft;
+            whatsLeft = strchr(bodyContents, ' ');
+            continue;
         }
+        //bodyContents[pstem::stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
+
+        createWordObjs(dataStructure, bodyContents, documentNumber);
 
         bodyContents = ++whatsLeft; // Point to beginning of next word
         whatsLeft = strchr(bodyContents, ' ');
@@ -141,9 +139,13 @@ bool Parser::isStopWord(char *word) const
     return false;
 }
 
-void Parser::createWordObjs(IndexInterface &dataStructure)
+void Parser::createWordObjs(IndexInterface &dataStructure, char *&word, int documentNumber)
 {
-
+    if(!dataStructure.alreadyContains(word, documentNumber))
+    {
+        Word *temp = new Word(word, documentNumber);
+        dataStructure.addWordToIndex(temp);
+    }
 }
 
 void Parser::writeDataToVectors()

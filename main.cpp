@@ -9,25 +9,18 @@ using namespace rapidxml;
 
 int main(int argc, char *argv[])
 {
-    DocumentIndex documentIndexObject;
-    avltree *dataStruct = new avltree;
-    Parser parse(argv[1], argv[2]);
-    parse.parse(documentIndexObject, *dataStruct);
-    //dataStruct->display(dataStruct->getRoot());
-
-    /*
     chrono::time_point<std::chrono::system_clock> start, end;
     start = chrono::system_clock::now();
 
     DocumentIndex documentIndexObject;
+    avltree dataStruct;
     Parser parse(argv[1], argv[2]);
-    parse.parse(documentIndexObject);
-    documentIndexObject.getDocument(32);
+    parse.parse(documentIndexObject, dataStruct);
 
     end = chrono::system_clock::now();
     chrono::duration<double> elapsed_seconds = end-start;
     cout << "Elapsed file load time: " << elapsed_seconds.count() << endl;
-`*/
+
     /*
         avltree<int> at ;
         AVLNode* avl = NULL ;

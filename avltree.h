@@ -33,7 +33,7 @@ class avltree : public IndexInterface
         static void deltree ( AVLNode *root ) ;
 
         virtual void addWordToIndex(Word *word);
-        virtual bool alreadyContains(char*& word);
+        virtual bool alreadyContains(char*& word, int documentNumber);
         virtual std::vector<int>* getDocumentsForWord(char* &word);
 } ;
 

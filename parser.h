@@ -43,11 +43,11 @@ private: // Utility Functions
     void initializeStopWordList(const char *);
 
     // Thses deal with cleaning words from the body of the files
-    void cleanBodyContents(IndexInterface &);
+    void cleanBodyContents(IndexInterface &, int);
     bool isStopWord(char *) const;
     void removeNonAlphaCharacters(char *&);
 
-    void createWordObjs(IndexInterface &);
+    void createWordObjs(IndexInterface &, char *&, int);
 
 public:
     Parser(char *, char *);

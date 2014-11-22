@@ -10,7 +10,7 @@ public:
 
     virtual void addWordToIndex(Word *data) = 0;
     virtual std::vector<int>* getDocumentsForWord(char*& word) = 0;
-    virtual bool alreadyContains(char*& word) = 0;
+    virtual bool alreadyContains(char*& word, int documentNumber) = 0;
     virtual ~IndexInterface();
 };
 

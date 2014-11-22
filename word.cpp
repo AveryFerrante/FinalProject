@@ -1,12 +1,10 @@
 #include "word.h"
 using namespace std;
 
-int Word::documentNumber = 0; // This is the document we are currently on (i.e. the 5th doc). Updated in parser class
-
-Word::Word(char *wordToAdd)
+Word::Word(char *wordToAdd, int documentNumber)
 {
     int length = strlen(wordToAdd);
-    word = new char[length];
+    word = new char[length + 1];
     strcpy(word, wordToAdd);
     word[length] = '\0';
 
@@ -32,9 +30,8 @@ bool Word::operator<(Word &source)
         return false;
 }
 
-void Word::updateFreqAndDoc()
+void Word::updateFreqAndDoc(int documentNumber)
 {
-    cout << "Updating frequency" << endl;
 
     assert(this != NULL);
 
@@ -42,25 +39,15 @@ void Word::updateFreqAndDoc()
             (*frequency)[frequency->size() - 1] += 1;
     else // On a new document, need to add it to the vector and start a frequency for it
     {
-        if(documentNumber == 1 && strcmp(word, "material") == 0)
-            cout << endl;
-
         assert(index != NULL);
-
-        cout << "Starting new doc" << endl;
-        index->push_back(Word::documentNumber); // The document we are currently on
-        cout << "Pushed doc number" << endl;
+        index->push_back(documentNumber); // The document we are currently on
 
         assert(frequency != NULL);
-
         frequency->push_back(1); // We have atleast one occurence
-        cout << "Pushed frequency" << endl;
         lastDocument = documentNumber; // Update this so we can just add to frequency if it occurs again in this document
     }
-    cout << "Successful" << endl;
-}
 
-void Word::increaseDocNumber() { ++documentNumber; }
+}
 
 bool Word::operator>(Word &source)
 {

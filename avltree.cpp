@@ -350,32 +350,23 @@ std::vector<int>* avltree::getDocumentsForWord(char*& word)
         if(strcmp(temp->data->getWord(), word) == 0)
             return temp->data->getIndex();
         else if(strcmp(temp->data->getWord(), word) < 0)
-            return temp->data->getIndex();
+            temp = temp->right;
         else
-            return temp->data->getIndex();
+            temp = temp->left;
     }
+
+    return NULL; // Word does not exist
 }
 
-bool avltree::alreadyContains(char*& word){
+bool avltree::alreadyContains(char*& word, int documentNumber){
     AVLNode* temp = this->root;
     while(temp != NULL)
     {
         if(strcmp(temp->data->getWord(), word) == 0)
         {
-            const vector<int>* index = temp->data->getIndex();
-
-            std::cout << temp->data << std::endl;
-
-            cout << index->size() << endl;
-
-            for (auto i : *index)
-            {
-                std::cout << i << std::endl;
-            }
-
             assert(temp->data != NULL);
 
-            temp->data->updateFreqAndDoc();
+            temp->data->updateFreqAndDoc(documentNumber);
             return true;
         }
         else if(strcmp(temp->data->getWord(), word) < 0)
