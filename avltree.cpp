@@ -7,13 +7,14 @@ avltree :: avltree( )
     root = NULL ;
 }
 
-void avltree :: addWordToIndex(Word *data, int *h)
+void avltree :: addWordToIndex(Word *data)
 {
-    root = buildtree ( root, data, h ) ;
+    bool h = true;
+    root = buildtree ( root, data, &h ) ;
     setroot( root );
     //return root ;
 }
-AVLNode* avltree :: buildtree ( AVLNode *root, Word *data, int *h )
+AVLNode* avltree :: buildtree ( AVLNode *root, Word *data, bool *h )
 {
     AVLNode *node1, *node2 ;
 
@@ -40,7 +41,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, Word *data, int *h )
                     node1 = root -> left ;
                     if ( node1 -> balfact == 1 )
                     {
-                        cout << "\nRight rotation." ;
+                        //cout << "\nRight rotation." ;
                         root -> left = node1 -> right ;
                         node1 -> right = root ;
                         root -> balfact = 0 ;
@@ -48,7 +49,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, Word *data, int *h )
                     }
                     else
                     {
-                        cout << "\nDouble rotation, left then right." ;
+                        //cout << "\nDouble rotation, left then right." ;
                         node2 = node1 -> right ;
                         node1 -> right = node2 -> left ;
                         node2 -> left = node1 ;
@@ -97,7 +98,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, Word *data, int *h )
                     node1 = root -> right ;
                     if ( node1 -> balfact == -1 )
                     {
-                        cout << "\nLeft rotation." ;
+                        //cout << "\nLeft rotation." ;
                         root -> right = node1 -> left ;
                         node1 -> left = root ;
                         root -> balfact = 0 ;
@@ -105,7 +106,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, Word *data, int *h )
                     }
                     else
                     {
-                        cout << "\nDouble rotation, right then left." ;
+                        //cout << "\nDouble rotation, right then left." ;
                         node2 = node1 -> left ;
                         node1 -> left = node2 -> right ;
                         node2 -> right = node1 ;
@@ -228,7 +229,7 @@ AVLNode* avltree :: balright ( AVLNode *root, int *h )
             temp1 = root -> right ;
             if ( temp1 -> balfact <= 0 )
             {
-                cout << "\nLeft rotation." ;
+                //cout << "\nLeft rotation." ;
                 root -> right = temp1 -> left ;
                 temp1 -> left = root ;
                 if ( temp1 -> balfact == 0 )
@@ -245,7 +246,7 @@ AVLNode* avltree :: balright ( AVLNode *root, int *h )
             }
             else
             {
-                cout << "\nDouble rotation, right then left." ;
+                //cout << "\nDouble rotation, right then left." ;
                 temp2 = temp1 -> left ;
                 temp1 -> left = temp2 -> right ;
                 temp2 -> right = temp1 ;
@@ -283,7 +284,7 @@ AVLNode* avltree :: balleft ( AVLNode *root, int *h )
             temp1 = root -> left ;
             if ( temp1 -> balfact >= 0 )
             {
-                cout << "\nRight rotation." ;
+               // cout << "\nRight rotation." ;
                 root -> left = temp1 -> right ;
                 temp1 -> right = root ;
 
@@ -301,7 +302,7 @@ AVLNode* avltree :: balleft ( AVLNode *root, int *h )
             }
             else
             {
-                cout << "\nDouble rotation, left then right." ;
+                //cout << "\nDouble rotation, left then right." ;
                 temp2 = temp1 -> right ;
                 temp1 -> right = temp2 -> left ;
                 temp2 -> left = temp1 ;
@@ -341,7 +342,7 @@ void avltree :: deltree ( AVLNode *root )
     delete ( root ) ;
 }
 
-std::vector<int>& avltree::getDocumentsForWord(char*& word)
+std::vector<int>* avltree::getDocumentsForWord(char*& word)
 {
     AVLNode* temp = root;
     while(temp != NULL)
@@ -360,7 +361,23 @@ bool avltree::alreadyContains(char*& word){
     while(temp != NULL)
     {
         if(strcmp(temp->data->getWord(), word) == 0)
+        {
+            const vector<int>* index = temp->data->getIndex();
+
+            std::cout << temp->data << std::endl;
+
+            cout << index->size() << endl;
+
+            for (auto i : *index)
+            {
+                std::cout << i << std::endl;
+            }
+
+            assert(temp->data != NULL);
+
+            temp->data->updateFreqAndDoc();
             return true;
+        }
         else if(strcmp(temp->data->getWord(), word) < 0)
             temp = temp->right;
         else

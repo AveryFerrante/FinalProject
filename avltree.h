@@ -22,7 +22,7 @@ class avltree : public IndexInterface
     public :
         avltree( ) ;
         AVLNode* getRoot() ;
-        static AVLNode* buildtree ( AVLNode *root, Word *data, int *h ) ;
+        static AVLNode* buildtree ( AVLNode *root, Word *data, bool *h ) ;
         void display( AVLNode* root ) ;
         AVLNode* deldata ( AVLNode* root, Word *data, int *h ) ;
         static AVLNode* del ( AVLNode *node, AVLNode* root, int *h ) ;
@@ -32,9 +32,9 @@ class avltree : public IndexInterface
         ~avltree( ) ;
         static void deltree ( AVLNode *root ) ;
 
-        virtual void addWordToIndex(Word *word, int *h);
+        virtual void addWordToIndex(Word *word);
         virtual bool alreadyContains(char*& word);
-        virtual std::vector<int>& getDocumentsForWord(char* &word);
+        virtual std::vector<int>* getDocumentsForWord(char* &word);
 } ;
 
 #endif // AVLTREE_H

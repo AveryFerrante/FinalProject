@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     avltree *dataStruct = new avltree;
     Parser parse(argv[1], argv[2]);
     parse.parse(documentIndexObject, *dataStruct);
-    dataStruct->display(dataStruct->getRoot());
+    //dataStruct->display(dataStruct->getRoot());
 
     /*
     chrono::time_point<std::chrono::system_clock> start, end;

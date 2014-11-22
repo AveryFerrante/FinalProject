@@ -27,7 +27,6 @@ void Parser::printNodeContents()
 
 void Parser::parse(DocumentIndex &documentIndexObject, IndexInterface &dataStructure)
 {
-    int docCounter = 0;
     while(currentPage != NULL)
     {
         getPageInfo();
@@ -38,9 +37,12 @@ void Parser::parse(DocumentIndex &documentIndexObject, IndexInterface &dataStruc
         }
 
         writeDataToVectors();
+        cout << "wrote to vectors" << endl;
         cleanBodyContents(dataStructure);
+        cout << "Cleaned body." << endl;
         getNextPage();
-        ++docCounter;
+        cout << "getNextPage()" << endl;
+        Word::increaseDocNumber(); // Update static variable
     }
     ofstream outputFile("file.txt", ios::binary);
     documentIndexObject.addDoc(0);
@@ -54,6 +56,8 @@ void Parser::parse(DocumentIndex &documentIndexObject, IndexInterface &dataStruc
     outputFile.close();
 }
 
+
+// ********************************UTILITY FUNCTIONS****************************************************************************
 void Parser::initializeStopWordList(const char *fileName)
 {
     ifstream wordList(fileName);
@@ -70,10 +74,6 @@ void Parser::initializeStopWordList(const char *fileName)
     wordList.close();
 }
 
-
-
-
-// ********************************UTILITY FUNCTIONS****************************************************************************
 void Parser::removeNonAlphaCharacters(char *&word)
 {
     for(size_t i = 0; i < strlen(word); ++i)
@@ -103,11 +103,13 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure)
 
         removeNonAlphaCharacters(bodyContents);
         //bodyContents[pstem::stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
+        cout << "On word " << bodyContents << endl;
+        if(strcmp(bodyContents, "material") == 0)
+            cout << endl;
         if(!dataStructure.alreadyContains(bodyContents))
         {
-            Word *temp = new Word(bodyContents, 20, 20);
-            int h = 1;
-            dataStructure.addWordToIndex(temp, &h);
+            Word *temp = new Word(bodyContents);
+            dataStructure.addWordToIndex(temp);
         }
 
         bodyContents = ++whatsLeft; // Point to beginning of next word

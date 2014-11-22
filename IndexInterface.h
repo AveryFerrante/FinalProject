@@ -8,8 +8,8 @@
 class IndexInterface{
 public:
 
-    virtual void addWordToIndex(Word *data, int *h) = 0;
-    virtual std::vector<int>& getDocumentsForWord(char*& word) = 0;
+    virtual void addWordToIndex(Word *data) = 0;
+    virtual std::vector<int>* getDocumentsForWord(char*& word) = 0;
     virtual bool alreadyContains(char*& word) = 0;
     virtual ~IndexInterface();
 };
