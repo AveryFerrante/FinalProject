@@ -39,7 +39,7 @@
 */
 
 #include <cstring>  /* for memmove */
-namespace pstem {
+
 #define TRUE 1
 #define FALSE 0
 
@@ -317,6 +317,7 @@ static void step5()
    file.
 */
 
+
 int stem(char * p, int i, int j)
 {  b = p; k = j; k0 = i; /* copy the parameters into statics */
    if (k <= k0+1) return k; /*-DEPARTURE-*/
@@ -333,6 +334,7 @@ int stem(char * p, int i, int j)
    return k;
 
 }
-}
+
+
 /*--------------------stemmer definition ends here------------------------*/
 

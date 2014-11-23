@@ -22,13 +22,6 @@ Word::~Word()
     delete [] word;
 }
 
-bool Word::operator<(Word &source)
-{
-    if(strcmp(word, source.getWord()) < 0)
-        return true;
-    else
-        return false;
-}
 
 void Word::sortRelevancy()
 {
@@ -41,21 +34,19 @@ void Word::sortRelevancy()
         for(int i = x; i < index->size(); ++i)
         {
             if((*frequency)[i] > (*frequency)[biggestIndex])
-            {
                 biggestIndex = i;
-                tempIndex = i;
-            }
+
         }
         // Swap
         int temp;
 
         temp = (*frequency)[x];
-        (*frequency)[x] = (*frequency)[tempIndex];
-        (*frequency)[tempIndex] = temp;
+        (*frequency)[x] = (*frequency)[biggestIndex];
+        (*frequency)[biggestIndex] = temp;
 
         temp = (*index)[x];
-        (*index)[x] = (*index)[tempIndex];
-        (*index)[tempIndex] = temp;
+        (*index)[x] = (*index)[biggestIndex];
+        (*index)[biggestIndex] = temp;
     }
 }
 
@@ -76,6 +67,14 @@ void Word::updateFreqAndDoc(int documentNumber)
         lastDocument = documentNumber; // Update this so we can just add to frequency if it occurs again in this document
     }
 
+}
+
+bool Word::operator<(Word &source)
+{
+    if(strcmp(word, source.getWord()) < 0)
+        return true;
+    else
+        return false;
 }
 
 bool Word::operator>(Word &source)

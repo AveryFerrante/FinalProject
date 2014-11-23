@@ -8,6 +8,7 @@
 #include "word.h"
 #include "documentindex.h"
 #include "IndexInterface.h"
+#include "Stemmer.h"
 
 class Parser
 {
@@ -15,7 +16,7 @@ class Parser
 private: // Member Variables
 
     //Variables related to rapidxml
-    rapidxml::file<> *xFile; // Must be a pointer else I will lose the file once it leaves the scope of the constructor
+    //rapidxml::file<> xFile; // Must be a pointer else I will lose the file once it leaves the scope of the constructor
     rapidxml::xml_node<> *mainNode;
     rapidxml::xml_node<> *currentPage;
     rapidxml::xml_node<> *bodyOfFile;
@@ -27,9 +28,9 @@ private: // Member Variables
 
     std::vector<std::string *> fileBodies;
     std::vector<std::string *> fileTitles;
-    std::vector<int> fileStartPosition;
 
     int documentCount;
+
 
 private: // Utility Functions
 
@@ -52,13 +53,14 @@ private: // Utility Functions
 
     void createWordObjs(IndexInterface &, char *&);
 
+    void clearCurrentDocument();
+
 public:
     Parser(char *);
+    ~Parser();
+    void parse(char *&, IndexInterface &);
 
-
-    void printNodeContents();
-
-    void parse(char *&, DocumentIndex &, IndexInterface &);
+    void writeToFile(DocumentIndex &);
 };
 
 #endif // PARSER_H
