@@ -3,12 +3,14 @@
 #include "avltree.h"
 #include <chrono>
 #include <ctime>
+#include <vector>
 
 using namespace std;
 using namespace rapidxml;
 
 int main(int argc, char *argv[])
 {
+    cout << "TEST 1" << endl;
     chrono::time_point<std::chrono::system_clock> start, end;
     start = chrono::system_clock::now();
 
