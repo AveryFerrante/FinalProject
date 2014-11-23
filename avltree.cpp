@@ -326,6 +326,7 @@ void avltree :: setroot ( AVLNode *avl )
 {
     root = avl ;
 }
+
 avltree :: ~avltree( )
 {
     deltree ( root ) ;
@@ -342,13 +343,17 @@ void avltree :: deltree ( AVLNode *root )
     delete ( root ) ;
 }
 
-std::vector<int>* avltree::getDocumentsForWord(const char *&word)
+std::vector<int>* avltree::getDocumentsForWord(char *&word, std::vector<int> *&freqList)
 {
     AVLNode* temp = root;
     while(temp != NULL)
     {
         if(strcmp(temp->data->getWord(), word) == 0)
+        {
+            temp->data->sortRelevancy();
+            freqList = temp->data->getFreq();
             return temp->data->getIndex();
+        }
         else if(strcmp(temp->data->getWord(), word) < 0)
             temp = temp->right;
         else

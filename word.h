@@ -24,9 +24,12 @@ public:
 
     void addDocIndex(int);
     int getDocIndex(int);
+
     std::vector<int>* getIndex();
+    std::vector<int>* getFreq();
 
     void updateFreqAndDoc(int);
+    void sortRelevancy();
 
     bool operator<(Word &);
     bool operator>(Word &);

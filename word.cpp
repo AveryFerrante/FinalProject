@@ -22,12 +22,32 @@ Word::~Word()
     delete [] word;
 }
 
-bool Word::operator<(Word &source)
+
+void Word::sortRelevancy()
 {
-    if(strcmp(word, source.getWord()) < 0)
-        return true;
-    else
-        return false;
+    assert ( index->size() == frequency->size() );
+
+    int biggestIndex = 0;
+    int tempIndex = 0;
+    for(int x = 0; x < index->size(); ++x)
+    {
+        for(int i = x; i < index->size(); ++i)
+        {
+            if((*frequency)[i] > (*frequency)[biggestIndex])
+                biggestIndex = i;
+
+        }
+        // Swap
+        int temp;
+
+        temp = (*frequency)[x];
+        (*frequency)[x] = (*frequency)[biggestIndex];
+        (*frequency)[biggestIndex] = temp;
+
+        temp = (*index)[x];
+        (*index)[x] = (*index)[biggestIndex];
+        (*index)[biggestIndex] = temp;
+    }
 }
 
 void Word::updateFreqAndDoc(int documentNumber)
@@ -49,12 +69,21 @@ void Word::updateFreqAndDoc(int documentNumber)
 
 }
 
+bool Word::operator<(Word &source)
+{
+    if(strcmp(word, source.getWord()) < 0)
+        return true;
+    else
+        return false;
+}
+
 bool Word::operator>(Word &source)
 {
     return !(*this < source);
 }
 
 std::vector<int>* Word::getIndex() { return index; }
+std::vector<int>* Word::getFreq() { return frequency; }
 void Word::addDocIndex(int docIndex) { index->push_back(docIndex); }
 int Word::getDocIndex(int docIndex) { return (*index)[docIndex]; }
 char* Word::getWord() { return word; }

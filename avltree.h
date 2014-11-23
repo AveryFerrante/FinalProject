@@ -34,7 +34,7 @@ class avltree : public IndexInterface
 
         virtual void addWordToIndex(Word *word);
         virtual bool alreadyContains(char*& word, int documentNumber);
-        virtual std::vector<int>* getDocumentsForWord(const char* &word);
+        virtual std::vector<int>* getDocumentsForWord(char* &word, std::vector<int>*& freqList);
 } ;
 
 #endif // AVLTREE_H

@@ -3,31 +3,26 @@
 using namespace rapidxml;
 using namespace std;
 
-Parser::Parser(char *xmlFileName, char *stopWordList)
+Parser::Parser(char *stopWordList)
 {
-    xFile = new file<>(xmlFileName);
-    xmlFile.parse<0>((*xFile).data());
+    initializeStopWordList(stopWordList);
+    documentCount = 0;
+}
+Parser::~Parser()
+{
+
+}
+
+void Parser::parse(char *&fileName, IndexInterface &dataStructure)
+{
+    // This initializes the file. Must be done here because if this goes out of scope, the whole file is lost.
+    file<> xFile(fileName);
+    xmlFile.parse<parse_no_utf8>(xFile.data());
 
     //Set the two nodes up
     initializeMainNode();
     initializeCurrentPage();
 
-    //Sets the other nodes to contain values
-    getPageInfo();
-
-    initializeStopWordList(stopWordList);
-}
-
-void Parser::printNodeContents()
-{
-    cout << "Title: " << titleOfFile->value() << endl;
-    cout << "Body Contents:\n\n\n" << bodyOfFile->value() << endl;
-}
-
-
-void Parser::parse(DocumentIndex &documentIndexObject, IndexInterface &dataStructure)
-{
-    int documentNumber = 0;
     while(currentPage != NULL)
     {
         getPageInfo();
@@ -38,10 +33,17 @@ void Parser::parse(DocumentIndex &documentIndexObject, IndexInterface &dataStruc
         }
 
         writeDataToVectors();
-        cleanBodyContents(dataStructure, documentNumber);
+        cleanBodyContents(dataStructure);
         getNextPage();
-        ++documentNumber;
+        ++documentCount;
     }
+    clearCurrentDocument();
+}
+
+
+
+void Parser::writeToFile(DocumentIndex &documentIndexObject)
+{
     ofstream outputFile("file.txt", ios::binary);
     documentIndexObject.addDoc(0);
     for(int i = 0; i < fileBodies.size(); ++i)
@@ -83,7 +85,7 @@ void Parser::removeNonAlphaCharacters(char *&word)
     }
 }
 
-void Parser::cleanBodyContents(IndexInterface &dataStructure, int documentNumber)
+void Parser::cleanBodyContents(IndexInterface &dataStructure)
 {
     char *bodyContents = bodyOfFile->value();
     char *whatsLeft = strchr(bodyContents, ' '); // Gets occurence to first space in the body
@@ -92,23 +94,17 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure, int documentNumber
     {
         *whatsLeft = '\0';
 
-        if(strlen(bodyContents) > 22 || isStopWord(bodyContents)) // Skip this word
+        removeNonAlphaCharacters(bodyContents);
+        if(strlen(bodyContents) <= 1 || strlen(bodyContents) >= 22 || isStopWord(bodyContents)) // Skip this word
         {
             bodyContents = ++whatsLeft; // Point to beginning of next word
             whatsLeft = strchr(bodyContents, ' ');
             continue;
         }
 
-        removeNonAlphaCharacters(bodyContents);
-        if(strcmp(bodyContents, "") == 0) // Possible for words to literally be empty, don't want to index those
-        {
-            bodyContents = ++whatsLeft;
-            whatsLeft = strchr(bodyContents, ' ');
-            continue;
-        }
-        //bodyContents[pstem::stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
+        bodyContents[stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
 
-        createWordObjs(dataStructure, bodyContents, documentNumber);
+        createWordObjs(dataStructure, bodyContents);
 
         bodyContents = ++whatsLeft; // Point to beginning of next word
         whatsLeft = strchr(bodyContents, ' ');
@@ -139,11 +135,11 @@ bool Parser::isStopWord(char *word) const
     return false;
 }
 
-void Parser::createWordObjs(IndexInterface &dataStructure, char *&word, int documentNumber)
+void Parser::createWordObjs(IndexInterface &dataStructure, char *&word)
 {
-    if(!dataStructure.alreadyContains(word, documentNumber))
+    if(!dataStructure.alreadyContains(word, documentCount))
     {
-        Word *temp = new Word(word, documentNumber);
+        Word *temp = new Word(word, documentCount);
         dataStructure.addWordToIndex(temp);
     }
 }
@@ -161,7 +157,7 @@ void Parser::getPageInfo() // Just a function for testing the class, not needed
     getText();
 }
 
-
+void Parser::clearCurrentDocument() { xmlFile.clear(); }
 void Parser::getText() { bodyOfFile = currentPage->first_node("revision")->first_node("text"); }
 void Parser::getTitle() { titleOfFile = currentPage->first_node("title"); }
 void Parser::getNextPage() { currentPage = currentPage->next_sibling(); }

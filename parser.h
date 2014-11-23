@@ -8,6 +8,7 @@
 #include "word.h"
 #include "documentindex.h"
 #include "IndexInterface.h"
+#include "Stemmer.h"
 
 class Parser
 {
@@ -15,7 +16,7 @@ class Parser
 private: // Member Variables
 
     //Variables related to rapidxml
-    rapidxml::file<> *xFile; // Must be a pointer else I will lose the file once it leaves the scope of the constructor
+    //rapidxml::file<> xFile; // Must be a pointer else I will lose the file once it leaves the scope of the constructor
     rapidxml::xml_node<> *mainNode;
     rapidxml::xml_node<> *currentPage;
     rapidxml::xml_node<> *bodyOfFile;
@@ -27,10 +28,13 @@ private: // Member Variables
 
     std::vector<std::string *> fileBodies;
     std::vector<std::string *> fileTitles;
-    std::vector<int> fileStartPosition;
+
+    int documentCount;
+
 
 private: // Utility Functions
 
+    void initializeDocument(char *&);
     void initializeMainNode();
     void initializeCurrentPage();
     void getNextPage();
@@ -43,19 +47,20 @@ private: // Utility Functions
     void initializeStopWordList(const char *);
 
     // Thses deal with cleaning words from the body of the files
-    void cleanBodyContents(IndexInterface &, int);
+    void cleanBodyContents(IndexInterface &);
     bool isStopWord(char *) const;
     void removeNonAlphaCharacters(char *&);
 
-    void createWordObjs(IndexInterface &, char *&, int);
+    void createWordObjs(IndexInterface &, char *&);
+
+    void clearCurrentDocument();
 
 public:
-    Parser(char *, char *);
+    Parser(char *);
+    ~Parser();
+    void parse(char *&, IndexInterface &);
 
-
-    void printNodeContents();
-
-    void parse(DocumentIndex &, IndexInterface &);
+    void writeToFile(DocumentIndex &);
 };
 
 #endif // PARSER_H
