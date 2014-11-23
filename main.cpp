@@ -14,8 +14,8 @@ int main(int argc, char *argv[])
 
     DocumentIndex documentIndexObject;
     avltree dataStruct;
-    Parser parse(argv[1], argv[2]);
-    parse.parse(documentIndexObject, dataStruct);
+    Parser parse(argv[2]);
+    parse.parse(argv[1], documentIndexObject, dataStruct);
 
     end = chrono::system_clock::now();
     chrono::duration<double> elapsed_seconds = end-start;
@@ -25,19 +25,24 @@ int main(int argc, char *argv[])
     string userWord;
     cin >> userWord;
     const char *word = userWord.c_str();
-    vector<int> *docList = dataStruct.getDocumentsForWord(word);
+    vector<int> *freqList = NULL;
+    vector<int> *docList = dataStruct.getDocumentsForWord(word, freqList);
 
-    for(int i = 0; i < docList->size(); ++i)
+    if(docList != NULL)
     {
-        cout << i + 1 << ": ";
-        documentIndexObject.getTitle((*docList)[i]);
+        for(int i = 0; i < docList->size(); ++i)
+        {
+            cout << i + 1 << ": ";
+            documentIndexObject.getTitle((*docList)[i]);
+            cout << " with " << (*freqList)[i] << " occurances of " << word << endl;
+        }
+
+        int userInput;
+        cout << "Enter the number of the document you would like to see." << endl;
+        cin >> userInput;
+
+        documentIndexObject.getDocument((*docList)[userInput - 1]);
     }
-
-    int userInput;
-    cout << "Enter the number of the document you would like to see." << endl;
-    cin >> userInput;
-
-    documentIndexObject.getDocument((*docList)[userInput - 1]);
 
 
 

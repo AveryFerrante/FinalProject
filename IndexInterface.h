@@ -9,7 +9,7 @@ class IndexInterface{
 public:
 
     virtual void addWordToIndex(Word *data) = 0;
-    virtual std::vector<int>* getDocumentsForWord(const char*& word) = 0;
+    virtual std::vector<int>* getDocumentsForWord(const char*& word, std::vector<int>*& freqList) = 0;
     virtual bool alreadyContains(char*& word, int documentNumber) = 0;
     virtual ~IndexInterface();
 };

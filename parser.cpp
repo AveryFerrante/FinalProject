@@ -3,19 +3,10 @@
 using namespace rapidxml;
 using namespace std;
 
-Parser::Parser(char *xmlFileName, char *stopWordList)
+Parser::Parser(char *stopWordList)
 {
-    xFile = new file<>(xmlFileName);
-    xmlFile.parse<0>((*xFile).data());
-
-    //Set the two nodes up
-    initializeMainNode();
-    initializeCurrentPage();
-
-    //Sets the other nodes to contain values
-    getPageInfo();
-
     initializeStopWordList(stopWordList);
+    documentCount = 0;
 }
 
 void Parser::printNodeContents()
@@ -25,9 +16,10 @@ void Parser::printNodeContents()
 }
 
 
-void Parser::parse(DocumentIndex &documentIndexObject, IndexInterface &dataStructure)
+void Parser::parse(char *&fileName, DocumentIndex &documentIndexObject, IndexInterface &dataStructure)
 {
-    int documentNumber = 0;
+    initializeDocument(fileName);
+
     while(currentPage != NULL)
     {
         getPageInfo();
@@ -38,9 +30,9 @@ void Parser::parse(DocumentIndex &documentIndexObject, IndexInterface &dataStruc
         }
 
         writeDataToVectors();
-        cleanBodyContents(dataStructure, documentNumber);
+        cleanBodyContents(dataStructure);
         getNextPage();
-        ++documentNumber;
+        ++documentCount;
     }
     ofstream outputFile("file.txt", ios::binary);
     documentIndexObject.addDoc(0);
@@ -83,7 +75,7 @@ void Parser::removeNonAlphaCharacters(char *&word)
     }
 }
 
-void Parser::cleanBodyContents(IndexInterface &dataStructure, int documentNumber)
+void Parser::cleanBodyContents(IndexInterface &dataStructure)
 {
     char *bodyContents = bodyOfFile->value();
     char *whatsLeft = strchr(bodyContents, ' '); // Gets occurence to first space in the body
@@ -108,7 +100,7 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure, int documentNumber
         }
         //bodyContents[pstem::stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
 
-        createWordObjs(dataStructure, bodyContents, documentNumber);
+        createWordObjs(dataStructure, bodyContents);
 
         bodyContents = ++whatsLeft; // Point to beginning of next word
         whatsLeft = strchr(bodyContents, ' ');
@@ -139,11 +131,11 @@ bool Parser::isStopWord(char *word) const
     return false;
 }
 
-void Parser::createWordObjs(IndexInterface &dataStructure, char *&word, int documentNumber)
+void Parser::createWordObjs(IndexInterface &dataStructure, char *&word)
 {
-    if(!dataStructure.alreadyContains(word, documentNumber))
+    if(!dataStructure.alreadyContains(word, documentCount))
     {
-        Word *temp = new Word(word, documentNumber);
+        Word *temp = new Word(word, documentCount);
         dataStructure.addWordToIndex(temp);
     }
 }
@@ -159,6 +151,17 @@ void Parser::getPageInfo() // Just a function for testing the class, not needed
     getTitle();
     getId();
     getText();
+}
+
+void Parser::initializeDocument(char *&xmlFileName)
+{
+    xFile = new file<>(xmlFileName);
+    xmlFile.parse<0>((*xFile).data());
+
+    //Set the two nodes up
+    initializeMainNode();
+    initializeCurrentPage();
+
 }
 
 

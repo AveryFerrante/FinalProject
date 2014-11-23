@@ -30,6 +30,35 @@ bool Word::operator<(Word &source)
         return false;
 }
 
+void Word::sortRelevancy()
+{
+    assert ( index->size() == frequency->size() );
+
+    int biggestIndex = 0;
+    int tempIndex = 0;
+    for(int x = 0; x < index->size(); ++x)
+    {
+        for(int i = x; i < index->size(); ++i)
+        {
+            if((*frequency)[i] > (*frequency)[biggestIndex])
+            {
+                biggestIndex = i;
+                tempIndex = i;
+            }
+        }
+        // Swap
+        int temp;
+
+        temp = (*frequency)[x];
+        (*frequency)[x] = (*frequency)[tempIndex];
+        (*frequency)[tempIndex] = temp;
+
+        temp = (*index)[x];
+        (*index)[x] = (*index)[tempIndex];
+        (*index)[tempIndex] = temp;
+    }
+}
+
 void Word::updateFreqAndDoc(int documentNumber)
 {
 
@@ -55,6 +84,7 @@ bool Word::operator>(Word &source)
 }
 
 std::vector<int>* Word::getIndex() { return index; }
+std::vector<int>* Word::getFreq() { return frequency; }
 void Word::addDocIndex(int docIndex) { index->push_back(docIndex); }
 int Word::getDocIndex(int docIndex) { return (*index)[docIndex]; }
 char* Word::getWord() { return word; }

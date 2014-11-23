@@ -31,7 +31,7 @@ void DocumentIndex::getTitle(int index)
     outputFile.seekg(fileStartPositions[index]);
     outputFile.getline(word, length);
 
-    cout << word << endl;
+    cout << word;
     delete [] word;
     outputFile.close();
 }

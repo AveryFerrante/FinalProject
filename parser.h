@@ -29,8 +29,11 @@ private: // Member Variables
     std::vector<std::string *> fileTitles;
     std::vector<int> fileStartPosition;
 
+    int documentCount;
+
 private: // Utility Functions
 
+    void initializeDocument(char *&);
     void initializeMainNode();
     void initializeCurrentPage();
     void getNextPage();
@@ -43,19 +46,19 @@ private: // Utility Functions
     void initializeStopWordList(const char *);
 
     // Thses deal with cleaning words from the body of the files
-    void cleanBodyContents(IndexInterface &, int);
+    void cleanBodyContents(IndexInterface &);
     bool isStopWord(char *) const;
     void removeNonAlphaCharacters(char *&);
 
-    void createWordObjs(IndexInterface &, char *&, int);
+    void createWordObjs(IndexInterface &, char *&);
 
 public:
-    Parser(char *, char *);
+    Parser(char *);
 
 
     void printNodeContents();
 
-    void parse(DocumentIndex &, IndexInterface &);
+    void parse(char *&, DocumentIndex &, IndexInterface &);
 };
 
 #endif // PARSER_H
