@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
         strcpy(word, userWord.c_str());
         word[userWord.length()] = '\0';
 
-        word[stem(word, 0, strlen(word) - 1)] = '\0';
+       // word[stem(word, 0, strlen(word) - 1)] = '\0';
 
         vector<int> *freqList = NULL;
         vector<int> *docList = dataStruct.getDocumentsForWord(word, freqList);
