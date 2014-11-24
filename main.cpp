@@ -10,7 +10,6 @@ using namespace rapidxml;
 
 int main(int argc, char *argv[])
 {
-    cout << "TEST 1" << endl;
     chrono::time_point<std::chrono::system_clock> start, end;
     start = chrono::system_clock::now();
 
@@ -40,7 +39,7 @@ int main(int argc, char *argv[])
         strcpy(word, userWord.c_str());
         word[userWord.length()] = '\0';
 
-       // word[stem(word, 0, strlen(word) - 1)] = '\0';
+        word[parse.stem(word, 0, strlen(word) - 1)] = '\0';
 
 
         vector<int> *freqList = NULL;

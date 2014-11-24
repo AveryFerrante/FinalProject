@@ -3,6 +3,9 @@
 using namespace rapidxml;
 using namespace std;
 
+int Parser::k = 0, Parser::k0 = 0, Parser::j = 0 ;
+char * Parser::b = NULL;
+
 Parser::Parser(char *stopWordList)
 {
     initializeStopWordList(stopWordList);
@@ -11,6 +14,11 @@ Parser::Parser(char *stopWordList)
 Parser::~Parser()
 {
 
+}
+
+int Parser::stemWord(char *&word)
+{
+    return this->stem(word, 0, strlen(word) - 1);
 }
 
 void Parser::parse(char *&fileName, IndexInterface &dataStructure)
@@ -102,7 +110,7 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure)
             continue;
         }
 
-        //bodyContents[stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
+        bodyContents[this->stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
 
         createWordObjs(dataStructure, bodyContents);
 
