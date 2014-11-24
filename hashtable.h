@@ -5,7 +5,7 @@
 class HashTable
 {
 private:
-    static const unsigned int tablesize;
+    static const unsigned int tablesize = 100;
 public:
     HashTable();
     int hash(std::string key);

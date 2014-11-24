@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
         strcpy(word, userWord.c_str());
         word[userWord.length()] = '\0';
 
-        word[stem(word, 0, strlen(word) - 1)] = '\0';
+        //word[stem(word, 0, strlen(word) - 1)] = '\0';
 
         vector<int> *freqList = NULL;
         vector<int> *docList = dataStruct.getDocumentsForWord(word, freqList);
@@ -64,28 +64,6 @@ int main(int argc, char *argv[])
             cout << "Word not found." << endl;
     }
 
-
-
-    /*
-        avltree<int> at ;
-        AVLNode* avl = NULL ;
-        int h ;
-
-        cout << "Testing AVL building " << endl;
-        for(int i = 1; i <= 625; i *= 5)
-        {
-            cout << endl;
-            avl = at.insert(i,&h);
-            at.setroot(avl);
-            cout << endl;
-            at.display ( avl ) ;
-            cout << endl;
-        }
-            avl = at.deldata(avl,25,&h);
-            at.setroot(avl);
-            cout << endl;
-            at.display(avl);
-    */
 
     return 0;
 }

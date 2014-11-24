@@ -102,7 +102,7 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure)
             continue;
         }
 
-        bodyContents[stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
+        //bodyContents[stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
 
         createWordObjs(dataStructure, bodyContents);
 

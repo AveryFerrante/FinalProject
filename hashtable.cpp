@@ -1,8 +1,8 @@
 #include "hashtable.h"
 
-HashTable::HashTable(unsigned int tableSize)
+HashTable::HashTable()
 {
-    this->tablesize = tableSize;
+
 }
 
 int HashTable::hash(std::string key){
