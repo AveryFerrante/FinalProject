@@ -25,12 +25,15 @@ int main(int argc, char *argv[])
 
     end = chrono::system_clock::now();
     chrono::duration<double> elapsed_seconds = end-start;
-    cout << "Elapsed file load time: " << elapsed_seconds.count() << endl;
+    cout << "Elapsed file load and index time: " << elapsed_seconds.count() << endl;
 
+    cout << "Setting up query...." << endl;
     parse.writeToFile(documentIndexObject);
 
 
-    for(int i = 0; i < 5; ++i)
+
+    // This gets the user input and junk
+    for(int i = 0; i < 100; ++i)
     {
         cout << "Input a word to search for." << endl;
         string userWord;
@@ -45,13 +48,15 @@ int main(int argc, char *argv[])
         vector<int> *freqList = NULL;
         vector<int> *docList = dataStruct.getDocumentsForWord(word, freqList);
 
-        if(docList != NULL)
+        if(docList != NULL && strlen(word) > 0)
         {
             for(int i = 0; i < docList->size(); ++i)
             {
                 cout << i + 1 << ": ";
                 documentIndexObject.getTitle((*docList)[i]);
                 cout << " with " << (*freqList)[i] << " occurances of " << word << endl;
+                if(i == 14)
+                    break;
             }
 
             int userInput;
@@ -62,6 +67,8 @@ int main(int argc, char *argv[])
         }
         else
             cout << "Word not found." << endl;
+
+        cout << endl;
     }
 
 
