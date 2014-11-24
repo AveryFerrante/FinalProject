@@ -8,7 +8,6 @@
 #include "word.h"
 #include "documentindex.h"
 #include "IndexInterface.h"
-#include "Stemmer.h"
 
 class Parser
 {
