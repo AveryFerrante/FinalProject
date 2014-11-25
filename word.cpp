@@ -17,6 +17,12 @@ Word::Word(char *wordToAdd, int documentNumber)
     index->push_back(documentNumber);
 }
 
+Word::Word(char *wordToAdd) // Used when the datastructure is being built from index
+{
+    word = wordToAdd;
+    lastDocument = -1;
+}
+
 Word::~Word()
 {
     delete [] word;
@@ -69,6 +75,17 @@ void Word::updateFreqAndDoc(int documentNumber)
 
 }
 
+void Word::writeOutIndex(ofstream &outputFile)
+{
+    outputFile << word << " ";
+
+    assert ( index->size() == frequency->size());
+
+    for(int i = 0; i < index->size(); ++i)
+        outputFile << (*index)[i] << " " << (*frequency)[i] << " ";
+
+}
+
 bool Word::operator<(Word &source)
 {
     if(strcmp(word, source.getWord()) < 0)
@@ -85,6 +102,7 @@ bool Word::operator>(Word &source)
 std::vector<int>* Word::getIndex() { return index; }
 std::vector<int>* Word::getFreq() { return frequency; }
 void Word::addDocIndex(int docIndex) { index->push_back(docIndex); }
+void Word::addFreq(int freq) {frequency->push_back(freq); }
 int Word::getDocIndex(int docIndex) { return (*index)[docIndex]; }
 char* Word::getWord() { return word; }
 

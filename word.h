@@ -4,6 +4,7 @@
 #include <cstring>
 #include <iostream>
 #include <cassert>
+#include <fstream>
 
 
 class Word
@@ -18,11 +19,13 @@ private:
 
 public:
 
+    Word(char *);
     Word(char *, int);
     ~Word();
     char *getWord();
 
     void addDocIndex(int);
+    void addFreq(int);
     int getDocIndex(int);
 
     std::vector<int>* getIndex();
@@ -30,6 +33,8 @@ public:
 
     void updateFreqAndDoc(int);
     void sortRelevancy();
+
+    void writeOutIndex(std::ofstream &);
 
     bool operator<(Word &);
     bool operator>(Word &);

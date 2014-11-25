@@ -4,6 +4,8 @@
 #include <chrono>
 #include <ctime>
 #include <vector>
+#include "Stemmer.h"
+
 
 using namespace std;
 using namespace rapidxml;
@@ -30,8 +32,12 @@ int main(int argc, char *argv[])
     cout << "Setting up query...." << endl;
     parse.writeToFile(documentIndexObject);
 
+    cout << "Creating index" << endl;
+    ofstream outputFile("index.jaf");
+    dataStruct.writeOutIndex(outputFile);
 
 
+    /*
     // This gets the user input and junk
     for(int i = 0; i < 100; ++i)
     {
@@ -71,6 +77,6 @@ int main(int argc, char *argv[])
         cout << endl;
     }
 
-
+    */
     return 0;
 }

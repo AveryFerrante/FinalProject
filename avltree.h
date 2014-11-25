@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "word.h"
 #include "IndexInterface.h"
+#include <fstream>
 #define FALSE 0
 #define TRUE 1
 
@@ -33,6 +34,13 @@ class avltree : public IndexInterface
         static void deltree ( AVLNode *root ) ;
 
         virtual void addWordToIndex(Word *word);
+
+        virtual void writeOutIndex(std::ofstream &outputFile);
+        void         inOrderTraverse(AVLNode *root, std::ofstream &outputFile); // This is called by write out index
+        void         write(AVLNode *root, std::ofstream &outputFile);
+
+        virtual void buildFromIndex(std::ifstream &inputFile);
+
         virtual bool alreadyContains(char*& word, int documentNumber);
         virtual std::vector<int>* getDocumentsForWord(char* &word, std::vector<int>*& freqList);
 } ;
