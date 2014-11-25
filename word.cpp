@@ -21,6 +21,9 @@ Word::Word(char *wordToAdd) // Used when the datastructure is being built from i
 {
     word = wordToAdd;
     lastDocument = -1;
+
+    index = new vector<int>();
+    frequency = new vector<int>();
 }
 
 Word::~Word()
@@ -53,6 +56,9 @@ void Word::sortRelevancy()
         temp = (*index)[x];
         (*index)[x] = (*index)[biggestIndex];
         (*index)[biggestIndex] = temp;
+
+        if(x == 15)
+            break; // Only need to return top 15 results
     }
 }
 
@@ -77,12 +83,14 @@ void Word::updateFreqAndDoc(int documentNumber)
 
 void Word::writeOutIndex(ofstream &outputFile)
 {
-    outputFile << word << " ";
+    outputFile << strlen(word) << " " << word << " ";
 
-    assert ( index->size() == frequency->size());
+    assert ( index->size() == frequency->size() );
 
     for(int i = 0; i < index->size(); ++i)
         outputFile << (*index)[i] << " " << (*frequency)[i] << " ";
+
+    outputFile << "-1" << endl; // Null terminator
 
 }
 

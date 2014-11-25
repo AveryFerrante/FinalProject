@@ -346,7 +346,7 @@ void avltree :: deltree ( AVLNode *root )
 void avltree::buildFromIndex(ifstream &inputFile)
 {
     int tempNumb = 0;
-    string word = "";
+    string word;
     while(!inputFile.eof())
     {
         inputFile >> tempNumb;
@@ -356,10 +356,16 @@ void avltree::buildFromIndex(ifstream &inputFile)
         tempWord[tempNumb] = '\0';
 
         Word *temp = new Word(tempWord);
+        inputFile >> tempNumb; // File index first
         while(tempNumb != -1)
         {
-            // Logic to read the numbers
+            temp->addDocIndex(tempNumb);
+            inputFile >> tempNumb; // Frequency
+            temp->addFreq(tempNumb);
+            inputFile >> tempNumb; //File Index
         }
+
+        this->addWordToIndex(temp);
     }
 }
 
@@ -379,11 +385,7 @@ void avltree::inOrderTraverse(AVLNode *root, ofstream &outputFile)
     //write(root, outputFile);
 }
 
-void avltree::write(AVLNode *root, ofstream &outputFile)
-{
-    root->data->writeOutIndex(outputFile);
-    outputFile << '~' << endl; // This is how I know to stop reading for that object
-}
+void avltree::write(AVLNode *root, ofstream &outputFile) { root->data->writeOutIndex(outputFile); }
 
 std::vector<int>* avltree::getDocumentsForWord(char *&word, std::vector<int> *&freqList)
 {

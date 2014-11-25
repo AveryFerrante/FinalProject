@@ -15,29 +15,32 @@ int main(int argc, char *argv[])
     chrono::time_point<std::chrono::system_clock> start, end;
     start = chrono::system_clock::now();
 
-    DocumentIndex documentIndexObject;
+    //DocumentIndex documentIndexObject;
     avltree dataStruct;
 
+    /*
     Parser parse(argv[argc - 1]);
     for(int i = 1; i < argc - 1; ++i)
     {
         cout << "Opening file " << argv[i] << " for parsing" << endl;
         parse.parse(argv[i], dataStruct);
     }
-
+    */
     end = chrono::system_clock::now();
     chrono::duration<double> elapsed_seconds = end-start;
     cout << "Elapsed file load and index time: " << elapsed_seconds.count() << endl;
 
     cout << "Setting up query...." << endl;
-    parse.writeToFile(documentIndexObject);
+   // parse.writeToFile(documentIndexObject);
 
     cout << "Creating index" << endl;
-    ofstream outputFile("index.jaf");
-    dataStruct.writeOutIndex(outputFile);
+    ifstream inputFile("index.jaf");
+    dataStruct.buildFromIndex(inputFile);
 
 
-    /*
+
+
+
     // This gets the user input and junk
     for(int i = 0; i < 100; ++i)
     {
@@ -77,6 +80,6 @@ int main(int argc, char *argv[])
         cout << endl;
     }
 
-    */
+
     return 0;
 }
