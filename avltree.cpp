@@ -371,7 +371,7 @@ void avltree::buildFromIndex(ifstream &inputFile)
 
 void avltree::writeOutIndex()
 {
-    ofstream outputFile(WORD_INDEX_FILE);
+    ofstream outputFile(WORD_INDEX_FILE_PATH);
     inOrderTraverse(this->getRoot(), outputFile);
     outputFile.close();
 }

@@ -14,6 +14,8 @@ struct AVLNode
     int balfact ;
     AVLNode *left ;
     AVLNode *right ;
+
+    ~AVLNode() { delete [] data; }
 } ;
 
 class avltree : public IndexInterface

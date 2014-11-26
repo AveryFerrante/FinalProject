@@ -29,6 +29,8 @@ Word::Word(char *wordToAdd) // Used when the datastructure is being built from i
 Word::~Word()
 {
     delete [] word;
+    delete [] index;
+    delete [] frequency;
 }
 
 

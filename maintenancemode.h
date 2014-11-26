@@ -7,8 +7,10 @@
 #include <iostream>
 #include "avltree.h"
 
-#define CREATE_DEF_INDEX 1
+#define CREATE_DEFAULT_INDEX 1
 #define EXIT_VALUE 0
+#define MAX_MAINTENANCE_MODE_NUMBER 1
+
 class MaintenanceMode
 {
 private:

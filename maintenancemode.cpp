@@ -31,7 +31,7 @@ void MaintenanceMode::doAction(int decision)
 {
     if(decision == EXIT_VALUE)
         return;
-    if(decision == CREATE_DEF_INDEX)
+    if(decision == CREATE_DEFAULT_INDEX)
         createDefaultIndex();
 
 }

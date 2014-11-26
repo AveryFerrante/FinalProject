@@ -15,7 +15,6 @@ class Parser
 private: // Member Variables
 
     //Variables related to rapidxml
-    //rapidxml::file<> xFile; // Must be a pointer else I will lose the file once it leaves the scope of the constructor
     rapidxml::xml_node<> *mainNode;
     rapidxml::xml_node<> *currentPage;
     rapidxml::xml_node<> *bodyOfFile;

@@ -13,7 +13,16 @@ Parser::Parser(char *stopWordList)
 }
 Parser::~Parser()
 {
+    for(int i = 0; i < stopWords.size(); ++i)
+        delete [] (stopWords[i]);
 
+    assert ( fileBodies.size() == fileTitles.size() );
+
+    for(int i = 0; i < fileBodies.size(); ++i)
+    {
+        delete [] (fileBodies[i]);
+        delete [] (fileTitles[i]);
+    }
 }
 
 int Parser::stemWord(char *&word)

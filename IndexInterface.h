@@ -3,7 +3,7 @@
 #include <vector>
 #include "word.h"
 
-#define WORD_INDEX_FILE "wordindex.jaf"
+#define WORD_INDEX_FILE_PATH "wordindex.jaf"
 
 
 class IndexInterface{

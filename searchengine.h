@@ -10,7 +10,7 @@
 
 #define MAX_MODE_NUMBER 3
 #define MAX_USER_MODE_NUMBER 2
-#define MAX_MAINTENANCE_MODE_NUMBER 1
+
 
 
 class SearchEngine
