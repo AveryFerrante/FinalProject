@@ -35,7 +35,7 @@ class avltree : public IndexInterface
 
         virtual void addWordToIndex(Word *word);
 
-        virtual void writeOutIndex(std::ofstream &outputFile);
+        virtual void writeOutIndex();
         void         inOrderTraverse(AVLNode *root, std::ofstream &outputFile); // This is called by write out index
         void         write(AVLNode *root, std::ofstream &outputFile);
 

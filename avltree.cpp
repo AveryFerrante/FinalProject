@@ -369,9 +369,11 @@ void avltree::buildFromIndex(ifstream &inputFile)
     }
 }
 
-void avltree::writeOutIndex(ofstream &outputFile)
+void avltree::writeOutIndex()
 {
+    ofstream outputFile(WORD_INDEX_FILE);
     inOrderTraverse(this->getRoot(), outputFile);
+    outputFile.close();
 }
 
 void avltree::inOrderTraverse(AVLNode *root, ofstream &outputFile)

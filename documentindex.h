@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 
+#define DOCUMNET_INDEX_FILE "documentindex.jaf"
+
 class DocumentIndex
 {
 private:
@@ -17,6 +19,8 @@ public:
     void getDocument(int);
     void getTitle(int);
 
+    void writeOutIndex();
+    void buildFromIndex(std::ifstream &);
 
 
 };

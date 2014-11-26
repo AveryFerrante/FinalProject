@@ -35,3 +35,21 @@ void DocumentIndex::getTitle(int index)
     delete [] word;
     outputFile.close();
 }
+
+void DocumentIndex::writeOutIndex()
+{
+    ofstream outputFile(DOCUMNET_INDEX_FILE);
+    for(int i = 0; i < fileStartPositions.size(); ++i)
+        outputFile << fileStartPositions[i] << " ";
+    outputFile.close();
+}
+
+void DocumentIndex::buildFromIndex(ifstream &inputFile)
+{
+    int temp = 0;
+    while(!inputFile.eof())
+    {
+        inputFile >> temp;
+        fileStartPositions.push_back(temp);
+    }
+}
