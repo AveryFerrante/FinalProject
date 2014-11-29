@@ -3,31 +3,24 @@
 using namespace rapidxml;
 using namespace std;
 
-int Parser::k = 0, Parser::k0 = 0, Parser::j = 0 ;
-char * Parser::b = NULL;
-
 Parser::Parser(char *stopWordList)
 {
     initializeStopWordList(stopWordList);
     documentCount = 0;
 }
+
 Parser::~Parser()
 {
     for(int i = 0; i < stopWords.size(); ++i)
-        delete [] (stopWords[i]);
+        delete [] stopWords[i];
 
     assert ( fileBodies.size() == fileTitles.size() );
 
     for(int i = 0; i < fileBodies.size(); ++i)
     {
-        delete [] (fileBodies[i]);
-        delete [] (fileTitles[i]);
+        delete fileBodies[i];
+        delete fileTitles[i];
     }
-}
-
-int Parser::stemWord(char *&word)
-{
-    return this->stem(word, 0, strlen(word) - 1);
 }
 
 void Parser::parse(char *&fileName, IndexInterface &dataStructure)
@@ -54,6 +47,7 @@ void Parser::parse(char *&fileName, IndexInterface &dataStructure)
         getNextPage();
         ++documentCount;
     }
+
     clearCurrentDocument();
 }
 
@@ -83,7 +77,7 @@ void Parser::initializeStopWordList(const char *fileName)
     while(!wordList.eof())
     {
         wordList.getline(buffer, 80);
-        char *temp = new char[strlen(buffer)];
+        char *temp = new char[strlen(buffer) + 1];
         strcpy(temp, buffer);
         stopWords.push_back(temp);
     }
@@ -119,7 +113,7 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure)
             continue;
         }
 
-        bodyContents[this->stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
+        bodyContents[stemObject.stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
 
         createWordObjs(dataStructure, bodyContents);
 

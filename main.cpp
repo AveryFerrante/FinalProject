@@ -14,9 +14,14 @@ using namespace rapidxml;
 int main(int argc, char *argv[])
 {
 
-
-    SearchEngine engine(argc, argv);
-    engine.runEngine();
+    Parser parseThing(argv[argc - 1]);
+    avltree *avlTree = new avltree;
+    parseThing.parse(argv[argc - 2], *avlTree);
+    avlTree->display(avlTree->getRoot());
+    cout << "Done" << endl;
+    //delete avlTree;
+    //SearchEngine engine(argc, argv);
+    //engine.runEngine();
 
 
 

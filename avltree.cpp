@@ -339,8 +339,8 @@ void avltree :: deltree ( AVLNode *root )
     {
         deltree ( root -> left ) ;
         deltree ( root -> right ) ;
+        delete root ;
     }
-    delete ( root ) ;
 }
 
 void avltree::buildFromIndex(ifstream &inputFile)
@@ -420,7 +420,7 @@ bool avltree::alreadyContains(char*& word, int documentNumber){
             temp->data->updateFreqAndDoc(documentNumber);
             return true;
         }
-        else if(strcmp(temp->data->getWord(), word) < 0)
+        else if(strcmp(temp->data->getWord(), word) < 0) // Word is larger than temp
             temp = temp->right;
         else
             temp = temp->left;

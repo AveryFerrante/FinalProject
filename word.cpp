@@ -4,6 +4,8 @@ using namespace std;
 Word::Word(char *wordToAdd, int documentNumber)
 {
     int length = strlen(wordToAdd);
+    if(length > 100)
+        cout << "Debug" << endl;
     word = new char[length + 1];
     strcpy(word, wordToAdd);
     word[length] = '\0';
@@ -28,9 +30,10 @@ Word::Word(char *wordToAdd) // Used when the datastructure is being built from i
 
 Word::~Word()
 {
+   // cout << this->word << " ";
     delete [] word;
-    delete [] index;
-    delete [] frequency;
+    delete index;
+    delete frequency;
 }
 
 
@@ -39,10 +42,9 @@ void Word::sortRelevancy()
     assert ( index->size() == frequency->size() );
 
     int biggestIndex = 0;
-    int tempIndex = 0;
-    for(int x = 0; x < index->size(); ++x)
+    for(size_t x = 0; x < index->size(); ++x)
     {
-        for(int i = x; i < index->size(); ++i)
+        for(size_t i = x; i < index->size(); ++i)
         {
             if((*frequency)[i] > (*frequency)[biggestIndex])
                 biggestIndex = i;
@@ -89,11 +91,10 @@ void Word::writeOutIndex(ofstream &outputFile)
 
     assert ( index->size() == frequency->size() );
 
-    for(int i = 0; i < index->size(); ++i)
+    for(size_t i = 0; i < index->size(); ++i)
         outputFile << (*index)[i] << " " << (*frequency)[i] << " ";
 
     outputFile << "-1" << endl; // Null terminator
-
 }
 
 bool Word::operator<(Word &source)
@@ -106,7 +107,7 @@ bool Word::operator<(Word &source)
 
 bool Word::operator>(Word &source)
 {
-    return !(*this < source);
+    return !((*this) < source);
 }
 
 std::vector<int>* Word::getIndex() { return index; }

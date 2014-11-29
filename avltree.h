@@ -15,7 +15,7 @@ struct AVLNode
     AVLNode *left ;
     AVLNode *right ;
 
-    ~AVLNode() { delete [] data; }
+    ~AVLNode() { delete data; }
 } ;
 
 class avltree : public IndexInterface

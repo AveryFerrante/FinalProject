@@ -1,5 +1,8 @@
 #include "stemmer2.h"
 
+int Stemmer2::k = 0, Stemmer2::k0 = 0, Stemmer2::j = 0 ;
+char * Stemmer2::b = NULL;
+
 Stemmer2::Stemmer2()
 {
 }
