@@ -1,10 +1,5 @@
-#include "parser.h"
-#include "documentindex.h"
-#include "avltree.h"
 #include <chrono>
 #include <ctime>
-#include <vector>
-#include "Stemmer.h"
 #include "searchengine.h"
 
 
