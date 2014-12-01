@@ -5,7 +5,8 @@
 #include <iostream>
 #include <string>
 
-#define DOCUMNET_INDEX_FILE "documentindex.jaf"
+#define DOCUMNET_INDEX_FILE_PATH "documentindex.jaf"
+#define ERROR_BUILDING_DOCUMENT_INDEX 1010
 
 class DocumentIndex
 {
@@ -20,9 +21,10 @@ public:
     void getTitle(int);
 
     void writeOutIndex();
-    void buildFromIndex(std::ifstream &);
+    void buildFromIndex();
 
-
+    int size();
+    int lastFile();
 };
 
 #endif // DOCUMENTINDEX_H

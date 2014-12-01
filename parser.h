@@ -10,6 +10,9 @@
 #include "IndexInterface.h"
 #include "stemmer2.h"
 
+#define STOP_WORDS_FILE_OPEN_ERROR 11
+#define XML_FILE_OPEN_ERROR 12
+
 class Parser
 {
 
@@ -59,7 +62,7 @@ private: // Utility Functions
 public:
     Parser(char *);
     ~Parser();
-    void parse(char *&, IndexInterface &);
+    void parse(const char *, IndexInterface &);
 
     void writeToFile(DocumentIndex &);
 };

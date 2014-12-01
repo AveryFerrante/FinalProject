@@ -329,7 +329,9 @@ void avltree :: setroot ( AVLNode *avl )
 
 avltree :: ~avltree( )
 {
+    cout << "Deleting AVLTree" << endl;
     deltree ( root ) ;
+    cout << "Deleted AVLTree" << endl;
 }
 
 
@@ -343,29 +345,37 @@ void avltree :: deltree ( AVLNode *root )
     }
 }
 
-void avltree::buildFromIndex(ifstream &inputFile)
+void avltree::buildFromIndex()
 {
-    int tempNumb = 0;
-    string word;
-    while(!inputFile.eof())
+    try
     {
-        inputFile >> tempNumb;
-        inputFile >> word;
-        char *tempWord = new char[tempNumb + 1];
-        strcpy(tempWord, word.c_str());
-        tempWord[tempNumb] = '\0';
-
-        Word *temp = new Word(tempWord);
-        inputFile >> tempNumb; // File index first
-        while(tempNumb != -1)
+        ifstream inputFile(WORD_INDEX_FILE_PATH);
+        int tempNumb = 0;
+        string word;
+        while(!inputFile.eof())
         {
-            temp->addDocIndex(tempNumb);
-            inputFile >> tempNumb; // Frequency
-            temp->addFreq(tempNumb);
-            inputFile >> tempNumb; //File Index
-        }
+            inputFile >> tempNumb; // Length of word
+            inputFile >> word;
+            char *tempWord = new char[tempNumb + 1];
+            strcpy(tempWord, word.c_str());
+            tempWord[tempNumb] = '\0';
 
-        this->addWordToIndex(temp);
+            Word *temp = new Word(tempWord);
+            inputFile >> tempNumb; // File index first
+            while(tempNumb != -1)
+            {
+                temp->addDocIndex(tempNumb);
+                inputFile >> tempNumb; // Frequency
+                temp->addFreq(tempNumb);
+                inputFile >> tempNumb; //File Index
+            }
+
+            this->addWordToIndex(temp);
+        }
+    }
+    catch(...)
+    {
+        throw ERROR_BUILDING_INDEX;
     }
 }
 
@@ -384,7 +394,6 @@ void avltree::inOrderTraverse(AVLNode *root, ofstream &outputFile)
     inOrderTraverse(root->left, outputFile); // Traverse down the left side
     write(root, outputFile);
     inOrderTraverse(root->right, outputFile); // Traverse right side
-    //write(root, outputFile);
 }
 
 void avltree::write(AVLNode *root, ofstream &outputFile) { root->data->writeOutIndex(outputFile); }

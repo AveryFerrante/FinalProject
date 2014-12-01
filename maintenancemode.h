@@ -5,11 +5,16 @@
 #include "documentindex.h"
 #include "parser.h"
 #include <iostream>
+#include <windows.h>
 #include "avltree.h"
+#include <stdio.h>
 
-#define CREATE_DEFAULT_INDEX 1
+
 #define EXIT_VALUE 0
-#define MAX_MAINTENANCE_MODE_NUMBER 1
+#define MAX_MAINTENANCE_MODE_NUMBER 3
+#define CREATE_DEFAULT_INDEX 1
+#define ADD_TO_INDEX 2
+#define CLEAR_CURRENT_INDEX 3
 
 class MaintenanceMode
 {
@@ -21,15 +26,22 @@ private:
     Parser *parse;
 
     void createDefaultIndex();
+    void addToIndex();
+    void clearCurrentIndex();
+
     bool dataStructExists();
     void displayStructureExistsError();
+    void display();
+    void clearScreen();
+    int getInput(int lowerBound, int upperBound);
+
+    void destroyObjects();
+    void setToNull();
 public:
-    MaintenanceMode(int &consoleNumb, char **&consoleTxt, IndexInterface *&dataStruct,
-                    DocumentIndex *&documentIndexObj, Parser *&prs);
+    MaintenanceMode(int consoleArgs, char** consolePaths);
     ~MaintenanceMode();
 
-    void display();
-    void doAction(int decision);
+    void run();
 };
 
 #endif // MAINTENANCEMODE_H

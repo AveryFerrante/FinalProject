@@ -5,50 +5,66 @@ using namespace std;
 
 Parser::Parser(char *stopWordList)
 {
-    initializeStopWordList(stopWordList);
+    try
+    {
+        initializeStopWordList(stopWordList);
+    }
+    catch(...)
+    {
+        throw STOP_WORDS_FILE_OPEN_ERROR;
+    }
+
     documentCount = 0;
 }
 
 Parser::~Parser()
 {
-    for(int i = 0; i < stopWords.size(); ++i)
+    cout << "Destroying Parser" << endl;
+    for(size_t i = 0; i < stopWords.size(); ++i)
         delete [] stopWords[i];
 
     assert ( fileBodies.size() == fileTitles.size() );
 
-    for(int i = 0; i < fileBodies.size(); ++i)
+    for(size_t i = 0; i < fileBodies.size(); ++i)
     {
         delete fileBodies[i];
         delete fileTitles[i];
     }
+    cout << "Parser Destroyed" << endl;
 }
 
-void Parser::parse(char *&fileName, IndexInterface &dataStructure)
+void Parser::parse(const char *fileName, IndexInterface &dataStructure)
 {
-    // This initializes the file. Must be done here because if this goes out of scope, the whole file is lost.
-    file<> xFile(fileName);
-    xmlFile.parse<parse_no_utf8>(xFile.data());
-
-    //Set the two nodes up
-    initializeMainNode();
-    initializeCurrentPage();
-
-    while(currentPage != NULL)
+    try
     {
-        getPageInfo();
-        if(bodyOfFile->value_size() < 100)
+        // This initializes the file. Must be done here because if this goes out of scope, the whole file is lost.
+        file<> xFile(fileName);
+        xmlFile.parse<parse_no_utf8>(xFile.data());
+
+        //Set the two nodes up
+        initializeMainNode();
+        initializeCurrentPage();
+
+        while(currentPage != NULL)
         {
+            getPageInfo();
+            if(bodyOfFile->value_size() < 100)
+            {
+                getNextPage();
+                continue;
+            }
+
+            writeDataToVectors();
+            cleanBodyContents(dataStructure);
             getNextPage();
-            continue;
+            ++documentCount;
         }
-
-        writeDataToVectors();
-        cleanBodyContents(dataStructure);
-        getNextPage();
-        ++documentCount;
+        clearCurrentDocument();
     }
-
-    clearCurrentDocument();
+    catch(...)
+    {
+        throw XML_FILE_OPEN_ERROR;
+    }
 }
 
 
@@ -56,8 +72,13 @@ void Parser::parse(char *&fileName, IndexInterface &dataStructure)
 void Parser::writeToFile(DocumentIndex &documentIndexObject)
 {
     ofstream outputFile("file.txt", ios::binary);
-    documentIndexObject.addDoc(0);
-    for(int i = 0; i < fileBodies.size(); ++i)
+
+    if(documentIndexObject.size() == 0)
+        documentIndexObject.addDoc(0);
+    else // If we are adding to the index (maintenance mode)
+        outputFile.seekp(documentIndexObject.lastFile());
+
+    for(size_t i = 0; i < fileBodies.size(); ++i)
     {
         outputFile << *fileTitles[i] << endl;
         outputFile << *fileBodies[i] << endl;
