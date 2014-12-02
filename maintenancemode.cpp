@@ -99,6 +99,8 @@ void MaintenanceMode::addToIndex()
 
         dataStructure->buildFromIndex();
         documentIndexObject->buildFromIndex();
+
+        cout << "Indexing " << fileName << endl;
         parse->parse(fileName.c_str(), *dataStructure);
 
         parse->writeToFile(*documentIndexObject);
