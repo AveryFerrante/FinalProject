@@ -1,6 +1,7 @@
 #include <chrono>
 #include <ctime>
 #include "maintenancemode.h"
+#include "interactivemode.h"
 
 
 using namespace std;
@@ -8,12 +9,10 @@ using namespace rapidxml;
 
 int main(int argc, char *argv[])
 {
-    MaintenanceMode mode(argc, argv);
+    InteractiveMode mode(argc, argv);
     mode.run();
 
-
     /*
-
     // This gets the user input and junk
     for(int i = 0; i < 100; ++i)
     {
