@@ -71,21 +71,25 @@ void Parser::parse(const char *fileName, IndexInterface &dataStructure)
 
 void Parser::writeToFile(DocumentIndex &documentIndexObject)
 {
-    ofstream outputFile("file.txt", ios::binary);
+    ofstream *outputFile;
 
     if(documentIndexObject.size() == 0)
+    {
+        outputFile = new ofstream(OUTPUT_FILE, fstream::binary);
         documentIndexObject.addDoc(0);
-    else // If we are adding to the index (maintenance mode)
-        outputFile.seekp(documentIndexObject.lastFile());
+    }
+    else
+        outputFile = new ofstream(OUTPUT_FILE, fstream::binary | fstream::app);
 
     for(size_t i = 0; i < fileBodies.size(); ++i)
     {
-        outputFile << *fileTitles[i] << endl;
-        outputFile << *fileBodies[i] << endl;
-        documentIndexObject.addDoc(outputFile.tellp());
+        (*outputFile) << *fileTitles[i] << endl;
+        (*outputFile) << *fileBodies[i] << endl;
+        documentIndexObject.addDoc(outputFile->tellp());
     }
-    documentIndexObject.addDoc(outputFile.tellp());
-    outputFile.close();
+    documentIndexObject.addDoc(outputFile->tellp());
+    outputFile->close();
+    delete outputFile;
 }
 
 

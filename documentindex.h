@@ -8,6 +8,8 @@
 #define DOCUMNET_INDEX_FILE_PATH "documentindex.jaf"
 #define ERROR_BUILDING_DOCUMENT_INDEX 1010
 
+#define OUTPUT_FILE "lookup.jaf"
+
 class DocumentIndex
 {
 private:

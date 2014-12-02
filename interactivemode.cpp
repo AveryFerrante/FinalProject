@@ -46,6 +46,8 @@ void InteractiveMode::search()
 
     try
     {
+        if(dataStructure == NULL || documentIndexObject == NULL)
+            throw UNINITIALIZED_OBJECT_ERROR;
         cout << "Enter boolean querey:" << endl;
         cin.clear();
         cin.ignore(10000, '\n'); // These clear cin so next loop will work
@@ -88,6 +90,9 @@ void InteractiveMode::andQuery(vector<char *> &userQuery)
         documentList.push_back(dataStructure->getDocumentsForWord(userQuery[i], tempFreqList));
         frequencyList.push_back(tempFreqList);
     }
+
+    cout << documentList[0] << endl;
+    pause();
 
 }
 
@@ -205,6 +210,8 @@ void InteractiveMode::errorHandle(int e)
         cout << "You have entered too many terms.\nMax possible term number that can be processed is 5." << endl;
     if(e == USER_INPUT_UNDERFLOW)
         cout << "Cannot have a boolean query with less than 3 words.\nMake sure query is properly formatted (see manual)." << endl;
+    if(e == UNINITIALIZED_OBJECT_ERROR)
+        cout << "The data structure and/or the index is not initialized (see manual)" << endl;
 
     pause(); // "Press any key to continue"
 }

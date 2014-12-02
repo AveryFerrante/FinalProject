@@ -8,7 +8,7 @@ void DocumentIndex::addDoc(int index) { fileStartPositions.push_back(index); }
 
 void DocumentIndex::getDocument(int index)
 {
-    ifstream outputFile("file.txt", ios::binary);
+    ifstream outputFile(OUTPUT_FILE, fstream::binary);
 
     int length = fileStartPositions[index + 1] - fileStartPositions[index];
     char *word = new char[length + 1];
@@ -24,7 +24,7 @@ void DocumentIndex::getDocument(int index)
 
 void DocumentIndex::getTitle(int index)
 {
-    ifstream outputFile("file.txt", ios::binary);
+    ifstream outputFile(OUTPUT_FILE, fstream::binary);
     int length = fileStartPositions[index + 1] - fileStartPositions[index];
     char *word = new char[length + 1];
 

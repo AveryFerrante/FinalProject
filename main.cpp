@@ -12,7 +12,32 @@ int main(int argc, char *argv[])
     InteractiveMode mode(argc, argv);
     mode.run();
 
+    vector<vector<int> *> test;
+    vector<int> *work = new vector<int>;
+    work->push_back(1);
+    work->push_back(2);
+    test.push_back(work);
+
+    cout << (*(test[0]))[1] << endl;
+
+
+
+
     /*
+    avltree dataStruct;
+    DocumentIndex documentIndexObject;
+    dataStruct.buildFromIndex();
+    documentIndexObject.buildFromIndex();
+
+    //Parser parse(argv[argc - 1]);
+    //parse.parse("add.xml", dataStruct);
+    //parse.writeToFile(documentIndexObject);
+
+    //dataStruct.writeOutIndex();
+    //documentIndexObject.writeOutIndex();
+
+
+
     // This gets the user input and junk
     for(int i = 0; i < 100; ++i)
     {
@@ -23,7 +48,8 @@ int main(int argc, char *argv[])
         strcpy(word, userWord.c_str());
         word[userWord.length()] = '\0';
 
-        word[parse.stem(word, 0, strlen(word) - 1)] = '\0';
+        Stemmer2 stemmer;
+        word[stemmer.stem(word, 0, strlen(word) - 1)] = '\0';
 
 
         vector<int> *freqList = NULL;
@@ -52,6 +78,7 @@ int main(int argc, char *argv[])
         cout << endl;
     }
     */
+
 
     return 0;
 }

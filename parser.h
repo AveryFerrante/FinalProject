@@ -13,6 +13,8 @@
 #define STOP_WORDS_FILE_OPEN_ERROR 11
 #define XML_FILE_OPEN_ERROR 12
 
+#define OUTPUT_FILE "lookup.jaf"
+
 class Parser
 {
 
