@@ -61,8 +61,8 @@ void Word::sortRelevancy()
         (*index)[x] = (*index)[biggestIndex];
         (*index)[biggestIndex] = temp;
 
-        if(x == 15)
-            break; // Only need to return top 15 results
+        if(x == MAX_RESULTS)
+            break;
     }
 }
 

@@ -62,7 +62,7 @@ private: // Utility Functions
     void clearCurrentDocument();
 
 public:
-    Parser(char *);
+    Parser(char *, int startingPlace = 0);
     ~Parser();
     void parse(const char *, IndexInterface &);
 

@@ -17,6 +17,7 @@
 #define USER_INPUT_OVERFLOW 1992
 #define USER_INPUT_UNDERFLOW 1993
 #define UNINITIALIZED_OBJECT_ERROR 12993
+#define AND_WORD_DOES_NOT_EXIST 84383
 
 class InteractiveMode
 {
@@ -26,6 +27,7 @@ private:
     IndexInterface *dataStructure;
     DocumentIndex *documentIndexObject;
     Parser *parse;
+    Stemmer2 stemObj;
 
     //Utility Functions
     void display();
@@ -37,8 +39,12 @@ private:
 
     void search();
     void andQuery(std::vector<char *> &userQuery);
+    std::vector<int> * compileFinalList(std::vector<int> *word1, std::vector<int> *word2);
     void orQuery();
-    void singleQuery();
+    void singleQuery(std::vector<char *> &userQuery);
+    void titlesAndBodies(std::vector<int> *documentList, std::string &title);
+
+    void stemAndPreserve(const char *word, char *destination);
 
     int getInput(int lowerBound, int upperBound);
 

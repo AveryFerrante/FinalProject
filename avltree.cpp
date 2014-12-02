@@ -373,6 +373,11 @@ void avltree::buildFromIndex()
             this->addWordToIndex(temp);
         }
     }
+    catch(exception &e)
+    {
+        cout << e.what() << endl;
+    }
+
     catch(...)
     {
         inputFile.close();

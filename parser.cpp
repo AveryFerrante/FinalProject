@@ -3,7 +3,7 @@
 using namespace rapidxml;
 using namespace std;
 
-Parser::Parser(char *stopWordList)
+Parser::Parser(char *stopWordList, int startingPlace)
 {
     try
     {
@@ -14,7 +14,7 @@ Parser::Parser(char *stopWordList)
         throw STOP_WORDS_FILE_OPEN_ERROR;
     }
 
-    documentCount = 0;
+    documentCount = startingPlace; // This is only set if I am adding to an already existing index
 }
 
 Parser::~Parser()
@@ -81,13 +81,15 @@ void Parser::writeToFile(DocumentIndex &documentIndexObject)
     else
         outputFile = new ofstream(OUTPUT_FILE, fstream::binary | fstream::app);
 
+
     for(size_t i = 0; i < fileBodies.size(); ++i)
     {
         (*outputFile) << *fileTitles[i] << endl;
         (*outputFile) << *fileBodies[i] << endl;
         documentIndexObject.addDoc(outputFile->tellp());
+        if(i == fileBodies.size() - 1)
+            cout << documentIndexObject.lastFile() << endl;
     }
-    documentIndexObject.addDoc(outputFile->tellp());
     outputFile->close();
     delete outputFile;
 }
@@ -131,7 +133,7 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure)
         *whatsLeft = '\0';
 
         removeNonAlphaCharacters(bodyContents);
-        if(strlen(bodyContents) <= 1 || strlen(bodyContents) >= 22 || isStopWord(bodyContents)) // Skip this word
+        if(strlen(bodyContents) >= 22 || isStopWord(bodyContents)) // Skip this word
         {
             bodyContents = ++whatsLeft; // Point to beginning of next word
             whatsLeft = strchr(bodyContents, ' ');
@@ -139,6 +141,12 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure)
         }
 
         bodyContents[stemObject.stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
+        if(strlen(bodyContents) <= 1)
+        {
+            bodyContents = ++whatsLeft; // Point to beginning of next word
+            whatsLeft = strchr(bodyContents, ' ');
+            continue;
+        }
 
         createWordObjs(dataStructure, bodyContents);
 

@@ -42,7 +42,7 @@ int MaintenanceMode::getInput(int lowerBound, int upperBound)
     cin >> returnValue;
 
     bool validInput = false;
-    while(!validInput)
+    while(true)
     {
         for(size_t i = 0; i < returnValue.length(); ++i)
         {
@@ -95,10 +95,11 @@ void MaintenanceMode::addToIndex()
         cout << "Setting up original Index" << endl;
         dataStructure = new avltree;
         documentIndexObject = new DocumentIndex;
-        parse = new Parser(argv[argc - 1]);
+        documentIndexObject->buildFromIndex();
+        parse = new Parser(argv[argc - 1], documentIndexObject->size() - 1);
 
         dataStructure->buildFromIndex();
-        documentIndexObject->buildFromIndex();
+
 
         cout << "Indexing " << fileName << endl;
         parse->parse(fileName.c_str(), *dataStructure);
