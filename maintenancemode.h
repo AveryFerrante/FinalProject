@@ -33,10 +33,13 @@ private:
     void displayStructureExistsError();
     void display();
     void clearScreen();
+    void pause();
     int getInput(int lowerBound, int upperBound);
 
     void destroyObjects();
     void setToNull();
+
+    void errorHandle(int e);
 public:
     MaintenanceMode(int consoleArgs, char** consolePaths);
     ~MaintenanceMode();

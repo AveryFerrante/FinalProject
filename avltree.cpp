@@ -347,9 +347,9 @@ void avltree :: deltree ( AVLNode *root )
 
 void avltree::buildFromIndex()
 {
+    ifstream inputFile(WORD_INDEX_FILE_PATH);
     try
     {
-        ifstream inputFile(WORD_INDEX_FILE_PATH);
         int tempNumb = 0;
         string word;
         while(!inputFile.eof())
@@ -375,8 +375,11 @@ void avltree::buildFromIndex()
     }
     catch(...)
     {
+        inputFile.close();
         throw ERROR_BUILDING_INDEX;
     }
+
+    inputFile.close();
 }
 
 void avltree::writeOutIndex()

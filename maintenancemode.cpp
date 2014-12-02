@@ -67,6 +67,7 @@ int MaintenanceMode::getInput(int lowerBound, int upperBound)
 
 void MaintenanceMode::display()
 {
+    clearScreen();
     cout << "Maintenance Mode:" << endl;
     cout << EXIT_VALUE << ". Exit" << endl;
     cout << CREATE_DEFAULT_INDEX << ". Build Default Index" << endl;
@@ -79,7 +80,8 @@ void MaintenanceMode::clearCurrentIndex()
     clearScreen();
     remove(WORD_INDEX_FILE_PATH);
     remove(DOCUMNET_INDEX_FILE_PATH);
-    cout << "Deleted Successfully" << endl;
+    cout << "Index Deleted Successfully" << endl;
+    pause();
 }
 
 void MaintenanceMode::addToIndex()
@@ -104,22 +106,11 @@ void MaintenanceMode::addToIndex()
         dataStructure->writeOutIndex();
         documentIndexObject->writeOutIndex();
         cout << fileName << " successfully added to the existing index." << endl;
+        pause();
     }
     catch(int e)
     {
-        clearScreen();
-        if(e == XML_FILE_OPEN_ERROR)
-            cout << "Error opening file \"" << fileName <<"\". Make sure the file name is spelled correctly and"
-                 << " is in the proper working directory (See manual).\n\n" << endl;
-        if(e == STOP_WORDS_FILE_OPEN_ERROR)
-            cout << "Unable to open the file containing the stop words. Make sure this is provided as the"
-                 << " last command line argument (see manual).\n\n" << endl;
-        if(e == ERROR_BUILDING_INDEX)
-            cout << "Unable to build the structure. Please make sure an index file exists in the working directory."
-                 << " If none exists, you may use maintenance mode to build the default index and try again (see manual).\n\n" << endl;
-        if( e == ERROR_BUILDING_DOCUMENT_INDEX)
-            cout << "Unable to build document index. Please make sure an index file exists in the working directory."
-                 << " If none exists, you may use maintenance mode to build the default index and try again (see manual).\n\n" << endl;
+        errorHandle(e);
     }
 
     destroyObjects();
@@ -129,7 +120,7 @@ void MaintenanceMode::addToIndex()
 void MaintenanceMode::createDefaultIndex()
 {
     clearScreen();
-    assert ( argc > 2 ); // User must include stopWords list
+    //assert ( argc > 2 ); // User must include stopWords list
     if(dataStructExists())
     {
         displayStructureExistsError();
@@ -151,6 +142,27 @@ void MaintenanceMode::createDefaultIndex()
     //destroyObjects();
     setToNull();
     cout << "Index created successfully." << endl;
+    pause();
+}
+
+void MaintenanceMode::errorHandle(int e)
+{
+    clearScreen();
+    cout << "ERROR ENCOUNTERED" << endl;
+    if(e == XML_FILE_OPEN_ERROR)
+        cout << "Error opening the file entered.\nMake sure the file name is spelled correctly and"
+             << " is in the proper working directory (See manual)." << endl;
+    if(e == STOP_WORDS_FILE_OPEN_ERROR)
+        cout << "Unable to open the file containing the stop words.\nMake sure this is provided as the"
+             << " last command line argument (see manual)." << endl;
+    if(e == ERROR_BUILDING_INDEX)
+        cout << "Unable to build the structure. Please make sure an index file exists in the working directory.\n"
+             << "If none exists, you may use maintenance mode to build the default index and try again (see manual)." << endl;
+    if( e == ERROR_BUILDING_DOCUMENT_INDEX)
+        cout << "Unable to build document index. Please make sure an index file exists in the working directory.\n"
+             << "If none exists, you may use maintenance mode to build the default index and try again (see manual)." << endl;
+
+    pause(); // "Press any key to continue"
 }
 
 void MaintenanceMode::destroyObjects()
@@ -176,6 +188,7 @@ bool MaintenanceMode::dataStructExists()
 }
 
 void MaintenanceMode::clearScreen() { system("cls"); }
+void MaintenanceMode::pause() { system("pause"); }
 
 void MaintenanceMode::displayStructureExistsError()
 { cout << "Error: A data structure is already contained in memory. Please remove structure from memory and try again." << endl; }
