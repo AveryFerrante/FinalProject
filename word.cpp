@@ -53,10 +53,11 @@ void Word::sortRelevancy()
         // Swap
         int temp;
 
+        /*
         temp = (*frequency)[x];
         (*frequency)[x] = (*frequency)[biggestIndex];
         (*frequency)[biggestIndex] = temp;
-
+        */
         temp = (*index)[x];
         (*index)[x] = (*index)[biggestIndex];
         (*index)[biggestIndex] = temp;

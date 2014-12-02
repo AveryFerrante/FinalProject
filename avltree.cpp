@@ -406,7 +406,7 @@ void avltree::inOrderTraverse(AVLNode *root, ofstream &outputFile)
 
 void avltree::write(AVLNode *root, ofstream &outputFile) { root->data->writeOutIndex(outputFile); }
 
-std::vector<int>* avltree::getDocumentsForWord(char *&word, std::vector<int> *&freqList)
+std::vector<int>* avltree::getDocumentsForWord(char *&word)
 {
     AVLNode* temp = root;
     while(temp != NULL)
@@ -414,7 +414,6 @@ std::vector<int>* avltree::getDocumentsForWord(char *&word, std::vector<int> *&f
         if(strcmp(temp->data->getWord(), word) == 0)
         {
             temp->data->sortRelevancy();
-            freqList = temp->data->getFreq();
             return temp->data->getIndex();
         }
         else if(strcmp(temp->data->getWord(), word) < 0)

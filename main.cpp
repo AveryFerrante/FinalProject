@@ -12,8 +12,8 @@ int main(int argc, char *argv[])
     int decision = -1;
     while(decision != 0)
     {
-        cout << "1. Maintenance Mode\n2. Interactive Mode" << endl;
-        int decision;
+        cout << "Please select a mode: " << endl;
+        cout << "0. Exit\n1. Maintenance Mode\n2. Interactive Mode" << endl;
         cin >> decision;
         if(decision == 1)
         {

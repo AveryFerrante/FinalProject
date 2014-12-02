@@ -18,6 +18,10 @@
 #define USER_INPUT_UNDERFLOW 1993
 #define UNINITIALIZED_OBJECT_ERROR 12993
 #define AND_WORD_DOES_NOT_EXIST 84383
+#define NOT_WORD_DOES_NOT_EXIST 7875
+
+#define AND_MODE 888
+#define NOT_MODE 109
 
 class InteractiveMode
 {
@@ -39,10 +43,12 @@ private:
 
     void search();
     void andQuery(std::vector<char *> &userQuery);
-    std::vector<int> * compileFinalList(std::vector<int> *word1, std::vector<int> *word2);
+    std::vector<int> * compileFinalList(std::vector<int> *word1, std::vector<int> *word2, int mode);
     void orQuery();
     void singleQuery(std::vector<char *> &userQuery);
     void titlesAndBodies(std::vector<int> *documentList, std::string &title);
+
+    std::vector<int> *notProcessor(std::vector<char *> &userQuery, std::vector<int> *currentDocumentList);
 
     void stemAndPreserve(const char *word, char *destination);
 
