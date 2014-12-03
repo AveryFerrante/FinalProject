@@ -360,6 +360,7 @@ void avltree::buildFromIndex()
             strcpy(tempWord, word.c_str());
             tempWord[tempNumb] = '\0';
 
+            //cout << "Adding word: " << tempWord << endl;
             Word *temp = new Word(tempWord);
             inputFile >> tempNumb; // File index first
             while(tempNumb != -1)
