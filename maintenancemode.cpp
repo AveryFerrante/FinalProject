@@ -80,6 +80,7 @@ void MaintenanceMode::clearCurrentIndex()
     clearScreen();
     remove(WORD_INDEX_FILE_PATH);
     remove(DOCUMNET_INDEX_FILE_PATH);
+    remove(DOCUMENT_OUTPUT_FILE);
     cout << "Index Deleted Successfully" << endl;
     pause();
 }
@@ -123,7 +124,7 @@ void MaintenanceMode::addToIndex()
 void MaintenanceMode::createDefaultIndex()
 {
     clearScreen();
-    //assert ( argc > 2 ); // User must include stopWords list
+    assert ( argc > 2 ); // User must include stopWords list
     if(dataStructExists())
     {
         displayStructureExistsError();

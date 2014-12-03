@@ -44,7 +44,7 @@ void Word::sortRelevancy()
     int biggestIndex = 0;
     for(size_t x = 0; x < index->size(); ++x)
     {
-        for(size_t i = x; i < index->size(); ++i)
+        for(size_t i = x; i < frequency->size(); ++i)
         {
             if((*frequency)[i] > (*frequency)[biggestIndex])
                 biggestIndex = i;
@@ -53,24 +53,20 @@ void Word::sortRelevancy()
         // Swap
         int temp;
 
-        /*
         temp = (*frequency)[x];
         (*frequency)[x] = (*frequency)[biggestIndex];
         (*frequency)[biggestIndex] = temp;
-        */
+
         temp = (*index)[x];
         (*index)[x] = (*index)[biggestIndex];
         (*index)[biggestIndex] = temp;
-
-        if(x == MAX_RESULTS)
-            break;
     }
 }
 
 void Word::updateFreqAndDoc(int documentNumber)
 {
 
-    assert(this != NULL);
+    assert( this != NULL );
 
     if(lastDocument == documentNumber) // Still on the same document, just need to add one to the frequency
             (*frequency)[frequency->size() - 1] += 1;

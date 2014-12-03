@@ -75,11 +75,11 @@ void Parser::writeToFile(DocumentIndex &documentIndexObject)
 
     if(documentIndexObject.size() == 0)
     {
-        outputFile = new ofstream(OUTPUT_FILE, fstream::binary);
+        outputFile = new ofstream(DOCUMENT_OUTPUT_FILE, fstream::binary);
         documentIndexObject.addDoc(0);
     }
     else
-        outputFile = new ofstream(OUTPUT_FILE, fstream::binary | fstream::app);
+        outputFile = new ofstream(DOCUMENT_OUTPUT_FILE, fstream::binary | fstream::app);
 
 
     for(size_t i = 0; i < fileBodies.size(); ++i)

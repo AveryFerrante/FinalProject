@@ -98,6 +98,10 @@ void InteractiveMode::andQuery(vector<char *> &userQuery)
     if(word1 == NULL || word2 == NULL)
         throw AND_WORD_DOES_NOT_EXIST;
 
+    cout << "Size of " << userQuery[1] << ": " << word1->size() << endl;
+    cout << "Size of " << userQuery[2] << ": " << word2->size() << endl;
+    pause();
+
     vector<int> *finalList = NULL;
     if(word1->size() < word2->size())
         finalList = compileFinalList(word1, word2, AND_MODE);
@@ -162,15 +166,19 @@ vector<int> *InteractiveMode::compileFinalList(std::vector<int> *word1, std::vec
     if(mode == AND_MODE)
     {
         assert ( word1->size() <= word2->size() );
+        int inputCounter = 0;
         for(size_t i = 0; i < word1->size(); ++i) // word1 has smaller size
         {
             for(size_t x = 0; x < word2->size(); ++x)
             {
                 if((*word1)[i] == (*word2)[x])
+                {
+                    ++inputCounter;
                     returnVec->push_back((*word1)[i]);
+                }
             }
 
-            if(i == MAX_RESULTS)
+            if(inputCounter == MAX_RESULTS)
                 break; // Only need to worry about the results that will be displayed
         }
     }
