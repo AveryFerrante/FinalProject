@@ -17,6 +17,10 @@ Word::Word(char *wordToAdd, int documentNumber)
 
     frequency->push_back(1); // When created, we know there is a frequency of atleast one
     index->push_back(documentNumber);
+
+    information = new std::vector<DocumentAndFrequency *>;
+    DocumentAndFrequency *temp = new DocumentAndFrequency(documentNumber, 1);
+    information->push_back(temp);
 }
 
 Word::Word(char *wordToAdd) // Used when the datastructure is being built from index
@@ -34,6 +38,11 @@ Word::~Word()
     delete [] word;
     delete index;
     delete frequency;
+
+    for(size_t i = 0; i < information->size(); ++i)
+        delete (*information)[i];
+
+    delete information;
 }
 
 
@@ -63,21 +72,27 @@ void Word::sortRelevancy()
     }
 }
 
-void Word::updateFreqAndDoc(int documentNumber)
+void Word::updateFreqAndDoc(int CurrentDocumentNumber)
 {
 
     assert( this != NULL );
 
-    if(lastDocument == documentNumber) // Still on the same document, just need to add one to the frequency
-            (*frequency)[frequency->size() - 1] += 1;
+    if(lastDocument == CurrentDocumentNumber) // Still on the same document, just need to add one to the frequency
+    {
+        (*frequency)[frequency->size() - 1] += 1;
+        information->back()->increaseFreq();
+    }
     else // On a new document, need to add it to the vector and start a frequency for it
     {
         assert(index != NULL);
-        index->push_back(documentNumber); // The document we are currently on
+        index->push_back(CurrentDocumentNumber); // The document we are currently on
 
         assert(frequency != NULL);
         frequency->push_back(1); // We have atleast one occurence
-        lastDocument = documentNumber; // Update this so we can just add to frequency if it occurs again in this document
+        lastDocument = CurrentDocumentNumber; // Update this so we can just add to frequency if it occurs again in this document
+
+        DocumentAndFrequency *temp = new DocumentAndFrequency(CurrentDocumentNumber, 1);
+        information->push_back(temp);
     }
 
 }

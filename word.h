@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cassert>
 #include <fstream>
+#include "documentandfrequency.h"
 
 #define MAX_RESULTS 14
 
@@ -17,8 +18,7 @@ private:
     std::vector<int>* index; // This will hold the corresponding index to the docKey vector for where a file starts
     std::vector<int>* frequency;
 
-
-
+    std::vector<DocumentAndFrequency *> *information;
 public:
 
     Word(char *);
@@ -32,6 +32,7 @@ public:
 
     std::vector<int>* getIndex();
     std::vector<int>* getFreq();
+    std::vector<DocumentAndFrequency *>* getInformation();
 
     void updateFreqAndDoc(int);
     void sortRelevancy();
