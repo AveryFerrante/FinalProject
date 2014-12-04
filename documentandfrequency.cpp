@@ -38,7 +38,6 @@ bool DocumentAndFrequency::andCompare(DocumentAndFrequency *obj1, DocumentAndFre
 {
     if(obj1->getDocNumb() < obj2->getDocNumb())
     {
-        obj1->addToFreq(obj2->getFreq()); // Have to keep a total tally of number of occurances of key words
         return true;
     }
 

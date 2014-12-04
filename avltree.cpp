@@ -340,8 +340,8 @@ void avltree :: deltree ( AVLNode *root )
     if ( root != NULL )
     {
         deltree ( root -> left ) ;
-        deltree ( root -> right ) ;
         delete root ;
+        deltree ( root -> right ) ;
     }
 }
 
@@ -351,15 +351,14 @@ void avltree::buildFromIndex()
     try
     {
         int tempFreq = 0;
+        string size = "garbage"; // This is a string so I can check to see if it is on a blank line (end of the document)
         int tempIndex = 0;
         string word;
-        while(!inputFile.eof())
+        while(!inputFile.eof() && (inputFile >> size != "")) // This also loads the length of the word temporarily in freq
         {
-            inputFile >> tempFreq; // Length of word
             inputFile >> word;
-
             //cout << "Adding word: " << word << endl;
-            Word *temp = new Word(word, tempFreq);
+            Word *temp = new Word(word, atoi(size.c_str()));
             inputFile >> tempIndex; // File index first
             while(tempIndex != -1)
             {

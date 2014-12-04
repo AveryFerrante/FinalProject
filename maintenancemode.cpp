@@ -110,43 +110,43 @@ void MaintenanceMode::addToIndex()
         dataStructure->writeOutIndex();
         documentIndexObject->writeOutIndex();
         cout << fileName << " successfully added to the existing index." << endl;
+    }
+    catch(int e)
+    {
+        errorHandle(e);
+    }
+    destroyObjects();
+    setToNull();
+    pause();
+}
+
+void MaintenanceMode::createDefaultIndex()
+{
+    clearScreen();
+    try
+    {
+        dataStructure = new avltree;
+        parse = new Parser(argv[argc - 1]);
+        documentIndexObject = new DocumentIndex;
+        for(int i = 1; i < argc - 1; ++i)
+        {
+            cout << "Opening file " << argv[i] << " for indexing" << endl;
+            parse->parse(argv[i], *dataStructure);
+        }
+
+        parse->writeToFile(*documentIndexObject);
+        dataStructure->writeOutIndex();
+        documentIndexObject->writeOutIndex();
+
+        destroyObjects();
+        setToNull();
+        cout << "Index created successfully." << endl;
         pause();
     }
     catch(int e)
     {
         errorHandle(e);
     }
-
-    destroyObjects();
-    setToNull();
-}
-
-void MaintenanceMode::createDefaultIndex()
-{
-    clearScreen();
-    assert ( argc > 2 ); // User must include stopWords list
-    if(dataStructExists())
-    {
-        displayStructureExistsError();
-        return;
-    }
-
-    dataStructure = new avltree;
-    parse = new Parser(argv[argc - 1]);
-    documentIndexObject = new DocumentIndex;
-    for(int i = 1; i < argc - 1; ++i)
-    {
-        cout << "Opening file " << argv[i] << " for indexing" << endl;
-        parse->parse(argv[i], *dataStructure);
-    }
-
-    parse->writeToFile(*documentIndexObject);
-    dataStructure->writeOutIndex();
-    documentIndexObject->writeOutIndex();
-    //destroyObjects();
-    setToNull();
-    cout << "Index created successfully." << endl;
-    pause();
 }
 
 void MaintenanceMode::errorHandle(int e)
@@ -154,8 +154,8 @@ void MaintenanceMode::errorHandle(int e)
     clearScreen();
     cout << "ERROR ENCOUNTERED" << endl;
     if(e == XML_FILE_OPEN_ERROR)
-        cout << "Error opening the file entered.\nMake sure the file name is spelled correctly and"
-             << " is in the proper working directory (See manual)." << endl;
+        cout << "Error opening the file entered.\nMake sure the file name is spelled correctly /"
+             << " is in the proper working directory / is formatted correctly (See manual)." << endl;
     if(e == STOP_WORDS_FILE_OPEN_ERROR)
         cout << "Unable to open the file containing the stop words.\nMake sure this is provided as the"
              << " last command line argument (see manual)." << endl;

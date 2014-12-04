@@ -7,8 +7,9 @@
 #include <windows.h>
 
 #define EXIT_VALUE 0
-#define MAX_INTERACTIVE_MODE_NUMBER 2
+#define MAX_INTERACTIVE_MODE_NUMBER 3
 #define LOAD_FROM_INDEX 1
+#define DELETE_CURRENT_INDEX 3
 #define BOOLEAN_QUERY 2
 
 #define AVL_TREE 1
@@ -31,7 +32,6 @@ private:
     char** argv;
     IndexInterface *dataStructure;
     DocumentIndex *documentIndexObject;
-    Parser *parse;
     Stemmer2 stemObj;
 
     //Utility Functions
@@ -42,25 +42,28 @@ private:
     void loadFromIndex();
     bool getDataStruct();
     void search();
+    void deleteCurrentIndex();
 
     void andQuery(std::vector<char *> &userQuery);
     void orQuery();
     void singleQuery(std::vector<char *> &userQuery);
 
     void titlesAndBodies(std::vector<DocumentAndFrequency *> *documentList, std::string &title);
+    std::string createTitle(std::vector<char *> &userQuery);
     void sortByFreq(std::vector<DocumentAndFrequency *> *documentList);
 
     std::vector<DocumentAndFrequency *> *notProcessor(std::vector<char *> &userQuery, std::vector<DocumentAndFrequency *> *goodWordList);
-    std::vector<DocumentAndFrequency *> *andProcessor(std::vector<DocumentAndFrequency *> *list1, std::vector<DocumentAndFrequency *> *list2);
+    std::vector<DocumentAndFrequency *> *andProcessor(std::vector<char *> &userQuery);
 
     char *stemAndPreserve(const char *word);
     int getInput(int lowerBound, int upperBound);
 
     void errorHandle(int e);
-
-
+    void deleteObjects();
+    void setToNull();
 public:
     InteractiveMode(int consoleArgs, char **consolePaths);
+    ~InteractiveMode();
     void run();
 };
 

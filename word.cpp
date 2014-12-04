@@ -29,7 +29,7 @@ Word::Word(string &wordToAdd, int length) // Used when the datastructure is bein
 
 Word::~Word()
 {
-    //cout << this->word << " " << endl;
+    cout << this->word << " " << endl;
     delete [] word;
 
     for(size_t i = 0; i < information->size(); ++i)
