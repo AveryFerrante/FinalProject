@@ -19,9 +19,10 @@
 #define UNINITIALIZED_OBJECT_ERROR 12993
 #define AND_WORD_DOES_NOT_EXIST 84383
 #define NOT_WORD_DOES_NOT_EXIST 7875
+#define INCORRECT_FORMAT 1584
+#define NO_RESULTS 44747
 
-#define AND_MODE 888
-#define NOT_MODE 109
+
 
 class InteractiveMode
 {
@@ -40,21 +41,24 @@ private:
 
     void loadFromIndex();
     bool getDataStruct();
-
     void search();
+
     void andQuery(std::vector<char *> &userQuery);
-    std::vector<int> * compileFinalList(std::vector<int> *word1, std::vector<int> *word2, int mode);
     void orQuery();
     void singleQuery(std::vector<char *> &userQuery);
-    void titlesAndBodies(std::vector<int> *documentList, std::string &title);
 
-    std::vector<int> *notProcessor(std::vector<char *> &userQuery, std::vector<int> *currentDocumentList);
+    void titlesAndBodies(std::vector<DocumentAndFrequency *> *documentList, std::string &title);
+    void sortByFreq(std::vector<DocumentAndFrequency *> *documentList);
 
-    void stemAndPreserve(const char *word, char *destination);
+    std::vector<DocumentAndFrequency *> *notProcessor(std::vector<char *> &userQuery, std::vector<DocumentAndFrequency *> *goodWordList);
+    std::vector<DocumentAndFrequency *> *andProcessor(std::vector<DocumentAndFrequency *> *list1, std::vector<DocumentAndFrequency *> *list2);
 
+    char *stemAndPreserve(const char *word);
     int getInput(int lowerBound, int upperBound);
 
     void errorHandle(int e);
+
+
 public:
     InteractiveMode(int consoleArgs, char **consolePaths);
     void run();

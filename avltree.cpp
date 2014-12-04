@@ -350,25 +350,22 @@ void avltree::buildFromIndex()
     ifstream inputFile(WORD_INDEX_FILE_PATH);
     try
     {
-        int tempNumb = 0;
+        int tempFreq = 0;
+        int tempIndex = 0;
         string word;
         while(!inputFile.eof())
         {
-            inputFile >> tempNumb; // Length of word
+            inputFile >> tempFreq; // Length of word
             inputFile >> word;
-            char *tempWord = new char[tempNumb + 1];
-            strcpy(tempWord, word.c_str());
-            tempWord[tempNumb] = '\0';
 
-            //cout << "Adding word: " << tempWord << endl;
-            Word *temp = new Word(tempWord);
-            inputFile >> tempNumb; // File index first
-            while(tempNumb != -1)
+            //cout << "Adding word: " << word << endl;
+            Word *temp = new Word(word, tempFreq);
+            inputFile >> tempIndex; // File index first
+            while(tempIndex != -1)
             {
-                temp->addDocIndex(tempNumb);
-                inputFile >> tempNumb; // Frequency
-                temp->addFreq(tempNumb);
-                inputFile >> tempNumb; //File Index
+                inputFile >> tempFreq; // Frequency
+                temp->addInfo(tempIndex, tempFreq);
+                inputFile >> tempIndex; // File Index (or terminator -1)
             }
 
             this->addWordToIndex(temp);
@@ -407,7 +404,7 @@ void avltree::inOrderTraverse(AVLNode *root, ofstream &outputFile)
 
 void avltree::write(AVLNode *root, ofstream &outputFile) { root->data->writeOutIndex(outputFile); }
 
-std::vector<int>* avltree::getDocumentsForWord(char *&word)
+std::vector<DocumentAndFrequency *> *avltree::getDocumentsForWord(char *&word)
 {
     AVLNode* temp = root;
     while(temp != NULL)
@@ -415,7 +412,7 @@ std::vector<int>* avltree::getDocumentsForWord(char *&word)
         if(strcmp(temp->data->getWord(), word) == 0)
         {
             temp->data->sortRelevancy();
-            return temp->data->getIndex();
+            return temp->data->getInformation();
         }
         else if(strcmp(temp->data->getWord(), word) < 0)
             temp = temp->right;

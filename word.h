@@ -6,6 +6,7 @@
 #include <cassert>
 #include <fstream>
 #include "documentandfrequency.h"
+#include <algorithm>
 
 #define MAX_RESULTS 14
 
@@ -21,7 +22,7 @@ private:
     std::vector<DocumentAndFrequency *> *information;
 public:
 
-    Word(char *);
+    Word(std::string &wordToAdd, int length);
     Word(char *, int);
     ~Word();
     char *getWord();
@@ -29,6 +30,7 @@ public:
     void addDocIndex(int);
     void addFreq(int);
     int getDocIndex(int);
+    void addInfo(int, int);
 
     std::vector<int>* getIndex();
     std::vector<int>* getFreq();

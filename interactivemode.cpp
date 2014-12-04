@@ -50,7 +50,7 @@ void InteractiveMode::search()
             throw UNINITIALIZED_OBJECT_ERROR;
         cout << "Enter boolean querey:" << endl;
         cin.clear();
-        cin.ignore(10000, '\n'); // These clear cin so next loop will work
+        cin.ignore(1000, '\n'); // These clear cin so next loop will work
         while(cin.peek() != '\n')
         {
             cin >> tempUserInput;
@@ -62,9 +62,7 @@ void InteractiveMode::search()
             userQuery.push_back(temp);
         }
 
-        if(userQuery.size() > 5) // This is a fundamental idea of the program
-            throw USER_INPUT_OVERFLOW;
-        else if(strcmp(userQuery[0], "AND") == 0)
+        if(strcmp(userQuery[0], "AND") == 0)
             andQuery(userQuery);
         else if(strcmp(userQuery[0], "OR") == 0)
             orQuery();
@@ -75,6 +73,9 @@ void InteractiveMode::search()
     {
         errorHandle(e);
     }
+
+    for(size_t i = 0; i < userQuery.size(); ++i)
+        delete [] userQuery[i];
 }
 
 void InteractiveMode::andQuery(vector<char *> &userQuery)
@@ -82,32 +83,19 @@ void InteractiveMode::andQuery(vector<char *> &userQuery)
     if(userQuery.size() < 3) // Impossible to process
         throw USER_INPUT_UNDERFLOW;
 
-    vector<int> *word1 = NULL;
-    vector<int> *word2 = NULL;
-
-    char *tempWord = new char[strlen(userQuery[1]) + 1]; // no case where index 1 won't contain a search word
-    stemAndPreserve(userQuery[1], tempWord);
-    word1 = dataStructure->getDocumentsForWord(tempWord);
+    char *tempWord = stemAndPreserve(userQuery[1]); // no case where index 1 won't contain a search word
+    vector<DocumentAndFrequency *> *word1 = dataStructure->getDocumentsForWord(tempWord);
     delete [] tempWord;
 
-    tempWord = new char[strlen(userQuery[2]) + 1]; // no case where index 2 won't contain a search word
-    stemAndPreserve(userQuery[2], tempWord);
-    word2 = dataStructure->getDocumentsForWord(tempWord);
+    tempWord = stemAndPreserve(userQuery[2]); // no case where index 2 won't contain a search word
+    vector<DocumentAndFrequency *> *word2 = dataStructure->getDocumentsForWord(tempWord);
     delete [] tempWord;
 
     if(word1 == NULL || word2 == NULL)
         throw AND_WORD_DOES_NOT_EXIST;
 
-    cout << "Size of " << userQuery[1] << ": " << word1->size() << endl;
-    cout << "Size of " << userQuery[2] << ": " << word2->size() << endl;
-    pause();
 
-    vector<int> *finalList = NULL;
-    if(word1->size() < word2->size())
-        finalList = compileFinalList(word1, word2, AND_MODE);
-    else
-        finalList = compileFinalList(word2, word1, AND_MODE);
-
+    vector<DocumentAndFrequency *> *finalList = andProcessor(word1, word2);
 
     if(finalList->size() > 0)
     {
@@ -118,94 +106,22 @@ void InteractiveMode::andQuery(vector<char *> &userQuery)
         titlesAndBodies(finalList, title);
     }
     else
-    {
-        cout << "No documents meet all of the requirements set forth in the search" << endl;
-        pause();
-    }
+        throw NO_RESULTS;
 
     delete finalList;
 
 
-
-    /*
-     * THIS ASSUMES THE USER CAN INPUT MORE THAN 2 WORDS DURING THE AND QUERY. NOT SURE IF THIS IS ALLOWED
-    vector<vector<int> *> documentList;
-    vector<vector<int> *> frequencyList;
-    vector<int> *tempFreq = NULL;
-
-
-    for(int i = 1; ((i < userQuery.size()) && (strcmp(userQuery[i], "NOT") != 0)); ++i)
-    {
-        char *stemmedWord = new char[strlen(userQuery[i]) + 1];
-        stemAndPreserve(userQuery[i], stemmedWord);
-
-        documentList.push_back(dataStructure->getDocumentsForWord(stemmedWord, tempFreq));
-        frequencyList.push_back(tempFreq);
-
-        delete [] stemmedWord;
-    }
-
-    // This gets the word that has the least amount of results (all other words doc ID's must be within this words ID's for AND)
-    int indexOfSmallest = 0;
-    for(int outer = 0; outer < documentList.size(); ++outer)
-    {
-        if(documentList[outer] == NULL) // Don't mess with it if one of the words is null
-            throw AND_WORD_DOES_NOT_EXIST;
-
-        if((documentList[outer])->size() < (documentList[indexOfSmallest])->size())
-            indexOfSmallest = outer;
-    }
-    */
-
 }
 
-vector<int> *InteractiveMode::compileFinalList(std::vector<int> *word1, std::vector<int> *word2, int mode)
-{   
-    vector<int> *returnVec = new vector<int>();
+vector<DocumentAndFrequency *>* InteractiveMode::andProcessor(std::vector<DocumentAndFrequency *> *list1, std::vector<DocumentAndFrequency *> *list2)
+{
+    // MUST BE SORTED ASCEDINGLY BY DOCUMENT ID VALUE
+    vector<DocumentAndFrequency *> *returnVector = new vector<DocumentAndFrequency *>(list1->size() + list2->size());
+    vector<DocumentAndFrequency *>::iterator it;
 
-    if(mode == AND_MODE)
-    {
-        assert ( word1->size() <= word2->size() );
-        int inputCounter = 0;
-        for(size_t i = 0; i < word1->size(); ++i) // word1 has smaller size
-        {
-            for(size_t x = 0; x < word2->size(); ++x)
-            {
-                if((*word1)[i] == (*word2)[x])
-                {
-                    ++inputCounter;
-                    returnVec->push_back((*word1)[i]);
-                }
-            }
-
-            if(inputCounter == MAX_RESULTS)
-                break; // Only need to worry about the results that will be displayed
-        }
-    }
-
-    else if(mode == NOT_MODE) // word1 (outer for loop) should be the list containing the docs of the actual words, word2 contains the not word list)
-    {
-        bool exists = false;
-        for(size_t i = 0; i < word1->size(); ++i)
-        {
-            for(size_t x = 0; x < word2->size(); ++x)
-            {
-                if((*word1)[i] == (*word2)[x])
-                {
-                    exists = true;
-                    break;
-                }
-            }
-
-            if(!exists)
-                returnVec->push_back((*word1)[i]);
-            if(i == MAX_RESULTS)
-                break;
-            exists = false;
-        }
-    }
-
-    return returnVec;
+    it = set_intersection(list1->begin(), list1->end(), list2->begin(), list2->end(), returnVector->begin(), DocumentAndFrequency::andCompare);
+    returnVector->resize(it - returnVector->begin());
+    return returnVector;
 }
 
 void InteractiveMode::orQuery()
@@ -216,49 +132,42 @@ void InteractiveMode::orQuery()
 void InteractiveMode::singleQuery(vector<char *> &userQuery)
 {
     clearScreen();
-    vector<int> *documentList = NULL;
+    vector<DocumentAndFrequency *> *documentList = NULL;
 
     if(userQuery.size() < 1)
         throw USER_INPUT_UNDERFLOW;
 
-    char *tempWord = new char[strlen(userQuery[0]) + 1];
-    stemAndPreserve(userQuery[0], tempWord); // Word should ALWAYS be at index 0
+    char *tempWord = stemAndPreserve(userQuery[0]); // Word should ALWAYS be at index 0
     documentList = dataStructure->getDocumentsForWord(tempWord);
     delete [] tempWord;
 
     if(documentList == NULL)
-    {
-        cout << userQuery[0] << " does not exist in the current index." << endl;
-        pause();
-    }
-    else if(userQuery.size() == 3) // Contains a NOT directive
-    {
-        vector<int> *finalList = notProcessor(userQuery, documentList);
+        throw NO_RESULTS;
 
-        if(finalList == NULL) // NOT word did not exist
+    else if(userQuery.size() > 1) // NOT words
+    {
+        if(strcmp(userQuery[1], "NOT") != 0)
+            throw INCORRECT_FORMAT;
+
+        vector<DocumentAndFrequency *> *finalList = notProcessor(userQuery, documentList);
+
+        if(finalList->size() > 0)
         {
-            cout << "happy" << endl;
-            cout << "No documents contained the word: " << userQuery[userQuery.size() - 1] << "." << endl;
-            cout << "Displaying results for " << userQuery[0] << endl;
-            string title("Results for ");
-            title += userQuery[0];
-            titlesAndBodies(documentList, title);
-        }
-        else if(finalList->size() > 0)
-        {
-            string title("Results for ");
+            std::string title("Results for ");
             title += userQuery[0];
             title += " NOT ";
             title += userQuery[userQuery.size() - 1];
+
+
             titlesAndBodies(finalList, title);
+            delete finalList;
         }
         else
         {
-            cout << "No document meets all requirements set forth in the search" << endl;
-            pause();
+            delete finalList;
+            throw NO_RESULTS;
         }
 
-        delete finalList;
     }
     else
     {
@@ -269,32 +178,72 @@ void InteractiveMode::singleQuery(vector<char *> &userQuery)
 
 }
 
-std::vector<int> *InteractiveMode::notProcessor(std::vector<char *> &userQuery, std::vector<int> *currentDocumentList)
+std::vector<DocumentAndFrequency *> *InteractiveMode::notProcessor(vector<char *> &userQuery, std::vector<DocumentAndFrequency *> *goodWordList)
 {
     if(userQuery.size() < 3)
-        throw USER_INPUT_UNDERFLOW;
+        throw INCORRECT_FORMAT;
 
-    if(strcmp(userQuery[userQuery.size() - 2], "NOT") == 0 && userQuery[userQuery.size() - 1])
+    size_t index = 0; // This gets the starting index where the NOT list of words begins
+    for(; index < userQuery.size(); ++index)
     {
-        char *tempWord = new char[strlen(userQuery[userQuery.size() - 1]) + 1];
-        stemAndPreserve(userQuery[userQuery.size() - 1], tempWord);
-        vector<int> *notWordList = dataStructure->getDocumentsForWord(tempWord);
-        delete [] tempWord;
-
-        if(notWordList != NULL)
-            return compileFinalList(currentDocumentList, notWordList, NOT_MODE);
-        else
-            return NULL;
+        if(strcmp(userQuery[index], "NOT") == 0)
+            break;
     }
-    else
-        throw USER_INPUT_UNDERFLOW;
+    if(index == userQuery.size() - 1)
+        throw INCORRECT_FORMAT;
+
+    ++index; // Now pointing at the next not word.
+
+
+    // MUST BE SORTED ASCENDINGLY BY DOCUMENT ID NUMBER!
+    vector<DocumentAndFrequency *> *returnVector = new vector<DocumentAndFrequency *>(goodWordList->size());
+    vector<DocumentAndFrequency *>::iterator it;
+
+    char *temp = stemAndPreserve(userQuery[index++]);
+    vector<DocumentAndFrequency *> *badWordList = dataStructure->getDocumentsForWord(temp);
+    delete [] temp;
+
+    if(badWordList == NULL)
+    {
+        delete returnVector;
+        throw NOT_WORD_DOES_NOT_EXIST;
+    }
+
+    it = set_difference(goodWordList->begin(), goodWordList->end(), badWordList->begin(), badWordList->end(), returnVector->begin(), DocumentAndFrequency::notCompare);
+    returnVector->resize(it - returnVector->begin());
+    // Initialization complete. Continue Processing
+
+
+    for(; index < userQuery.size(); ++index)
+    {
+        vector<DocumentAndFrequency *> *tempGoodWordList = returnVector; // This is now the "good word list". Must use it in the set algorithm
+        returnVector = new vector<DocumentAndFrequency *>(tempGoodWordList->size());
+        temp = stemAndPreserve(userQuery[index]);
+        badWordList = dataStructure->getDocumentsForWord(temp);
+        delete [] temp;
+
+        if(badWordList == NULL)
+        {
+            delete returnVector;
+            delete tempGoodWordList;
+            throw NOT_WORD_DOES_NOT_EXIST;
+        }
+
+        it = set_difference(tempGoodWordList->begin(), tempGoodWordList->end(), badWordList->begin(), badWordList->end(), returnVector->begin(), DocumentAndFrequency::notCompare);
+        returnVector->resize(it - returnVector->begin());
+
+        delete tempGoodWordList; // No longer need the old good word list, we now have new updated one
+    }
+
+    return returnVector;
 }
 
-void InteractiveMode::titlesAndBodies(std::vector<int> *documentList, string &title)
+void InteractiveMode::titlesAndBodies(std::vector<DocumentAndFrequency *> *documentList, string &title)
 {
     assert( documentList != NULL );
     int decision = -1;
 
+    sortByFreq(documentList);
     while(decision != 0)
     {
         clearScreen();
@@ -303,13 +252,14 @@ void InteractiveMode::titlesAndBodies(std::vector<int> *documentList, string &ti
         for(size_t i = 0; i < documentList->size(); ++i)
         {
             cout << i + 1 << ": ";
-            documentIndexObject->getTitle((*documentList)[i]);
-            cout << endl;
+            documentIndexObject->getTitle(((*documentList)[i])->getDocNumb());
+            cout << " - " << ((*documentList)[i])->getFinalFreq() << " total keyword occurences." << endl;
             if(i == MAX_RESULTS)
                 break;
         }
 
         cout << "Enter the number of the document you would like to view: ";
+
         if(documentList->size() > MAX_RESULTS)
             decision = getInput(EXIT_VALUE, MAX_RESULTS + 1);
         else
@@ -318,13 +268,17 @@ void InteractiveMode::titlesAndBodies(std::vector<int> *documentList, string &ti
         if((decision - 1) > -1)
         {
             clearScreen();
-            documentIndexObject->getDocument((*documentList)[decision - 1]);
+            documentIndexObject->getDocument(((*documentList)[decision - 1])->getDocNumb());
             pause();
         }
     }
 
+    for(size_t i = 0; i < documentList->size(); ++i)
+        (*documentList)[i]->resetFreq(); // Set the final frequencies back to original value so they are not permanently altered for future searches
 
 }
+
+void InteractiveMode::sortByFreq(std::vector<DocumentAndFrequency *> *documentList) { std::sort(documentList->begin(), documentList->end(), DocumentAndFrequency::descendingByFreq); }
 
 void InteractiveMode::loadFromIndex()
 {
@@ -411,10 +365,13 @@ int InteractiveMode::getInput(int lowerBound, int upperBound)
     return atoi(returnValue.c_str());
 }
 
-void InteractiveMode::stemAndPreserve(const char *word, char *destination)
+char * InteractiveMode::stemAndPreserve(const char *word)
 {
-    strcpy(destination, word);
-    destination[stemObj.stem(destination, 0, strlen(destination) - 1)] = '\0';
+    char *temp = new char[strlen(word) + 1];
+    strcpy(temp, word);
+    temp[strlen(word)] = '\0';
+    temp[stemObj.stem(temp, 0, strlen(temp) - 1)] = '\0';
+    return temp;
 }
 
 void InteractiveMode::errorHandle(int e)
@@ -441,6 +398,12 @@ void InteractiveMode::errorHandle(int e)
         cout << "The data structure and/or the index is not initialized (see manual)" << endl;
     if(e == AND_WORD_DOES_NOT_EXIST)
         cout << "A word in your AND query does not exist in the current index." << endl;
+    if(e == INCORRECT_FORMAT)
+        cout << "Your query entry is not formatted properly.\nSee manual for details on formatting." << endl;
+    if(e == NO_RESULTS)
+        cout << "There are no documents in the index that meet all of the search criteria." << endl;
+    else
+        cout << "UNKNOW ERROR OCCURED" << endl;
 
     pause(); // "Press any key to continue"
 }

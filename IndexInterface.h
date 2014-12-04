@@ -11,7 +11,7 @@ class IndexInterface{
 public:
 
     virtual void addWordToIndex(Word *data) = 0;
-    virtual std::vector<int>* getDocumentsForWord(char*& word) = 0;
+    virtual std::vector<DocumentAndFrequency *>* getDocumentsForWord(char*& word) = 0;
     virtual bool alreadyContains(char*& word, int documentNumber) = 0;
     virtual void writeOutIndex() = 0;
     virtual void buildFromIndex() = 0;
