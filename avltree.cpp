@@ -340,8 +340,8 @@ void avltree :: deltree ( AVLNode *root )
     if ( root != NULL )
     {
         deltree ( root -> left ) ;
-        delete root ;
         deltree ( root -> right ) ;
+        delete root ;
     }
 }
 

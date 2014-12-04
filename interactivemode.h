@@ -45,7 +45,7 @@ private:
     void deleteCurrentIndex();
 
     void andQuery(std::vector<char *> &userQuery);
-    void orQuery();
+    void orQuery(std::vector<char *> &userQuery);
     void singleQuery(std::vector<char *> &userQuery);
 
     void titlesAndBodies(std::vector<DocumentAndFrequency *> *documentList, std::string &title);

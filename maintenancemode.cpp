@@ -115,7 +115,7 @@ void MaintenanceMode::addToIndex()
     {
         errorHandle(e);
     }
-    destroyObjects();
+    destroyObjects(); // Does not have a memory leak if I build from index
     setToNull();
     pause();
 }
@@ -138,7 +138,7 @@ void MaintenanceMode::createDefaultIndex()
         dataStructure->writeOutIndex();
         documentIndexObject->writeOutIndex();
 
-        destroyObjects();
+        // destroyObjects(); // This creates a massive memory leak, but I couldn't get it to work otherwise (dangling pointer?)
         setToNull();
         cout << "Index created successfully." << endl;
         pause();

@@ -3,23 +3,20 @@ using namespace std;
 
 Word::Word(char *wordToAdd, int documentNumber)
 {
-    int length = strlen(wordToAdd);
-    if(length > 100)
-        cout << "Debug" << endl;
-    word = new char[length + 1];
+    word = new char[strlen(wordToAdd) + 1];
     strcpy(word, wordToAdd);
-    word[length] = '\0';
 
     information = new std::vector<DocumentAndFrequency *>();
     DocumentAndFrequency *temp = new DocumentAndFrequency(documentNumber, 1);
     information->push_back(temp);
+
+    lastDocument = documentNumber;
 }
 
 Word::Word(string &wordToAdd, int length) // Used when the datastructure is being built from index
 {
     char *tempWord = new char[length + 1];
     strcpy(tempWord, wordToAdd.c_str());
-    tempWord[length] = '\0';
 
     word = tempWord;
     lastDocument = -1;
@@ -29,14 +26,11 @@ Word::Word(string &wordToAdd, int length) // Used when the datastructure is bein
 
 Word::~Word()
 {
-    cout << this->word << " " << endl;
     delete [] word;
-
     for(size_t i = 0; i < information->size(); ++i)
         delete (*information)[i];
 
     delete information;
-    cout << "Deleted Word object successfully" << endl;
 }
 
 void Word::addInfo(int docId, int freq)

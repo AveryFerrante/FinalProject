@@ -60,8 +60,8 @@ void InteractiveMode::search()
 
         if(strcmp(userQuery[0], "AND") == 0)
             andQuery(userQuery);
-        else if(strcmp(userQuery[0], "OR") == 0)
-            orQuery();
+//        else if(strcmp(userQuery[0], "OR") == 0)
+//            //orQuery();
         else
             singleQuery(userQuery);
     }
@@ -93,8 +93,10 @@ void InteractiveMode::andQuery(vector<char *> &userQuery)
     delete finalList;
 }
 
-void InteractiveMode::orQuery()
+void InteractiveMode::orQuery(vector<char *> &userQuery)
 {
+    if(userQuery.size() < 3)
+        throw USER_INPUT_UNDERFLOW;
 
 }
 
