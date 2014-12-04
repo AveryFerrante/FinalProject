@@ -1,7 +1,8 @@
 #include <chrono>
 #include <ctime>
 #include "searchengine.h"
-
+#include "hashtable.h"
+#include "IndexInterface.h"
 
 using namespace std;
 using namespace rapidxml;
@@ -9,11 +10,12 @@ using namespace rapidxml;
 int main(int argc, char *argv[])
 {
 
-    Parser parseThing(argv[argc - 1]);
-    avltree *avlTree = new avltree;
-    parseThing.parse(argv[argc - 2], *avlTree);
-    avlTree->display(avlTree->getRoot());
-    cout << "Done" << endl;
+    IndexInterface* structure = new HashTable();
+    //Parser parseThing(argv[argc - 1]);
+    //avltree *avlTree = new avltree;
+    //parseThing.parse(argv[argc - 2], *avlTree);
+    //avlTree->display(avlTree->getRoot());
+    //cout << "Done" << endl;
     //delete avlTree;
     //SearchEngine engine(argc, argv);
     //engine.runEngine();
