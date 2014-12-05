@@ -4,6 +4,7 @@
 #include "documentindex.h"
 #include "IndexInterface.h"
 #include "avltree.h"
+#include "hashtable.h"
 #include <windows.h>
 
 #define EXIT_VALUE 0
@@ -18,6 +19,7 @@
 #define USER_INPUT_OVERFLOW 1992
 #define USER_INPUT_UNDERFLOW 1993
 #define UNINITIALIZED_OBJECT_ERROR 12993
+#define INITIALIZED_OBJECT_ERROR 388392
 #define AND_WORD_DOES_NOT_EXIST 84383
 #define NOT_WORD_DOES_NOT_EXIST 7875
 #define INCORRECT_FORMAT 1584
@@ -27,7 +29,7 @@
 
 class InteractiveMode
 {
-private:
+protected: // Stress Test Mode inherits from this so all of these are protected
     int argc;
     char** argv;
     IndexInterface *dataStructure;

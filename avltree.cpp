@@ -329,19 +329,14 @@ void avltree :: setroot ( AVLNode *avl )
 avltree :: ~avltree( )
 {
     cout << "Deleting AVLTree" << endl;
-    deltree ( root ) ;
+    deltree ( this->root );
     cout << "Deleted AVLTree" << endl;
 }
 
 
 void avltree :: deltree ( AVLNode *root )
 {
-    if ( root != NULL )
-    {
-        deltree ( root -> left ) ;
-        deltree ( root -> right ) ;
-        delete root ;
-    }
+    delete root;
 }
 
 void avltree::buildFromIndex()
@@ -351,7 +346,10 @@ void avltree::buildFromIndex()
     {
         int tempFreq = 0;
         int tempIndex = 0;
-        string size = "fill"; // This is a string so I can check to see if it is on a blank line (end of the document)
+        string size = "fill"; // This is a string so I can check to see if it is on a blank line (end of the document).
+        // Program would error sometimes and when I opened the index file and deleted the last line (which was just
+        // a blank line created from calling endl in the writeoutindex functions), it would not error, so I have to
+        // check to see if I'm on a blank line too
         string word;
         while(!inputFile.eof() && (inputFile >> size != "")) // This also loads the length of the word
         {
@@ -381,7 +379,7 @@ void avltree::buildFromIndex()
 void avltree::writeOutIndex()
 {
     ofstream outputFile(WORD_INDEX_FILE_PATH);
-    inOrderTraverse(this->getRoot(), outputFile);
+    inOrderTraverse(this->root, outputFile);
     outputFile.close();
 }
 

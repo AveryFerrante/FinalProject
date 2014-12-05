@@ -7,6 +7,7 @@
 #include <iostream>
 #include <windows.h>
 #include "avltree.h"
+#include "hashtable.h"
 #include <stdio.h>
 
 

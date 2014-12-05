@@ -4,10 +4,26 @@ using namespace std;
 
 HashTable::HashTable()
 {
-    for(int i = 0; i < tablesize; i++)
+    for(size_t i = 0; i < tablesize; i++)
     {
         table[i] =  NULL;
     }
+}
+
+HashTable::~HashTable()
+{
+    cout << "Deleting Hash Table." << endl;
+    for(size_t i = 0; i < tablesize; ++i)
+    {
+        HashNode *temp = table[i];
+        while(temp != NULL)
+        {
+            HashNode *next = temp->next;
+            delete temp;
+            temp = next;
+        }
+    }
+    cout << "Successfully deleted." << endl;
 }
 
 unsigned int HashTable::hash(char* key)
@@ -16,7 +32,7 @@ unsigned int HashTable::hash(char* key)
         unsigned int hashIndex = 5381;
         int c;
 
-        while (c = *key++)
+        while (c = *(key++))
             hashIndex = ((hashIndex << 5) + hashIndex) + c; /* hash * 33 + c */
 
         return hashIndex % tablesize;
@@ -32,20 +48,19 @@ void HashTable::addNode(Word*& word)
         table[index]->data = word;
         table[index]->next = NULL;
     }
-    else
+    else // Collision
     {
         HashNode* tempPtr = table[index];
         HashNode* newNode = new HashNode;
         newNode->data = word;
         newNode->next = NULL;
 
-        while(tempPtr->next !=  NULL){
+        while(tempPtr->next !=  NULL)
+        {
             tempPtr = tempPtr->next;
         }
-
         tempPtr->next = newNode;
     }
-
 }
 
 bool HashTable::alreadyContains(char*& word, int documentNumber)
@@ -55,8 +70,11 @@ bool HashTable::alreadyContains(char*& word, int documentNumber)
 
     while(tempPtr != NULL)
     {
-      if(tempPtr->data->getWord() == word)
+      if(strcmp(tempPtr->data->getWord(), word) == 0)
+      {
+          tempPtr->data->updateFreqAndDoc(documentNumber);
           return true;
+      }
       tempPtr = tempPtr->next;
     }
 
@@ -75,12 +93,12 @@ std::vector<DocumentAndFrequency *>* HashTable::getDocumentsForWord(char*& word)
 
     while(tempPtr != NULL)
     {
-      if(tempPtr->data->getWord() == word)
+      if(strcmp(tempPtr->data->getWord(), word) == 0)
           return tempPtr->data->getInformation();
       tempPtr = tempPtr->next;
     }
 
-    cout << "Documents for " << word << "not found" << endl;
+    return NULL;
 }
 
 
@@ -93,14 +111,12 @@ void HashTable::writeOutIndex()
 
 void HashTable::write(std::ofstream &outputFile)
 {
-    int number;
-    for(int i = 0; i < tablesize; i++)
+    for(size_t i = 0; i < tablesize; i++)
     {
         HashNode* tempPtr = table[i];
         while(tempPtr != NULL)
         {
-            cout << "Index " << i << endl;
-            cout << tempPtr->data->getWord() << endl;
+            tempPtr->data->writeOutIndex(outputFile);
             tempPtr = tempPtr->next;
         }
     }
@@ -108,7 +124,7 @@ void HashTable::write(std::ofstream &outputFile)
 
 void HashTable::printTable(){
     int number;
-    for(int i = 0; i < tablesize; i++)
+    for(size_t i = 0; i < tablesize; i++)
     {
         number = numberOfItemsInBucket(i);
         HashNode* tempPtr = table[i];
@@ -177,10 +193,5 @@ void HashTable::buildFromIndex()
     }
 
     inputFile.close();
-
-}
-
-void HashTable::buildFromIndex(std::ifstream &inputFile)
-{
 
 }

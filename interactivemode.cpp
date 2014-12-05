@@ -367,10 +367,12 @@ void InteractiveMode::deleteCurrentIndex()
 
 void InteractiveMode::loadFromIndex()
 {
-    clearScreen();
-    bool avlTree = getDataStruct();
     try
     {
+        if(dataStructure != NULL || documentIndexObject != NULL)
+            throw INITIALIZED_OBJECT_ERROR;
+        clearScreen();
+        bool avlTree = getDataStruct();
         clearScreen();
         if(avlTree)
         {
@@ -386,7 +388,14 @@ void InteractiveMode::loadFromIndex()
 
         else
         {
-            //Hash Table Logic
+            cout << "Loading the Hash Table." << endl;
+            dataStructure = new HashTable;
+            documentIndexObject = new DocumentIndex;
+
+            dataStructure->buildFromIndex();
+            documentIndexObject->buildFromIndex();
+            cout << "Loaded Successfully" << endl;
+            pause();
         }
     }
     catch(int e)
@@ -488,8 +497,8 @@ void InteractiveMode::errorHandle(int e)
         cout << "Your query entry is not formatted properly.\nSee manual for details on formatting." << endl;
     if(e == NO_RESULTS)
         cout << "There are no documents in the index that meet all of the search criteria." << endl;
-    else
-        cout << "UNKNOW ERROR OCCURED" << endl;
+    if(e == INITIALIZED_OBJECT_ERROR)
+        cout << "There is already a data strucutre loaded in memory." << endl;
 
     pause(); // "Press any key to continue"
 }

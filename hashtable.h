@@ -15,19 +15,22 @@ private:
     {
         Word* data;
         HashNode* next;
+
+        ~HashNode() { delete data; }
     };
 
     HashNode* table[tablesize];
 
 public:
     HashTable();
+    ~HashTable();
+
     unsigned int hash(char* key);
     void addWordToIndex(Word* word);
     std::vector<DocumentAndFrequency *>* getDocumentsForWord(char *&word);
     bool alreadyContains(char *&word, int documentNumber);
     void writeOutIndex();
     void buildFromIndex();
-    void buildFromIndex(std::ifstream &inputFile);
     void addNode(Word*& word);
     void findWord(char* word);
     int numberOfItemsInBucket(int index);

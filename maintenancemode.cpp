@@ -94,7 +94,7 @@ void MaintenanceMode::addToIndex()
     try
     {
         cout << "Setting up original Index" << endl;
-        dataStructure = new avltree;
+        dataStructure = new HashTable;
         documentIndexObject = new DocumentIndex;
         documentIndexObject->buildFromIndex();
         parse = new Parser(argv[argc - 1], documentIndexObject->size() - 1);
@@ -125,7 +125,7 @@ void MaintenanceMode::createDefaultIndex()
     clearScreen();
     try
     {
-        dataStructure = new avltree;
+        dataStructure = new HashTable;
         parse = new Parser(argv[argc - 1]);
         documentIndexObject = new DocumentIndex;
         for(int i = 1; i < argc - 1; ++i)
@@ -138,7 +138,7 @@ void MaintenanceMode::createDefaultIndex()
         dataStructure->writeOutIndex();
         documentIndexObject->writeOutIndex();
 
-        // destroyObjects(); // This creates a massive memory leak, but I couldn't get it to work otherwise.
+        destroyObjects(); // This creates a massive memory leak, but I couldn't get it to work otherwise.
         // It crashes during the a word destructor, acting like I have a dangling pointer. Doesn't happen when I build from index.
         setToNull();
         cout << "Index created successfully." << endl;

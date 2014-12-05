@@ -5,6 +5,7 @@
 #include "IndexInterface.h"
 #include "maintenancemode.h"
 #include "interactivemode.h"
+#include "stresstestmode.h"
 #include "parser.h"
 #include "avltree.h"
 
@@ -31,8 +32,11 @@ int main(int argc, char *argv[])
         InteractiveMode mode(argc, argv);
         mode.run();
     }
-    else
-        cout << "Unknown Input. Exiting...." << endl;
+    else if(decision == 3)
+    {
+        StressTestMode mode(argc, argv);
+        mode.run();
+    }
 
 
 //    IndexInterface* structure = new HashTable();
@@ -48,42 +52,6 @@ int main(int argc, char *argv[])
 //    hashStructure->addWordToIndex(word4);
 //    hashStructure->printTable();
 
-    //Parser parseThing(argv[argc - 1]);
-    //avltree *avlTree = new avltree;
-    //parseThing.parse(argv[argc - 2], *avlTree);
-    //avlTree->display(avlTree->getRoot());
-    //cout << "Done" << endl;
-    //delete avlTree;
-    //SearchEngine engine(argc, argv);
-    //engine.runEngine();
 
-
-
-
-
-
-
-    // This gets the user input and junk
-//    for(int i = 0; i < 100; ++i){
-//        int decision = -1;
-//        while(decision != 0)
-
-//        {
-//            cout << "Please select a mode: " << endl;
-//            cout << "0. Exit\n1. Maintenance Mode\n2. Interactive Mode" << endl;
-//            cin >> decision;
-//            if(decision == 1)
-//            {
-//                MaintenanceMode mode(argc, argv);
-//                mode.run();
-//            }
-//            else if(decision == 2)
-//            {
-//                InteractiveMode mode(argc, argv);
-//                mode.run();
-//            }
-
-//        }
-//    }
     return 0;
 }
