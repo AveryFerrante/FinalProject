@@ -12,7 +12,6 @@ void avltree :: addWordToIndex(Word *data)
     bool h = true;
     root = buildtree ( root, data, &h ) ;
     setroot( root );
-    //return root ;
 }
 AVLNode* avltree :: buildtree ( AVLNode *root, Word *data, bool *h )
 {
@@ -141,78 +140,78 @@ void avltree :: display (AVLNode* root)
         display ( root -> right ) ;
     }
 }
-AVLNode* avltree :: deldata ( AVLNode *root, Word *data, int *h )
-{
-    AVLNode *node ;
-    if ( root == NULL )
-    {
-        return ( root ) ;
-    }
-    else
-    {
-        if ( data < root -> data )
-        {
-            root -> left = deldata ( root -> left, data, h ) ;
-            if ( *h )
-                root = balright ( root, h ) ;
-        }
-        else
-        {
-            if ( data > root -> data )
-            {
-                root -> right = deldata ( root -> right, data, h ) ;
-                if ( *h )
-                    root = balleft ( root, h ) ;
-            }
-            else
-            {
-                node = root ;
-                if ( node -> right == NULL )
-                {
-                    root = node -> left ;
-                    *h = TRUE ;
-                    delete ( node ) ;
-                }
-                else
-                {
-                    if ( node -> left == NULL )
-                    {
-                        root = node -> right ;
-                        *h = TRUE ;
-                        delete ( node ) ;
-                    }
-                    else
-                    {
-                        node -> right = del ( node -> right, node, h ) ;
-                        if ( *h )
-                            root = balleft ( root, h ) ;
-                    }
-                }
-            }
-        }
-    }
-    return ( root ) ;
-}
-AVLNode* avltree :: del ( AVLNode *succ, AVLNode *node, int *h )
-{
-    AVLNode *temp = succ ;
+//AVLNode* avltree :: deldata ( AVLNode *root, Word *data, int *h )
+//{
+//    AVLNode *node ;
+//    if ( root == NULL )
+//    {
+//        return ( root ) ;
+//    }
+//    else
+//    {
+//        if ( data < root -> data )
+//        {
+//            root -> left = deldata ( root -> left, data, h ) ;
+//            if ( *h )
+//                root = balright ( root, h ) ;
+//        }
+//        else
+//        {
+//            if ( data > root -> data )
+//            {
+//                root -> right = deldata ( root -> right, data, h ) ;
+//                if ( *h )
+//                    root = balleft ( root, h ) ;
+//            }
+//            else
+//            {
+//                node = root ;
+//                if ( node -> right == NULL )
+//                {
+//                    root = node -> left ;
+//                    *h = TRUE ;
+//                    delete ( node ) ;
+//                }
+//                else
+//                {
+//                    if ( node -> left == NULL )
+//                    {
+//                        root = node -> right ;
+//                        *h = TRUE ;
+//                        delete ( node ) ;
+//                    }
+//                    else
+//                    {
+//                        node -> right = del ( node -> right, node, h ) ;
+//                        if ( *h )
+//                            root = balleft ( root, h ) ;
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    return ( root ) ;
+//}
+//AVLNode* avltree :: del ( AVLNode *succ, AVLNode *node, int *h )
+//{
+//    AVLNode *temp = succ ;
 
-    if ( succ -> left != NULL )
-    {
-        succ -> left = del ( succ -> left, node, h ) ;
-        if ( *h )
-            succ = balright ( succ, h ) ;
-    }
-    else
-    {
-        temp = succ ;
-        node -> data = succ -> data ;
-        succ = succ -> right ;
-        delete ( temp ) ;
-        *h = TRUE ;
-    }
-    return ( succ ) ;
-}
+//    if ( succ -> left != NULL )
+//    {
+//        succ -> left = del ( succ -> left, node, h ) ;
+//        if ( *h )
+//            succ = balright ( succ, h ) ;
+//    }
+//    else
+//    {
+//        temp = succ ;
+//        node -> data = succ -> data ;
+//        succ = succ -> right ;
+//        delete ( temp ) ;
+//        *h = TRUE ;
+//    }
+//    return ( succ ) ;
+//}
 AVLNode* avltree :: balright ( AVLNode *root, int *h )
 {
     AVLNode *temp1, *temp2 ;
@@ -350,35 +349,26 @@ void avltree::buildFromIndex()
     ifstream inputFile(WORD_INDEX_FILE_PATH);
     try
     {
-        int tempNumb = 0;
+        int tempFreq = 0;
+        int tempIndex = 0;
+        string size = "fill"; // This is a string so I can check to see if it is on a blank line (end of the document)
         string word;
-        while(!inputFile.eof())
+        while(!inputFile.eof() && (inputFile >> size != "")) // This also loads the length of the word
         {
-            inputFile >> tempNumb; // Length of word
             inputFile >> word;
-            char *tempWord = new char[tempNumb + 1];
-            strcpy(tempWord, word.c_str());
-            tempWord[tempNumb] = '\0';
+            Word *temp = new Word(word, atoi(size.c_str()));
 
-            //cout << "Adding word: " << tempWord << endl;
-            Word *temp = new Word(tempWord);
-            inputFile >> tempNumb; // File index first
-            while(tempNumb != -1)
+            inputFile >> tempIndex; // File index first
+            while(tempIndex != -1)
             {
-                temp->addDocIndex(tempNumb);
-                inputFile >> tempNumb; // Frequency
-                temp->addFreq(tempNumb);
-                inputFile >> tempNumb; //File Index
+                inputFile >> tempFreq; // Frequency
+                temp->addInfo(tempIndex, tempFreq);
+                inputFile >> tempIndex; // File Index (or terminator -1)
             }
 
             this->addWordToIndex(temp);
         }
     }
-    catch(exception &e)
-    {
-        cout << e.what() << endl;
-    }
-
     catch(...)
     {
         inputFile.close();
@@ -407,7 +397,7 @@ void avltree::inOrderTraverse(AVLNode *root, ofstream &outputFile)
 
 void avltree::write(AVLNode *root, ofstream &outputFile) { root->data->writeOutIndex(outputFile); }
 
-std::vector<int>* avltree::getDocumentsForWord(char *&word)
+std::vector<DocumentAndFrequency *> *avltree::getDocumentsForWord(char *&word)
 {
     AVLNode* temp = root;
     while(temp != NULL)
@@ -415,7 +405,7 @@ std::vector<int>* avltree::getDocumentsForWord(char *&word)
         if(strcmp(temp->data->getWord(), word) == 0)
         {
             temp->data->sortRelevancy();
-            return temp->data->getIndex();
+            return temp->data->getInformation();
         }
         else if(strcmp(temp->data->getWord(), word) < 0)
             temp = temp->right;

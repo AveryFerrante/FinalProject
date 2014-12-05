@@ -3,81 +3,63 @@ using namespace std;
 
 Word::Word(char *wordToAdd, int documentNumber)
 {
-    int length = strlen(wordToAdd);
-    if(length > 100)
-        cout << "Debug" << endl;
-    word = new char[length + 1];
+    word = new char[strlen(wordToAdd) + 1];
     strcpy(word, wordToAdd);
-    word[length] = '\0';
 
-    frequency = new vector<int>();
-    index = new vector<int>();
+    information = new std::vector<DocumentAndFrequency *>();
+    DocumentAndFrequency *temp = new DocumentAndFrequency(documentNumber, 1);
+    information->push_back(temp);
 
     lastDocument = documentNumber;
-
-    frequency->push_back(1); // When created, we know there is a frequency of atleast one
-    index->push_back(documentNumber);
 }
 
-Word::Word(char *wordToAdd) // Used when the datastructure is being built from index
+Word::Word(string &wordToAdd, int length) // Used when the datastructure is being built from index
 {
-    word = wordToAdd;
-    lastDocument = -1;
+    char *tempWord = new char[length + 1];
+    strcpy(tempWord, wordToAdd.c_str());
 
-    index = new vector<int>();
-    frequency = new vector<int>();
+    word = tempWord;
+    lastDocument = -1; // Should never need to use this when building from an index
+
+    information = new vector<DocumentAndFrequency *>();
 }
 
 Word::~Word()
 {
-   // cout << this->word << " ";
     delete [] word;
-    delete index;
-    delete frequency;
+
+    for(size_t i = 0; i < information->size(); ++i)
+        delete (*information)[i];
+    delete information;
+}
+
+void Word::addInfo(int docId, int freq) // Used when building from the index
+{
+    DocumentAndFrequency *temp = new DocumentAndFrequency(docId, freq);
+    information->push_back(temp);
 }
 
 
 void Word::sortRelevancy()
 {
-    assert ( index->size() == frequency->size() );
-
-    int biggestIndex = 0;
-    for(size_t x = 0; x < index->size(); ++x)
-    {
-        for(size_t i = x; i < frequency->size(); ++i)
-        {
-            if((*frequency)[i] > (*frequency)[biggestIndex])
-                biggestIndex = i;
-
-        }
-        // Swap
-        int temp;
-
-        temp = (*frequency)[x];
-        (*frequency)[x] = (*frequency)[biggestIndex];
-        (*frequency)[biggestIndex] = temp;
-
-        temp = (*index)[x];
-        (*index)[x] = (*index)[biggestIndex];
-        (*index)[biggestIndex] = temp;
-    }
+    // SORT BY DOCUMENT ID VALUE HERE, NOT BY FREQUENCY VALUE!
+    std::sort(information->begin(), information->end(), DocumentAndFrequency::ascendingByDocID);
 }
 
-void Word::updateFreqAndDoc(int documentNumber)
+void Word::updateFreqAndDoc(int CurrentDocumentNumber)
 {
 
     assert( this != NULL );
 
-    if(lastDocument == documentNumber) // Still on the same document, just need to add one to the frequency
-            (*frequency)[frequency->size() - 1] += 1;
+    if(lastDocument == CurrentDocumentNumber) // Still on the same document, just need to add one to the frequency
+        information->back()->increaseFreq();
+
     else // On a new document, need to add it to the vector and start a frequency for it
     {
-        assert(index != NULL);
-        index->push_back(documentNumber); // The document we are currently on
+        lastDocument = CurrentDocumentNumber; // Update this so we can just add to frequency if it occurs again in this document
 
-        assert(frequency != NULL);
-        frequency->push_back(1); // We have atleast one occurence
-        lastDocument = documentNumber; // Update this so we can just add to frequency if it occurs again in this document
+        DocumentAndFrequency *temp = new DocumentAndFrequency(CurrentDocumentNumber, 1);
+        information->push_back(temp);
     }
 
 }
@@ -86,10 +68,8 @@ void Word::writeOutIndex(ofstream &outputFile)
 {
     outputFile << strlen(word) << " " << word << " ";
 
-    assert ( index->size() == frequency->size() );
-
-    for(size_t i = 0; i < index->size(); ++i)
-        outputFile << (*index)[i] << " " << (*frequency)[i] << " ";
+    for(size_t i = 0; i < information->size(); ++i)
+        outputFile << (*information)[i]->getDocNumb() << " " << (*information)[i]->getFreq() << " ";
 
     outputFile << "-1" << endl; // Null terminator
 }
@@ -107,11 +87,5 @@ bool Word::operator>(Word &source)
     return !((*this) < source);
 }
 
-std::vector<int>* Word::getIndex() { return index; }
-std::vector<int>* Word::getFreq() { return frequency; }
-void Word::addDocIndex(int docIndex) { index->push_back(docIndex); }
-void Word::addFreq(int freq) {frequency->push_back(freq); }
-int Word::getDocIndex(int docIndex) { return (*index)[docIndex]; }
-char* Word::getWord() { return word; }
-
-
+std::vector<DocumentAndFrequency *>* Word::getInformation() { return information; }
+char * Word::getWord() { return word; }

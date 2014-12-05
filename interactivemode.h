@@ -7,8 +7,9 @@
 #include <windows.h>
 
 #define EXIT_VALUE 0
-#define MAX_INTERACTIVE_MODE_NUMBER 2
+#define MAX_INTERACTIVE_MODE_NUMBER 3
 #define LOAD_FROM_INDEX 1
+#define DELETE_CURRENT_INDEX 3
 #define BOOLEAN_QUERY 2
 
 #define AVL_TREE 1
@@ -19,9 +20,10 @@
 #define UNINITIALIZED_OBJECT_ERROR 12993
 #define AND_WORD_DOES_NOT_EXIST 84383
 #define NOT_WORD_DOES_NOT_EXIST 7875
+#define INCORRECT_FORMAT 1584
+#define NO_RESULTS 44747
 
-#define AND_MODE 888
-#define NOT_MODE 109
+
 
 class InteractiveMode
 {
@@ -30,7 +32,6 @@ private:
     char** argv;
     IndexInterface *dataStructure;
     DocumentIndex *documentIndexObject;
-    Parser *parse;
     Stemmer2 stemObj;
 
     //Utility Functions
@@ -40,23 +41,29 @@ private:
 
     void loadFromIndex();
     bool getDataStruct();
-
     void search();
+    void deleteCurrentIndex();
+
     void andQuery(std::vector<char *> &userQuery);
-    std::vector<int> * compileFinalList(std::vector<int> *word1, std::vector<int> *word2, int mode);
-    void orQuery();
+    void orQuery(std::vector<char *> &userQuery);
     void singleQuery(std::vector<char *> &userQuery);
-    void titlesAndBodies(std::vector<int> *documentList, std::string &title);
 
-    std::vector<int> *notProcessor(std::vector<char *> &userQuery, std::vector<int> *currentDocumentList);
+    void titlesAndBodies(std::vector<DocumentAndFrequency *> *documentList, std::string &title);
+    std::string createTitle(std::vector<char *> &userQuery);
+    void sortByFreq(std::vector<DocumentAndFrequency *> *documentList);
 
-    void stemAndPreserve(const char *word, char *destination);
+    std::vector<DocumentAndFrequency *> *notProcessor(std::vector<char *> &userQuery, std::vector<DocumentAndFrequency *> *goodWordList);
+    std::vector<DocumentAndFrequency *> *andProcessor(std::vector<char *> &userQuery);
 
+    char *stemAndPreserve(const char *word);
     int getInput(int lowerBound, int upperBound);
 
     void errorHandle(int e);
+    void deleteObjects();
+    void setToNull();
 public:
     InteractiveMode(int consoleArgs, char **consolePaths);
+    ~InteractiveMode();
     void run();
 };
 

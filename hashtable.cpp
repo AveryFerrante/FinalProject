@@ -68,7 +68,7 @@ void HashTable::addWordToIndex(Word *word)
     addNode(word);
 }
 
-std::vector<int>* HashTable::getDocumentsForWord(char*& word)
+std::vector<DocumentAndFrequency *>* HashTable::getDocumentsForWord(char*& word)
 {
     int index = hash(word);
     HashNode* tempPtr = table[index];
@@ -76,7 +76,7 @@ std::vector<int>* HashTable::getDocumentsForWord(char*& word)
     while(tempPtr != NULL)
     {
       if(tempPtr->data->getWord() == word)
-          return tempPtr->data->getIndex();
+          return tempPtr->data->getInformation();
       tempPtr = tempPtr->next;
     }
 
@@ -150,35 +150,26 @@ void HashTable::buildFromIndex()
     ifstream inputFile(WORD_INDEX_FILE_PATH);
     try
     {
-        int tempNumb = 0;
+        int tempFreq = 0;
+        int tempIndex = 0;
+        string size = "fill"; // This is a string so I can check to see if it is on a blank line (end of the document)
         string word;
-        while(!inputFile.eof())
+        while(!inputFile.eof() && (inputFile >> size != "")) // This also loads the length of the word
         {
-            inputFile >> tempNumb; // Length of word
             inputFile >> word;
-            char *tempWord = new char[tempNumb + 1];
-            strcpy(tempWord, word.c_str());
-            tempWord[tempNumb] = '\0';
+            Word *temp = new Word(word, atoi(size.c_str()));
 
-            //cout << "Adding word: " << tempWord << endl;
-            Word *temp = new Word(tempWord);
-            inputFile >> tempNumb; // File index first
-            while(tempNumb != -1)
+            inputFile >> tempIndex; // File index first
+            while(tempIndex != -1)
             {
-                temp->addDocIndex(tempNumb);
-                inputFile >> tempNumb; // Frequency
-                temp->addFreq(tempNumb);
-                inputFile >> tempNumb; //File Index
+                inputFile >> tempFreq; // Frequency
+                temp->addInfo(tempIndex, tempFreq);
+                inputFile >> tempIndex; // File Index (or terminator -1)
             }
 
             this->addWordToIndex(temp);
         }
     }
-    catch(exception &e)
-    {
-        cout << e.what() << endl;
-    }
-
     catch(...)
     {
         inputFile.close();

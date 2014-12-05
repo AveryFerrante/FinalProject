@@ -23,7 +23,7 @@ public:
     HashTable();
     unsigned int hash(char* key);
     void addWordToIndex(Word* word);
-    std::vector<int>* getDocumentsForWord(char *&word);
+    std::vector<DocumentAndFrequency *>* getDocumentsForWord(char *&word);
     bool alreadyContains(char *&word, int documentNumber);
     void writeOutIndex();
     void buildFromIndex();

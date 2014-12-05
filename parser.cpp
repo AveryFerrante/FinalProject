@@ -71,15 +71,15 @@ void Parser::parse(const char *fileName, IndexInterface &dataStructure)
 
 void Parser::writeToFile(DocumentIndex &documentIndexObject)
 {
+    cout << "Writing index to file" << endl;
     ofstream *outputFile;
-
     if(documentIndexObject.size() == 0)
     {
         outputFile = new ofstream(DOCUMENT_OUTPUT_FILE, fstream::binary);
         documentIndexObject.addDoc(0);
     }
     else
-        outputFile = new ofstream(DOCUMENT_OUTPUT_FILE, fstream::binary | fstream::app);
+        outputFile = new ofstream(DOCUMENT_OUTPUT_FILE, fstream::binary | fstream::app); // Append to the end of the document
 
 
     for(size_t i = 0; i < fileBodies.size(); ++i)
@@ -87,8 +87,6 @@ void Parser::writeToFile(DocumentIndex &documentIndexObject)
         (*outputFile) << *fileTitles[i] << endl;
         (*outputFile) << *fileBodies[i] << endl;
         documentIndexObject.addDoc(outputFile->tellp());
-        if(i == fileBodies.size() - 1)
-            cout << documentIndexObject.lastFile() << endl;
     }
     outputFile->close();
     delete outputFile;
@@ -118,7 +116,7 @@ void Parser::removeNonAlphaCharacters(char *&word)
     {
         word[i] = tolower(word[i]);
 
-        if(!isalpha(word[i]))
+        if(!isalpha(word[i]) || !isprint((unsigned)(word[i])))
             *(std::remove(word, word + strlen(word), word[i--])) = 0;
     }
 }
@@ -181,7 +179,7 @@ bool Parser::isStopWord(char *word) const
 
 void Parser::createWordObjs(IndexInterface &dataStructure, char *&word)
 {
-    if(!dataStructure.alreadyContains(word, documentCount))
+    if(!dataStructure.alreadyContains(word, documentCount)) // This will update the frequency / documents if it is found
     {
         Word *temp = new Word(word, documentCount);
         dataStructure.addWordToIndex(temp);
