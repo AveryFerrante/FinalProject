@@ -4,7 +4,7 @@
 class DocumentAndFrequency
 {
 private:
-    int documentNumber; // The index position of the seekp position contained in documentindex
+    int documentNumber; // The index position of the seekp position contained in the vector in documentindex class
     int frequency;
     int finalFrequency;
 

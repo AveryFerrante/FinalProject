@@ -1,0 +1,88 @@
+**Welcome to the user manual for wikibooks search engine v1.0**
+    - The following three main categories are: Maintenance Mode, Interactive Mode, and Stress Test Mode
+    - The ending part of this manual contains information on the classes that make up the search engine program
+    - Appendix A can be found after the information about the three modes, but before the class information
+
+
+
+
+-------------------------------------------MAINTENANCE MODE-------------------------------------------
+This mode has three main functionalities:
+  1. Creating the default index   (option 1)
+  2. Adding to the existing index (option 2)
+  3. Deleting the existing index  (option 3)
+
+
+  ****Option 1****
+
+	The default index is created based on the command line arguments passed to the engine upon compile time. The user must have compiled
+	with atleast two command line arguments to complete this task. The first argument must be name_of_file.xml where name_of_file
+	is the file name for the properly formatted XML file to be parsed and indexed (see appendix A below for XML formatting standards).
+	The user can pass in any amount of XML files, but the last command line argument MUST be the stop_words_text_file.txt file where
+	stop_words_text_file is the name of a text file containing the list of stop words to be filtered (see appendix A below for stop
+	word list formatting).
+
+
+	This will throw errors for any of the following reasons: Improperly formatted XML file, No stop words text file list, or any file
+	passed does not exist within the working directory.
+  
+
+
+
+  ****Option 2****
+
+	In order to add to the existing index, the user needs only to compile with one command line argument: the stop words text file.
+	(NOTE: this will still execute properly if the user has included variable amount of XML files, or none at all, during compilation, 
+	the only requirement is that the user has passed a properly formatted stop words text file as the LAST command line argument (see
+	appendix A below for stop word list formatting).
+
+
+	After selecting option 2, the user will be asked to enter the name of the desired XML file to be added. Note, the user may ONLY
+	enter one file here. This file must be a properly formatted XML file (see appendix A below for XML formatting standards), and must be 
+	inside the working directory. The user MUST include the .xml file extension when inputting the file name (i.e. 'add_file.xml' would be 
+	allowed (without the '')). After this step, the program loads the existing index into an AVL-Tree data structure, parses and indexes the 
+	new XML file, then rewrites the index including the new file.
+
+
+	This will throw errors for any of the following reasons: No index files currently exist in the working directory, the XML file entered
+	by the user does not exist in the working directory, or the user did not compile with a properly formatted stop words text file.
+
+
+
+
+  ****Option 3****
+
+	This mode does not require any command line arguments. It will never throw an error. It attempts to delete the existing index files in the
+	working directory. If none exist, it returns without problem. If they do exist, they are deleted.
+
+
+
+
+-------------------------------------------INTERACTIVE MODE-------------------------------------------
+
+
+
+
+
+
+-------------------------------------------STRESS TEST MODE-------------------------------------------
+
+
+
+
+
+-------------------------------------------Appendix A-------------------------------------------
+Proper XML Formatting:
+
+
+
+
+
+Proper Stop Words List Formatting:
+
+	The stop words list MUST be alphabetized BEFORE being passed in as a command line argument. It cannot contain any capitol letters or punctuation
+	(i.e. Can't -> cant). This is becuase during the parsing phase, all words are converted to lower case and any non-alpha character is removed. Only
+	add one word per line in the file. Do not put any extra spaces / characters after the word, just press enter. By default, the stop words algorithm 
+	uses a binary search. This is the cause for the file to need to be alphabetized prior to running the program. If it is not, the algorithm will only 
+	remove stop words by luck. This file can be named anything, but MUST have a .txt file extension.
+

@@ -19,7 +19,7 @@ Word::Word(string &wordToAdd, int length) // Used when the datastructure is bein
     strcpy(tempWord, wordToAdd.c_str());
 
     word = tempWord;
-    lastDocument = -1;
+    lastDocument = -1; // Should never need to use this when building from an index
 
     information = new vector<DocumentAndFrequency *>();
 }
@@ -27,13 +27,13 @@ Word::Word(string &wordToAdd, int length) // Used when the datastructure is bein
 Word::~Word()
 {
     delete [] word;
+
     for(size_t i = 0; i < information->size(); ++i)
         delete (*information)[i];
-
     delete information;
 }
 
-void Word::addInfo(int docId, int freq)
+void Word::addInfo(int docId, int freq) // Used when building from the index
 {
     DocumentAndFrequency *temp = new DocumentAndFrequency(docId, freq);
     information->push_back(temp);
@@ -88,7 +88,4 @@ bool Word::operator>(Word &source)
 }
 
 std::vector<DocumentAndFrequency *>* Word::getInformation() { return information; }
-int Word::getDocIndex(int docIndex) { return (*index)[docIndex]; }
-char* Word::getWord() { return word; }
-
-
+char * Word::getWord() { return word; }

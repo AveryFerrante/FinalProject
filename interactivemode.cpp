@@ -44,24 +44,26 @@ void InteractiveMode::search()
     {
         if(dataStructure == NULL || documentIndexObject == NULL)
             throw UNINITIALIZED_OBJECT_ERROR;
+
         cout << "Enter boolean querey:" << endl;
         cin.clear();
-        cin.ignore(1000, '\n'); // These clear cin so next loop will work
+        cin.ignore(1000, '\n'); // These clear cin so the following loop will work
         while(cin.peek() != '\n')
         {
             cin >> tempUserInput;
 
             char *temp = new char[tempUserInput.length() + 1];
             strcpy(temp, tempUserInput.c_str());
-            temp[tempUserInput.length()] = '\0';
 
             userQuery.push_back(temp);
         }
 
         if(strcmp(userQuery[0], "AND") == 0)
             andQuery(userQuery);
-//        else if(strcmp(userQuery[0], "OR") == 0)
-//            //orQuery();
+
+        else if(strcmp(userQuery[0], "OR") == 0)
+            orQuery(userQuery);
+
         else
             singleQuery(userQuery);
     }
@@ -98,6 +100,29 @@ void InteractiveMode::orQuery(vector<char *> &userQuery)
     if(userQuery.size() < 3)
         throw USER_INPUT_UNDERFLOW;
 
+    vector<DocumentAndFrequency *> *finalList = new vector<DocumentAndFrequency *>();
+    for(size_t index = 1; index < userQuery.size() && strcmp(userQuery[index], "NOT") != 0; ++index)
+    {
+        char *tempWord = stemAndPreserve(userQuery[index]);
+        vector<DocumentAndFrequency *> *temp = dataStructure->getDocumentsForWord(tempWord);
+        delete [] tempWord;
+
+        finalList->insert(finalList->end(), temp->begin(), temp->end());
+    }
+
+    finalList = notProcessor(userQuery, finalList);
+
+    if(finalList->size() > 0)
+    {
+        string title = createTitle(userQuery);
+        titlesAndBodies(finalList, title);
+        delete finalList;
+    }
+    else
+    {
+        delete finalList;
+        throw NO_RESULTS;
+    }
 }
 
 void InteractiveMode::singleQuery(vector<char *> &userQuery)
@@ -154,6 +179,8 @@ vector<DocumentAndFrequency *>* InteractiveMode::andProcessor(vector<char *> &us
         throw AND_WORD_DOES_NOT_EXIST;
 
     // MUST BE SORTED ASCEDINGLY BY DOCUMENT ID VALUE
+
+    // This vector should never be as big as I declare it here, but it is resized later, so I am being safe here.
     vector<DocumentAndFrequency *> *returnVector = new vector<DocumentAndFrequency *>(list1->size() + list2->size());
     vector<DocumentAndFrequency *>::iterator it;
 
@@ -286,6 +313,7 @@ void InteractiveMode::titlesAndBodies(std::vector<DocumentAndFrequency *> *docum
 
 string InteractiveMode::createTitle(std::vector<char *> &userQuery)
 {
+    // Some redundant looking practices. What I came up with that worked in under 10 minutes
     string returnVal("Results for ");
     size_t index = 0;
     if(strcmp(userQuery[index], "AND") == 0)
@@ -294,10 +322,18 @@ string InteractiveMode::createTitle(std::vector<char *> &userQuery)
         {
             returnVal += userQuery[index]; returnVal += " ";
             if((index + 1) < userQuery.size() && strcmp(userQuery[index + 1], "NOT") != 0)
-                returnVal += "AND ";
+                returnVal += "AND "; // Don't want to add this if no word is coming after it, thats why the above check happens
         }
     }
-
+    else if(strcmp(userQuery[index], "OR") == 0)
+    {
+        for(index = 1; index < userQuery.size() && strcmp(userQuery[index], "NOT") != 0; ++index)
+        {
+            returnVal += userQuery[index]; returnVal += " ";
+            if((index + 1) < userQuery.size() && strcmp(userQuery[index + 1], "NOT") != 0)
+                returnVal += "OR ";
+        }
+    }
     else // Single word query
     {
         returnVal += userQuery[index++]; returnVal += " ";

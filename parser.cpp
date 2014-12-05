@@ -116,7 +116,7 @@ void Parser::removeNonAlphaCharacters(char *&word)
     {
         word[i] = tolower(word[i]);
 
-        if(!isalpha(word[i]))
+        if(!isalpha(word[i]) || !isprint((unsigned)(word[i])))
             *(std::remove(word, word + strlen(word), word[i--])) = 0;
     }
 }
@@ -179,7 +179,7 @@ bool Parser::isStopWord(char *word) const
 
 void Parser::createWordObjs(IndexInterface &dataStructure, char *&word)
 {
-    if(!dataStructure.alreadyContains(word, documentCount))
+    if(!dataStructure.alreadyContains(word, documentCount)) // This will update the frequency / documents if it is found
     {
         Word *temp = new Word(word, documentCount);
         dataStructure.addWordToIndex(temp);

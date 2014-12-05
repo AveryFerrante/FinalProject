@@ -19,7 +19,7 @@ public:
 
     void addDoc(int);
 
-    void getDocument(int);
+    void getDocument(int); // Takes the index number of the fileStartPositions that the document is contained at
     void getTitle(int);
 
     void writeOutIndex();

@@ -8,16 +8,15 @@
 #include "documentandfrequency.h"
 #include <algorithm>
 
-#define MAX_RESULTS 14
+#define MAX_RESULTS 14 // Enter 1 less than you want displayed (i.e. 14 will display 1 - 15 results on the screen)
 
 
 class Word
 {
 private:
     char *word;
-    int lastDocument;
-    std::vector<int>* index; // This will hold the corresponding index to the docKey vector for where a file starts
-    std::vector<int>* frequency;
+    int lastDocument; // This is checked against the current document number to see if we only need to update the frequency
+    // of the word or if we need to create a new documentandfrequency object for the word.
 
     std::vector<DocumentAndFrequency *> *information;
 public:
@@ -32,8 +31,6 @@ public:
     int getDocIndex(int);
     void addInfo(int, int);
 
-    std::vector<int>* getIndex();
-    std::vector<int>* getFreq();
     std::vector<DocumentAndFrequency *>* getInformation();
 
     void updateFreqAndDoc(int);
