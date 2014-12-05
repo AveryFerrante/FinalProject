@@ -115,7 +115,7 @@ void MaintenanceMode::addToIndex()
     {
         errorHandle(e);
     }
-    destroyObjects(); // Does not have a memory leak if I build from index
+    destroyObjects();
     setToNull();
     pause();
 }
@@ -138,8 +138,7 @@ void MaintenanceMode::createDefaultIndex()
         dataStructure->writeOutIndex();
         documentIndexObject->writeOutIndex();
 
-        destroyObjects(); // This creates a massive memory leak, but I couldn't get it to work otherwise.
-        // It crashes during the a word destructor, acting like I have a dangling pointer. Doesn't happen when I build from index.
+        destroyObjects();
         setToNull();
         cout << "Index created successfully." << endl;
         pause();

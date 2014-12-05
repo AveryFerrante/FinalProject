@@ -365,14 +365,24 @@ void InteractiveMode::deleteCurrentIndex()
     pause();
 }
 
-void InteractiveMode::loadFromIndex()
+void InteractiveMode::loadFromIndex(int structure /* = 0*/) // Structure is passed from stress test mode
 {
     try
     {
         if(dataStructure != NULL || documentIndexObject != NULL)
             throw INITIALIZED_OBJECT_ERROR;
-        clearScreen();
-        bool avlTree = getDataStruct();
+
+        bool avlTree;
+        if(structure == 0) // Building from interactive mode
+            avlTree = getDataStruct();
+        else // Building from stress test mode
+        {
+            if(structure == AVL_TREE)
+                avlTree = true;
+            else
+                avlTree = false;
+        }
+
         clearScreen();
         if(avlTree)
         {
@@ -414,7 +424,7 @@ bool InteractiveMode::getDataStruct()
 
     int decision = getInput(AVL_TREE, HASH_TABLE);
 
-    if(decision == 1)
+    if(decision == AVL_TREE)
         return true;
     else
         return false;
@@ -499,6 +509,10 @@ void InteractiveMode::errorHandle(int e)
         cout << "There are no documents in the index that meet all of the search criteria." << endl;
     if(e == INITIALIZED_OBJECT_ERROR)
         cout << "There is already a data strucutre loaded in memory." << endl;
+    if(e == INPUT_FILE_OPEN_ERROR)
+        cout << "Could not open the file entered by the user (see manual)" << endl;
+    if(e == UNFORMATTED_ERROR)
+        cout << "Unknown commaned encountered. Improper file formatting (see manual)." << endl;
 
     pause(); // "Press any key to continue"
 }

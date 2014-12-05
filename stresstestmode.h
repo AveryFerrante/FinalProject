@@ -7,23 +7,18 @@
 #include <windows.h>
 #include "interactivemode.h" // This has the most functionality, can't / don't want to copy all of the code into here
 
-#define INPUT_FILE_OPEN_ERROR 1234321
-
 class StressTestMode : public InteractiveMode
 {
 private:
-    IndexInterface *dataStructure;
     Parser *parse;
-    DocumentIndex *documentIndexObject;
 
 
     // UTILITY FUNCTIONS
+    void loadCommand(std::ifstream &inputFile);
+    void parseCommand(std::ifstream &inputFile);
 
-    void errorHandle(int e);
 
-
-    void clearScreen();
-    void pause();
+    void deleteObjects();
 public:
     StressTestMode(int consoleArgs, char **consolePaths);
     void run();

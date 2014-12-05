@@ -25,6 +25,9 @@
 #define INCORRECT_FORMAT 1584
 #define NO_RESULTS 44747
 
+#define INPUT_FILE_OPEN_ERROR 1234321 // These are errors for stress test mode
+#define UNFORMATTED_ERROR 838383
+
 
 
 class InteractiveMode
@@ -41,7 +44,7 @@ protected: // Stress Test Mode inherits from this so all of these are protected
     void clearScreen();
     void pause();
 
-    void loadFromIndex();
+    void loadFromIndex(int structure = 0);
     bool getDataStruct();
     void search();
     void deleteCurrentIndex();

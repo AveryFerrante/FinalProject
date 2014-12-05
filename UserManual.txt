@@ -86,3 +86,27 @@ Proper Stop Words List Formatting:
 	uses a binary search. This is the cause for the file to need to be alphabetized prior to running the program. If it is not, the algorithm will only 
 	remove stop words by luck. This file can be named anything, but MUST have a .txt file extension.
 
+
+-------------------------------------------Appendix B-------------------------------------------
+Formatting and Instructions for Stress Test Mode:
+
+  Loading from Index( ld )
+	The 'ld' command is used for loading a currently existing index into a data structure. After the 'ld' command, the user may enter which of the data
+	structures they would like to load into. For hash table, the command is 'ht'. For avl-tree, the command is 'avlt'. See example below for clarificaton.
+
+	Example: To load the index into a hash table, the proper command would be:
+		ld ht
+	Note: this must be on one line by itsself. No capitol letters, no spacing after the last command / before the first command, single space between the commands.
+
+
+  Parsing XML files( prse )
+	The 'prse' command is used to parse and index a variable amount of properly formatted XML files. This will override the existing index.
+
+
+
+
+
+
+
+
+

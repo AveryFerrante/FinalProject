@@ -22,19 +22,19 @@ void StressTestMode::run()
            inputFile >> instruction;
 
            if(instruction == "ld")
-               cout << "Load index instructions" << endl;
+               loadCommand(inputFile);
 
            else if(instruction == "clr")
                cout << "Delete index instructions" << endl;
 
            else if(instruction == "prse")
-               cout << "Parse and index XML files" << endl;
+               parseCommand(inputFile);
 
            else if(instruction == "qry")
                cout << "Query instructions" << endl;
 
            else
-               cout << "Unknown Command Encountered" << endl;
+               throw UNFORMATTED_ERROR;
         }
 
     }
@@ -49,28 +49,62 @@ void StressTestMode::run()
 
 
 
+
+
 //***************************************************UTILITY FUNCTIONS******************************************
-
-void StressTestMode::errorHandle(int e)
+void StressTestMode::loadCommand(ifstream &inputFile)
 {
-    clearScreen();
-    cout << "ERROR ENCOUNTERED:" << endl;
-    if(e == INPUT_FILE_OPEN_ERROR)
-        cout << "Could not open the file entered by the user (see manual)" << endl;
+    string instruction;
+    inputFile >> instruction;
+
+    cout << "Processing " << instruction << endl;
+    if(instruction == "ht") // Load into hash table
+        loadFromIndex(HASH_TABLE);
+    else if(instruction == "avlt")
+        loadFromIndex(AVL_TREE);
+    else
+        throw UNFORMATTED_ERROR;
+}
+
+void StressTestMode::parseCommand(ifstream &inputFile)
+{
+    if(dataStructure != NULL || documentIndexObject != NULL)
+        throw INITIALIZED_OBJECT_ERROR;
+
+    dataStructure = new HashTable;
+    parse = new Parser(argv[argc - 1]);
+    documentIndexObject = new DocumentIndex;
+
+    vector<string> xmlFiles;
+    while(inputFile.peek() != '\n')
+    {
+        string temp;
+        inputFile >> temp;
+        xmlFiles.push_back(temp);
+    }
 
 
+    for(size_t i = 0; i < xmlFiles.size(); ++i)
+    {
+        cout << "Opening file " << xmlFiles[i] << " for indexing" << endl;
+        parse->parse(xmlFiles[i].c_str(), *dataStructure);
+    }
 
+    parse->writeToFile(*documentIndexObject);
+    dataStructure->writeOutIndex();
+    documentIndexObject->writeOutIndex();
 
+    deleteObjects();
+    setToNull();
+    cout << "Index created successfully." << endl;
     pause();
 }
 
+void StressTestMode::deleteObjects()
+{
+    delete parse;
+    delete dataStructure;
+    delete documentIndexObject;
+}
 
 
-
-
-
-
-
-
-void StressTestMode::clearScreen() { system("cls"); }
-void StressTestMode::pause() { system("pause"); }
