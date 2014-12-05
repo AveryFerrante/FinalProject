@@ -3,68 +3,95 @@
 using namespace rapidxml;
 using namespace std;
 
-Parser::Parser(char *stopWordList)
+Parser::Parser(char *stopWordList, int startingPlace)
 {
-    initializeStopWordList(stopWordList);
-    documentCount = 0;
+    try
+    {
+        initializeStopWordList(stopWordList);
+    }
+    catch(...)
+    {
+        throw STOP_WORDS_FILE_OPEN_ERROR;
+    }
+
+    documentCount = startingPlace; // This is only set if I am adding to an already existing index
 }
 
 Parser::~Parser()
 {
-    for(int i = 0; i < stopWords.size(); ++i)
+    cout << "Destroying Parser" << endl;
+    for(size_t i = 0; i < stopWords.size(); ++i)
         delete [] stopWords[i];
 
     assert ( fileBodies.size() == fileTitles.size() );
 
-    for(int i = 0; i < fileBodies.size(); ++i)
+    for(size_t i = 0; i < fileBodies.size(); ++i)
     {
         delete fileBodies[i];
         delete fileTitles[i];
     }
+    cout << "Parser Destroyed" << endl;
 }
 
-void Parser::parse(char *&fileName, IndexInterface &dataStructure)
+void Parser::parse(const char *fileName, IndexInterface &dataStructure)
 {
-    // This initializes the file. Must be done here because if this goes out of scope, the whole file is lost.
-    file<> xFile(fileName);
-    xmlFile.parse<parse_no_utf8>(xFile.data());
-
-    //Set the two nodes up
-    initializeMainNode();
-    initializeCurrentPage();
-
-    while(currentPage != NULL)
+    try
     {
-        getPageInfo();
-        if(bodyOfFile->value_size() < 100)
+        // This initializes the file. Must be done here because if this goes out of scope, the whole file is lost.
+        file<> xFile(fileName);
+        xmlFile.parse<parse_no_utf8>(xFile.data());
+
+        //Set the two nodes up
+        initializeMainNode();
+        initializeCurrentPage();
+
+        while(currentPage != NULL)
         {
+            getPageInfo();
+            if(bodyOfFile->value_size() < 100)
+            {
+                getNextPage();
+                continue;
+            }
+
+            writeDataToVectors();
+            cleanBodyContents(dataStructure);
             getNextPage();
-            continue;
+            ++documentCount;
         }
-
-        writeDataToVectors();
-        cleanBodyContents(dataStructure);
-        getNextPage();
-        ++documentCount;
+        clearCurrentDocument();
     }
-
-    clearCurrentDocument();
+    catch(...)
+    {
+        throw XML_FILE_OPEN_ERROR;
+    }
 }
 
 
 
 void Parser::writeToFile(DocumentIndex &documentIndexObject)
 {
-    ofstream outputFile("file.txt", ios::binary);
-    documentIndexObject.addDoc(0);
-    for(int i = 0; i < fileBodies.size(); ++i)
+    ofstream *outputFile;
+
+    if(documentIndexObject.size() == 0)
     {
-        outputFile << *fileTitles[i] << endl;
-        outputFile << *fileBodies[i] << endl;
-        documentIndexObject.addDoc(outputFile.tellp());
+        outputFile = new ofstream(DOCUMENT_OUTPUT_FILE, fstream::binary);
+        documentIndexObject.addDoc(0);
     }
-    documentIndexObject.addDoc(outputFile.tellp());
-    outputFile.close();
+    else
+        outputFile = new ofstream(DOCUMENT_OUTPUT_FILE, fstream::binary | fstream::app);
+
+
+    for(size_t i = 0; i < fileBodies.size(); ++i)
+    {
+        (*outputFile) << *fileTitles[i] << endl;
+        (*outputFile) << *fileBodies[i] << endl;
+        documentIndexObject.addDoc(outputFile->tellp());
+        if(i == fileBodies.size() - 1)
+            cout << documentIndexObject.lastFile() << endl;
+    }
+    outputFile->close();
+    delete outputFile;
 }
 
 
@@ -106,7 +133,7 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure)
         *whatsLeft = '\0';
 
         removeNonAlphaCharacters(bodyContents);
-        if(strlen(bodyContents) <= 1 || strlen(bodyContents) >= 22 || isStopWord(bodyContents)) // Skip this word
+        if(strlen(bodyContents) >= 22 || isStopWord(bodyContents)) // Skip this word
         {
             bodyContents = ++whatsLeft; // Point to beginning of next word
             whatsLeft = strchr(bodyContents, ' ');
@@ -114,6 +141,12 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure)
         }
 
         bodyContents[stemObject.stem(bodyContents, 0, strlen(bodyContents) - 1)] = '\0';
+        if(strlen(bodyContents) <= 1)
+        {
+            bodyContents = ++whatsLeft; // Point to beginning of next word
+            whatsLeft = strchr(bodyContents, ' ');
+            continue;
+        }
 
         createWordObjs(dataStructure, bodyContents);
 

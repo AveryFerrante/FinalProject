@@ -6,6 +6,8 @@
 #include <cassert>
 #include <fstream>
 
+#define MAX_RESULTS 14
+
 
 class Word
 {

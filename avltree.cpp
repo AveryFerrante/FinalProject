@@ -329,7 +329,9 @@ void avltree :: setroot ( AVLNode *avl )
 
 avltree :: ~avltree( )
 {
+    cout << "Deleting AVLTree" << endl;
     deltree ( root ) ;
+    cout << "Deleted AVLTree" << endl;
 }
 
 
@@ -343,30 +345,47 @@ void avltree :: deltree ( AVLNode *root )
     }
 }
 
-void avltree::buildFromIndex(ifstream &inputFile)
+void avltree::buildFromIndex()
 {
-    int tempNumb = 0;
-    string word;
-    while(!inputFile.eof())
+    ifstream inputFile(WORD_INDEX_FILE_PATH);
+    try
     {
-        inputFile >> tempNumb;
-        inputFile >> word;
-        char *tempWord = new char[tempNumb + 1];
-        strcpy(tempWord, word.c_str());
-        tempWord[tempNumb] = '\0';
-
-        Word *temp = new Word(tempWord);
-        inputFile >> tempNumb; // File index first
-        while(tempNumb != -1)
+        int tempNumb = 0;
+        string word;
+        while(!inputFile.eof())
         {
-            temp->addDocIndex(tempNumb);
-            inputFile >> tempNumb; // Frequency
-            temp->addFreq(tempNumb);
-            inputFile >> tempNumb; //File Index
-        }
+            inputFile >> tempNumb; // Length of word
+            inputFile >> word;
+            char *tempWord = new char[tempNumb + 1];
+            strcpy(tempWord, word.c_str());
+            tempWord[tempNumb] = '\0';
 
-        this->addWordToIndex(temp);
+            //cout << "Adding word: " << tempWord << endl;
+            Word *temp = new Word(tempWord);
+            inputFile >> tempNumb; // File index first
+            while(tempNumb != -1)
+            {
+                temp->addDocIndex(tempNumb);
+                inputFile >> tempNumb; // Frequency
+                temp->addFreq(tempNumb);
+                inputFile >> tempNumb; //File Index
+            }
+
+            this->addWordToIndex(temp);
+        }
     }
+    catch(exception &e)
+    {
+        cout << e.what() << endl;
+    }
+
+    catch(...)
+    {
+        inputFile.close();
+        throw ERROR_BUILDING_INDEX;
+    }
+
+    inputFile.close();
 }
 
 void avltree::writeOutIndex()
@@ -384,12 +403,11 @@ void avltree::inOrderTraverse(AVLNode *root, ofstream &outputFile)
     inOrderTraverse(root->left, outputFile); // Traverse down the left side
     write(root, outputFile);
     inOrderTraverse(root->right, outputFile); // Traverse right side
-    //write(root, outputFile);
 }
 
 void avltree::write(AVLNode *root, ofstream &outputFile) { root->data->writeOutIndex(outputFile); }
 
-std::vector<int>* avltree::getDocumentsForWord(char *&word, std::vector<int> *&freqList)
+std::vector<int>* avltree::getDocumentsForWord(char *&word)
 {
     AVLNode* temp = root;
     while(temp != NULL)
@@ -397,7 +415,6 @@ std::vector<int>* avltree::getDocumentsForWord(char *&word, std::vector<int> *&f
         if(strcmp(temp->data->getWord(), word) == 0)
         {
             temp->data->sortRelevancy();
-            freqList = temp->data->getFreq();
             return temp->data->getIndex();
         }
         else if(strcmp(temp->data->getWord(), word) < 0)

@@ -41,10 +41,10 @@ class avltree : public IndexInterface
         void         inOrderTraverse(AVLNode *root, std::ofstream &outputFile); // This is called by write out index
         void         write(AVLNode *root, std::ofstream &outputFile);
 
-        virtual void buildFromIndex(std::ifstream &inputFile);
+        virtual void buildFromIndex();
 
         virtual bool alreadyContains(char*& word, int documentNumber);
-        virtual std::vector<int>* getDocumentsForWord(char* &word, std::vector<int>*& freqList);
+        virtual std::vector<int>* getDocumentsForWord(char* &word);
 } ;
 
 #endif // AVLTREE_H

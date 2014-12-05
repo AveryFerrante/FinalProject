@@ -10,6 +10,11 @@
 #include "IndexInterface.h"
 #include "stemmer2.h"
 
+#define STOP_WORDS_FILE_OPEN_ERROR 11
+#define XML_FILE_OPEN_ERROR 12
+
+#define DOCUMENT_OUTPUT_FILE "lookup.jaf"
+
 class Parser
 {
 
@@ -57,9 +62,9 @@ private: // Utility Functions
     void clearCurrentDocument();
 
 public:
-    Parser(char *);
+    Parser(char *, int startingPlace = 0);
     ~Parser();
-    void parse(char *&, IndexInterface &);
+    void parse(const char *, IndexInterface &);
 
     void writeToFile(DocumentIndex &);
 };

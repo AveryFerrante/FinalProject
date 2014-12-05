@@ -8,7 +8,7 @@ void DocumentIndex::addDoc(int index) { fileStartPositions.push_back(index); }
 
 void DocumentIndex::getDocument(int index)
 {
-    ifstream outputFile("file.txt", ios::binary);
+    ifstream outputFile(FILE_LOOK_UP, fstream::binary);
 
     int length = fileStartPositions[index + 1] - fileStartPositions[index];
     char *word = new char[length + 1];
@@ -24,7 +24,7 @@ void DocumentIndex::getDocument(int index)
 
 void DocumentIndex::getTitle(int index)
 {
-    ifstream outputFile("file.txt", ios::binary);
+    ifstream outputFile(FILE_LOOK_UP, fstream::binary);
     int length = fileStartPositions[index + 1] - fileStartPositions[index];
     char *word = new char[length + 1];
 
@@ -38,18 +38,30 @@ void DocumentIndex::getTitle(int index)
 
 void DocumentIndex::writeOutIndex()
 {
-    ofstream outputFile(DOCUMNET_INDEX_FILE);
-    for(int i = 0; i < fileStartPositions.size(); ++i)
+    ofstream outputFile(DOCUMNET_INDEX_FILE_PATH);
+    for(size_t i = 0; i < fileStartPositions.size(); ++i)
         outputFile << fileStartPositions[i] << " ";
     outputFile.close();
 }
 
-void DocumentIndex::buildFromIndex(ifstream &inputFile)
+void DocumentIndex::buildFromIndex()
 {
-    int temp = 0;
-    while(!inputFile.eof())
+    try
     {
-        inputFile >> temp;
-        fileStartPositions.push_back(temp);
+        ifstream inputFile(DOCUMNET_INDEX_FILE_PATH);
+        int temp = 0;
+        while(!inputFile.eof())
+        {
+            inputFile >> temp;
+            fileStartPositions.push_back(temp);
+        }
     }
+    catch(...)
+    {
+        throw ERROR_BUILDING_DOCUMENT_INDEX;
+    }
+
 }
+
+int DocumentIndex::size() { return fileStartPositions.size(); }
+int DocumentIndex::lastFile() { return fileStartPositions[fileStartPositions.size() - 1]; }
