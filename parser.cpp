@@ -3,9 +3,8 @@
 using namespace rapidxml;
 using namespace std;
 
-//Creates a parser object using a given a file containing the list of stop words,
-//and a starting location in the body of the file to be parsed
-Parser::Parser(char *stopWordList, int startingPlace)
+// Creates a parser object using a given a file containing the list of stop words.
+Parser::Parser(char *stopWordList, int startingPlace /* = 0*/)
 {
     try
     {
@@ -21,7 +20,6 @@ Parser::Parser(char *stopWordList, int startingPlace)
 
 Parser::~Parser()
 {
-    cout << "Destroying Parser" << endl;
     for(size_t i = 0; i < stopWords.size(); ++i)
         delete [] stopWords[i];
 
@@ -32,7 +30,6 @@ Parser::~Parser()
         delete fileBodies[i];
         delete fileTitles[i];
     }
-    cout << "Parser Destroyed" << endl;
 }
 
 void Parser::parse(const char *fileName, IndexInterface &dataStructure)

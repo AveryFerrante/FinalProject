@@ -2,10 +2,11 @@
 using namespace std;
 
 StressTestMode::StressTestMode(int consoleArgs, char** consolePaths)
-    : InteractiveMode(consoleArgs, consolePaths) { }
+    : InteractiveMode(consoleArgs, consolePaths) { parse = NULL; }
 
 void StressTestMode::run()
 {
+    clearScreen();
     cout << "Enter the name of the command file: ";
     string fileName;
     cin >> fileName;
@@ -17,24 +18,23 @@ void StressTestMode::run()
             throw INPUT_FILE_OPEN_ERROR;
 
         string instruction;
-        while(!inputFile.eof())
+        while(inputFile >> instruction)
         {
-           inputFile >> instruction;
+            if(instruction == "ld")
+                loadCommand(inputFile);
+            else if(instruction == "clr")
+                cout << "Delete index instructions" << endl;
 
-           if(instruction == "ld")
-               loadCommand(inputFile);
-
-           else if(instruction == "clr")
-               cout << "Delete index instructions" << endl;
-
-           else if(instruction == "prse")
-               parseCommand(inputFile);
-
-           else if(instruction == "qry")
-               cout << "Query instructions" << endl;
-
-           else
-               throw UNFORMATTED_ERROR;
+            else if(instruction == "prse")
+                parseCommand(inputFile);
+            else if(instruction == "qry")
+                queryCommand(inputFile);
+            else if(instruction == "add")
+                addCommand(inputFile);
+            else if(instruction == "del")
+                delCommand(inputFile);
+            else
+                throw UNFORMATTED_ERROR;
         }
 
     }
@@ -54,20 +54,135 @@ void StressTestMode::run()
 //***************************************************UTILITY FUNCTIONS******************************************
 void StressTestMode::loadCommand(ifstream &inputFile)
 {
+    clearScreen();
     string instruction;
     inputFile >> instruction;
+    try
+    {
+        if(instruction == "ht") // Load into hash table
+            loadFromIndex(HASH_TABLE);
+        else if(instruction == "avlt")
+            loadFromIndex(AVL_TREE);
+        else
+            throw UNFORMATTED_ERROR;
+    }
+    catch(int e)
+    {
+        errorHandle(e);
+    }
+}
 
-    cout << "Processing " << instruction << endl;
-    if(instruction == "ht") // Load into hash table
-        loadFromIndex(HASH_TABLE);
-    else if(instruction == "avlt")
-        loadFromIndex(AVL_TREE);
-    else
-        throw UNFORMATTED_ERROR;
+void StressTestMode::addCommand(ifstream &inputFile)
+{
+    clearScreen();
+    try
+    {
+        vector<string> xmlFiles;
+        while(inputFile.peek() != '\n')
+        {
+            string temp;
+            inputFile >> temp;
+            xmlFiles.push_back(temp);
+        }
+
+        cout << "Setting up original Index" << endl;
+        bool dataStructCreate = false;
+        if(dataStructure == NULL && documentIndexObject == NULL) // If the user has not loaded a structure yet, else, just use the structure already in use.
+        {
+            dataStructure = new HashTable;
+            documentIndexObject = new DocumentIndex;
+            dataStructCreate = true;
+            documentIndexObject->buildFromIndex();
+            dataStructure->buildFromIndex();
+        }
+
+        parse = new Parser(argv[argc - 1], documentIndexObject->size() - 1);
+        for(size_t i = 0; i  < xmlFiles.size(); ++i)
+        {
+            cout << "Indexing " << xmlFiles[i] << "..." << endl;
+            parse->parse((xmlFiles[i]).c_str(), *dataStructure);
+            cout << xmlFiles[i] << " successfully added to the index." << endl;
+        }
+
+        parse->writeToFile(*documentIndexObject);
+        dataStructure->writeOutIndex();
+        documentIndexObject->writeOutIndex();
+
+        if(dataStructCreate == true) // If the user already created a data struct, then we won't delete it. It will also have the new file added to it.
+        {
+            deleteObjects();
+            setToNull();
+            pause();
+        }
+        else
+        {
+            delete parse;
+            parse = NULL;
+            pause();
+        }
+
+    }
+    catch(int e)
+    {
+        errorHandle(e);
+    }
+}
+
+void StressTestMode::delCommand(ifstream &inputFile)
+{
+    clearScreen();
+    remove(WORD_INDEX_FILE_PATH);
+    remove(DOCUMNET_INDEX_FILE_PATH);
+    remove(DOCUMENT_OUTPUT_FILE);
+    cout << "Index Deleted Successfully" << endl;
+    pause();
+}
+
+void StressTestMode::queryCommand(ifstream &inputFile)
+{
+    clearScreen();
+    string temp;
+    vector<char *> userQuery;
+    try
+    {
+        if(dataStructure == NULL || documentIndexObject == NULL)
+        {
+            inputFile.ignore(10000, '\n'); // Move the stream pointer to the next line so I don't try to process the search terms as commands from this qry
+            throw UNINITIALIZED_OBJECT_ERROR;
+        }
+
+        while(inputFile.peek() != '\n' && inputFile.peek() != -1) // Will sometimes = -1 if the searching is the last line in the command file so must check that too
+        {
+            inputFile >> temp;
+            char *tempWord = new char[temp.length() + 1];
+            strcpy(tempWord, temp.c_str());
+            userQuery.push_back(tempWord);
+        }
+
+        if(strcmp(userQuery[0], "AND") == 0)
+            andQuery(userQuery);
+
+        else if(strcmp(userQuery[0], "OR") == 0)
+            orQuery(userQuery);
+
+        else
+            singleQuery(userQuery);
+
+
+        for(size_t i = 0; i < userQuery.size(); ++i)
+            delete [] userQuery[i];
+    }
+    catch(int e)
+    {
+        for(size_t i = 0; i < userQuery.size(); ++i)
+            delete [] userQuery[i];
+        errorHandle(e);
+    }
 }
 
 void StressTestMode::parseCommand(ifstream &inputFile)
 {
+    clearScreen();
     if(dataStructure != NULL || documentIndexObject != NULL)
         throw INITIALIZED_OBJECT_ERROR;
 
@@ -102,9 +217,14 @@ void StressTestMode::parseCommand(ifstream &inputFile)
 
 void StressTestMode::deleteObjects()
 {
+    InteractiveMode::deleteObjects();
     delete parse;
-    delete dataStructure;
-    delete documentIndexObject;
+}
+
+void StressTestMode::setToNull()
+{
+    InteractiveMode::setToNull();
+    parse = NULL;
 }
 
 

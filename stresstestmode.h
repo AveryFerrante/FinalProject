@@ -12,13 +12,17 @@ class StressTestMode : public InteractiveMode
 {
 private:
     Parser *parse;
-
+    //Should make inputFile a member variable
 
     // UTILITY FUNCTIONS
     void loadCommand(std::ifstream &inputFile);
     void parseCommand(std::ifstream &inputFile);
-    void deleteObjects();
+    void queryCommand(std::ifstream &inputFile);
+    void addCommand(std::ifstream &inputFile);
+    void delCommand(std::ifstream &inputFile);
 
+    void setToNull();
+    void deleteObjects();
 public:
     StressTestMode(int consoleArgs, char **consolePaths);
     void run();

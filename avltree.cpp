@@ -328,9 +328,7 @@ void avltree :: setroot ( AVLNode *avl )
 
 avltree :: ~avltree( )
 {
-    cout << "Deleting AVLTree" << endl;
     deltree ( this->root );
-    cout << "Deleted AVLTree" << endl;
 }
 
 
