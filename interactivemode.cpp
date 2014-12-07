@@ -356,13 +356,20 @@ void InteractiveMode::sortByFreq(std::vector<DocumentAndFrequency *> *documentLi
 
 void InteractiveMode::deleteCurrentIndex()
 {
-    if(dataStructure == NULL || documentIndexObject == NULL)
-        throw UNINITIALIZED_OBJECT_ERROR;
+    try
+    {
+        if(dataStructure == NULL || documentIndexObject == NULL)
+            throw UNINITIALIZED_OBJECT_ERROR;
 
-    clearScreen();
-    deleteObjects();
-    setToNull();
-    pause();
+        clearScreen();
+        deleteObjects();
+        setToNull();
+        pause();
+    }
+    catch(int e)
+    {
+        errorHandle(e);
+    }
 }
 
 void InteractiveMode::loadFromIndex(int structure /* = 0*/) // Structure is passed from stress test mode
