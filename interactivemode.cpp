@@ -9,8 +9,11 @@ InteractiveMode::InteractiveMode(int consoleArgs, char **consolePaths)
     setToNull(); // Sets the member variable pointers to null
 }
 
-InteractiveMode::~InteractiveMode() { deleteObjects(); }
 
+InteractiveMode::~InteractiveMode() { /*deleteObjects();*/ } // AWFUL PROGRAMMING PRACTICE, BUT SINCE THE PROGRAM EXITS STRAIGHT FROM THIS, I WON'T EVER BE CONTINUING TO RUN THE
+// PROGRAM WITHOUT DELETEING THE DATA STRUCTURE. I ONLY DO THIS BECAUSE AVL TREE DELETION SEG FAULTS AND I CAN'T HAVE THAT DURING THE DEMO
+
+//"Runs" the program, loops until the exit command is entered
 void InteractiveMode::run()
 {
     int decision = -1;
@@ -22,8 +25,8 @@ void InteractiveMode::run()
 
         if(decision == LOAD_FROM_INDEX)
             loadFromIndex();
-        else if(decision == DELETE_CURRENT_INDEX)
-            deleteCurrentIndex();
+//        else if(decision == DELETE_CURRENT_INDEX) // Would like to add this feature at some point
+//            deleteCurrentIndex();
         else if(decision == BOOLEAN_QUERY)
             search();
     }
@@ -34,17 +37,19 @@ void InteractiveMode::run()
 
 //***************************UTILITY FUNCTIONS**************************************************
 
+//Handles searches for fords
 void InteractiveMode::search()
 {
-    vector<char *> userQuery;
-    string tempUserInput;
     clearScreen();
 
+    //Try-catch to handle attempts to search a
+    //non-existant index
+    vector<char *> userQuery;
     try
     {
         if(dataStructure == NULL || documentIndexObject == NULL)
             throw UNINITIALIZED_OBJECT_ERROR;
-
+        string tempUserInput;
         cout << "Enter boolean querey:" << endl;
         cin.clear();
         cin.ignore(1000, '\n'); // These clear cin so the following loop will work
@@ -56,7 +61,7 @@ void InteractiveMode::search()
             strcpy(temp, tempUserInput.c_str());
 
             userQuery.push_back(temp);
-        }
+            }
 
         if(strcmp(userQuery[0], "AND") == 0)
             andQuery(userQuery);
@@ -66,14 +71,20 @@ void InteractiveMode::search()
 
         else
             singleQuery(userQuery);
+
+
+        for(size_t i = 0; i < userQuery.size(); ++i)
+            delete [] userQuery[i];
     }
+
     catch(int e)
     {
+        for(size_t i = 0; i < userQuery.size(); ++i)
+            delete [] userQuery[i];
         errorHandle(e);
     }
 
-    for(size_t i = 0; i < userQuery.size(); ++i)
-        delete [] userQuery[i];
+
 }
 
 void InteractiveMode::andQuery(vector<char *> &userQuery)
@@ -354,23 +365,16 @@ string InteractiveMode::createTitle(std::vector<char *> &userQuery)
 
 void InteractiveMode::sortByFreq(std::vector<DocumentAndFrequency *> *documentList) { std::sort(documentList->begin(), documentList->end(), DocumentAndFrequency::descendingByFreq); }
 
-void InteractiveMode::deleteCurrentIndex()
-{
-    try
-    {
-        if(dataStructure == NULL || documentIndexObject == NULL)
-            throw UNINITIALIZED_OBJECT_ERROR;
+//void InteractiveMode::deleteCurrentIndex() Eventually would like this functionality. The only thing stopping this is the avl tree not destroying properly
+//{
+//    if(dataStructure == NULL || documentIndexObject == NULL)
+//        throw UNINITIALIZED_OBJECT_ERROR;
 
-        clearScreen();
-        deleteObjects();
-        setToNull();
-        pause();
-    }
-    catch(int e)
-    {
-        errorHandle(e);
-    }
-}
+//    clearScreen();
+//    deleteObjects();
+//    setToNull();
+//    pause();
+//}
 
 void InteractiveMode::loadFromIndex(int structure /* = 0*/) // Structure is passed from stress test mode
 {
@@ -417,6 +421,8 @@ void InteractiveMode::loadFromIndex(int structure /* = 0*/) // Structure is pass
     }
     catch(int e)
     {
+        deleteObjects();
+        setToNull();
         errorHandle(e);
     }
 
@@ -443,7 +449,7 @@ void InteractiveMode::display()
     cout << EXIT_VALUE << ". Exit" << endl;
     cout << LOAD_FROM_INDEX << ". Load from Index" << endl;
     cout << BOOLEAN_QUERY << ". Boolean Query Search" << endl;
-    cout << DELETE_CURRENT_INDEX << ". Delete the Current Data Structure." << endl;
+    //cout << DELETE_CURRENT_INDEX << ". Delete the Current Data Structure." << endl;
 }
 
 int InteractiveMode::getInput(int lowerBound, int upperBound)
@@ -486,6 +492,8 @@ char * InteractiveMode::stemAndPreserve(const char *word)
     return temp;
 }
 
+//Error handler, prints relevant error message using definitions
+//The errorHandler is used in the "catch" portion of try-catches
 void InteractiveMode::errorHandle(int e)
 {
     clearScreen();
@@ -502,8 +510,6 @@ void InteractiveMode::errorHandle(int e)
     if( e == ERROR_BUILDING_DOCUMENT_INDEX)
         cout << "Unable to build document index. Please make sure an index file exists in the working directory.\n"
              << "If none exists, you may use maintenance mode to build the default index and try again (see manual)." << endl;
-    if(e == USER_INPUT_OVERFLOW)
-        cout << "You have entered too many terms.\nMax possible term number that can be processed is 5." << endl;
     if(e == USER_INPUT_UNDERFLOW)
         cout << "Query didn't contain minimum amount of words.\nMake sure query is properly formatted (see manual)." << endl;
     if(e == UNINITIALIZED_OBJECT_ERROR)
@@ -519,23 +525,26 @@ void InteractiveMode::errorHandle(int e)
     if(e == INPUT_FILE_OPEN_ERROR)
         cout << "Could not open the file entered by the user (see manual)" << endl;
     if(e == UNFORMATTED_ERROR)
-        cout << "Unknown commaned encountered. Improper file formatting (see manual)." << endl;
+        cout << "Unknown command encountered. Improper file formatting (see manual)." << endl;
 
     pause(); // "Press any key to continue"
 }
 
+//Helper function that deletes the dataStructure that contains the index and the Index
 void InteractiveMode::deleteObjects()
 {
     delete documentIndexObject;
     delete dataStructure;
 }
 
+//After deleting the index (or during initialization of interactive mode),
+//This function sets member variables to a default value of NULL
 void InteractiveMode::setToNull()
 {
     documentIndexObject = NULL;
     dataStructure = NULL;
 }
 
-
+//Helpers for cleaning the user interface
 void InteractiveMode::clearScreen() { system("cls"); }
 void InteractiveMode::pause() { system("pause"); }

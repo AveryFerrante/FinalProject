@@ -110,14 +110,16 @@ void MaintenanceMode::addToIndex()
         dataStructure->writeOutIndex();
         documentIndexObject->writeOutIndex();
         cout << fileName << " successfully added to the existing index." << endl;
+        destroyObjects();
+        setToNull();
+        pause();
     }
     catch(int e)
     {
+        destroyObjects();
+        setToNull();
         errorHandle(e);
     }
-    destroyObjects();
-    setToNull();
-    pause();
 }
 
 void MaintenanceMode::createDefaultIndex()

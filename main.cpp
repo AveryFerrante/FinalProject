@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
 
     cout << "Please select a mode: " << endl;
-    cout << "0. Exit\n1. Maintenance Mode\n2. Interactive Mode" << endl;
+    cout << "0. Exit\n1. Maintenance Mode\n2. Interactive Mode\n3. Stress Test Mode" << endl;
     int decision;
     cin >> decision;
 
@@ -37,21 +37,5 @@ int main(int argc, char *argv[])
         StressTestMode mode(argc, argv);
         mode.run();
     }
-
-
-//    IndexInterface* structure = new HashTable();
-//    HashTable* hashStructure = new HashTable();
-//    hashStructure->printTable();
-//    Word* word = new Word("cat");
-//    Word* word2 = new Word("cat");
-//    Word* word3 = new Word("cat");
-//    Word* word4 = new Word("sandwich");
-//    hashStructure->addWordToIndex(word);
-//    hashStructure->addWordToIndex(word2);
-//    hashStructure->addWordToIndex(word3);
-//    hashStructure->addWordToIndex(word4);
-//    hashStructure->printTable();
-
-
     return 0;
 }

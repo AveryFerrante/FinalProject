@@ -8,6 +8,7 @@
 #define FALSE 0
 #define TRUE 1
 
+//AVLNode struct and destruct
 struct AVLNode
 {
     Word *data ;
@@ -23,12 +24,15 @@ struct AVLNode
     }
 } ;
 
+//
 class avltree : public IndexInterface
 {
     private :
         AVLNode *root ;
     public :
         avltree( ) ;
+        ~avltree( ) ;
+
         AVLNode* getRoot() ;
         static AVLNode* buildtree ( AVLNode *root, Word *data, bool *h ) ;
         void display( AVLNode* root ) ;
@@ -37,9 +41,10 @@ class avltree : public IndexInterface
         static AVLNode* balright ( AVLNode *root, int *h ) ;
         static AVLNode* balleft ( AVLNode* root, int *h ) ;
         void setroot ( AVLNode *avl ) ;
-        ~avltree( ) ;
+
         static void deltree ( AVLNode *root ) ;
 
+        //Overridden functions from IndexInterface
         virtual void addWordToIndex(Word *word);
 
         virtual void writeOutIndex();

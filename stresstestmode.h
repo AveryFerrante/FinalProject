@@ -7,17 +7,21 @@
 #include <windows.h>
 #include "interactivemode.h" // This has the most functionality, can't / don't want to copy all of the code into here
 
+//Inherits from interactive mode to inherit its functionality
 class StressTestMode : public InteractiveMode
 {
 private:
     Parser *parse;
-
+    //Should make inputFile a member variable
 
     // UTILITY FUNCTIONS
     void loadCommand(std::ifstream &inputFile);
     void parseCommand(std::ifstream &inputFile);
+    void queryCommand(std::ifstream &inputFile);
+    void addCommand(std::ifstream &inputFile);
+    void delCommand(std::ifstream &inputFile);
 
-
+    void setToNull();
     void deleteObjects();
 public:
     StressTestMode(int consoleArgs, char **consolePaths);

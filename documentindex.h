@@ -10,6 +10,7 @@
 
 #define FILE_LOOK_UP "lookup.jaf"
 
+//Object that represents the index that has been written to disk
 class DocumentIndex
 {
 private:

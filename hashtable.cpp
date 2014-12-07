@@ -2,6 +2,7 @@
 
 using namespace std;
 
+//Initializes all pointers to nul to remove junk data
 HashTable::HashTable()
 {
     for(size_t i = 0; i < tablesize; i++)
@@ -10,12 +11,14 @@ HashTable::HashTable()
     }
 }
 
+//Deletes the hashtable
 HashTable::~HashTable()
 {
-    cout << "Deleting Hash Table." << endl;
     for(size_t i = 0; i < tablesize; ++i)
     {
         HashNode *temp = table[i];
+
+        //Deletes any information that has been "chained"
         while(temp != NULL)
         {
             HashNode *next = temp->next;
@@ -23,32 +26,37 @@ HashTable::~HashTable()
             temp = next;
         }
     }
-    cout << "Successfully deleted." << endl;
 }
 
+//Hashfunction -- taken from http://www.cse.yorku.ca/~oz/hash.html
+//Returns the index to which nodes will be chained
 unsigned int HashTable::hash(char* key)
 {
 
         unsigned int hashIndex = 5381;
         int c;
 
-        while (c = *(key++))
+        while (c = *key++)
             hashIndex = ((hashIndex << 5) + hashIndex) + c; /* hash * 33 + c */
 
+        //Mod by tableSize for proper index values
         return hashIndex % tablesize;
 }
 
+//Adds a node to a pointer in the hashtable
 void HashTable::addNode(Word*& word)
 {
+    //Gets the index
     int index = hash(word->getWord());
 
     if(table[index] == NULL)
     {
+        //Creats and initializes a new node if the index is empty
         table[index]= new HashNode;
         table[index]->data = word;
         table[index]->next = NULL;
     }
-    else // Collision
+    else // Collision handling through linked lists
     {
         HashNode* tempPtr = table[index];
         HashNode* newNode = new HashNode;
@@ -122,6 +130,7 @@ void HashTable::write(std::ofstream &outputFile)
     }
 }
 
+//Used for testing- not necessary
 void HashTable::printTable(){
     int number;
     for(size_t i = 0; i < tablesize; i++)
@@ -140,6 +149,8 @@ void HashTable::printTable(){
 
 }
 
+//Returns the number of items that are chained to a particular index in
+//The hashTable
 int HashTable::numberOfItemsInBucket(int index)
 {
 
@@ -161,6 +172,7 @@ int HashTable::numberOfItemsInBucket(int index)
     }
 }
 
+//Rebuilds the hashtable using the index that was  written to disk
 void HashTable::buildFromIndex()
 {
     ifstream inputFile(WORD_INDEX_FILE_PATH);

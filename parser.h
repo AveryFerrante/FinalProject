@@ -15,6 +15,8 @@
 
 #define DOCUMENT_OUTPUT_FILE "lookup.jaf"
 
+//Class for parsing in the corpus,
+//makes use of rapid XML, a list of stopwords, and the porter stemmer algorithn
 class Parser
 {
 
@@ -37,8 +39,9 @@ private: // Member Variables
 
     int documentCount;
 
-
-private: // Utility Functions
+// Utility Functions, made private since they are only helpers for the "parse" function
+//and should never  need to be used from outside the class.
+private:
 
     void initializeDocument(char *&);
     void initializeMainNode();
@@ -62,6 +65,8 @@ private: // Utility Functions
     void clearCurrentDocument();
 
 public:
+    //Only these functions are made public,
+    //Since they are the only ones that
     Parser(char *, int startingPlace = 0);
     ~Parser();
     void parse(const char *, IndexInterface &);
