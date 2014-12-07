@@ -3,6 +3,8 @@
 using namespace rapidxml;
 using namespace std;
 
+//Creates a parser object using a given a file containing the list of stop words,
+//and a starting location in the body of the file to be parsed
 Parser::Parser(char *stopWordList, int startingPlace)
 {
     try
@@ -94,11 +96,16 @@ void Parser::writeToFile(DocumentIndex &documentIndexObject)
 
 
 // ********************************UTILITY FUNCTIONS****************************************************************************
+
+//Uses a file name passed as an argument to
+//read in each line (one word per line) a vector of stopWords to be used by
+//The stemmer algorithm
 void Parser::initializeStopWordList(const char *fileName)
 {
     ifstream wordList(fileName);
     char *buffer = new char[81];
 
+    //Read to the end of the file
     while(!wordList.eof())
     {
         wordList.getline(buffer, 80);
@@ -110,6 +117,8 @@ void Parser::initializeStopWordList(const char *fileName)
     wordList.close();
 }
 
+//Removes non a-z characters from a given word
+//Also forces the word to lowercase
 void Parser::removeNonAlphaCharacters(char *&word)
 {
     for(size_t i = 0; i < strlen(word); ++i)
@@ -121,10 +130,14 @@ void Parser::removeNonAlphaCharacters(char *&word)
     }
 }
 
+//Stems the body of a file/page
 void Parser::cleanBodyContents(IndexInterface &dataStructure)
 {
+    //Stores the entire body of the file in a cstring
     char *bodyContents = bodyOfFile->value();
-    char *whatsLeft = strchr(bodyContents, ' '); // Gets occurence to first space in the body
+
+    // Gets occurence to first space in the body, the first word
+    char *whatsLeft = strchr(bodyContents, ' ');
 
     while(whatsLeft != NULL)
     {
@@ -153,8 +166,11 @@ void Parser::cleanBodyContents(IndexInterface &dataStructure)
     }
 }
 
+//Checks to see if a word being read from in is a stopWord
 bool Parser::isStopWord(char *word) const
 {
+    //Compares the word to every stopword in the vector
+    //Binary-Search-style comparison to the stopwords
     int  left = 0, right = stopWords.size() - 1, mid;
     while (left <= right)
     {
@@ -177,6 +193,8 @@ bool Parser::isStopWord(char *word) const
     return false;
 }
 
+//From a given word and datas-structure, a word object is created
+//and added to the data structure
 void Parser::createWordObjs(IndexInterface &dataStructure, char *&word)
 {
     if(!dataStructure.alreadyContains(word, documentCount)) // This will update the frequency / documents if it is found
@@ -199,6 +217,7 @@ void Parser::getPageInfo() // Just a function for testing the class, not needed
     getText();
 }
 
+//Getter and setter functions for use of rapid XML
 void Parser::clearCurrentDocument() { xmlFile.clear(); }
 void Parser::getText() { bodyOfFile = currentPage->first_node("revision")->first_node("text"); }
 void Parser::getTitle() { titleOfFile = currentPage->first_node("title"); }

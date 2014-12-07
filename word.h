@@ -10,7 +10,9 @@
 
 #define MAX_RESULTS 14 // Enter 1 less than you want displayed (i.e. 14 will display 1 - 15 results on the screen)
 
-
+//Word class  that represents an entry in an index.
+//Contains a cstring that is the word it self
+//A vector pointer to the list of documents it has appeared in and how frequently
 class Word
 {
 private:

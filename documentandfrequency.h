@@ -1,6 +1,8 @@
 #ifndef DOCUMENTANDFREQUENCY_H
 #define DOCUMENTANDFREQUENCY_H
 
+//Class that represents the page a word was found on
+//and how many times it occured.
 class DocumentAndFrequency
 {
 private:

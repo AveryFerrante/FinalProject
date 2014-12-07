@@ -9,8 +9,10 @@ InteractiveMode::InteractiveMode(int consoleArgs, char **consolePaths)
     setToNull(); // Sets the member variable pointers to null
 }
 
+
 InteractiveMode::~InteractiveMode() { deleteObjects(); }
 
+//"Runs" the program, loops until the exit command is entered
 void InteractiveMode::run()
 {
     int decision = -1;
@@ -34,12 +36,15 @@ void InteractiveMode::run()
 
 //***************************UTILITY FUNCTIONS**************************************************
 
+//Handles searches for fords
 void InteractiveMode::search()
 {
     vector<char *> userQuery;
     string tempUserInput;
     clearScreen();
 
+    //Try-catch to handle attempts to search a
+    //non-existant index
     try
     {
         if(dataStructure == NULL || documentIndexObject == NULL)
@@ -67,6 +72,7 @@ void InteractiveMode::search()
         else
             singleQuery(userQuery);
     }
+
     catch(int e)
     {
         errorHandle(e);
@@ -479,6 +485,8 @@ char * InteractiveMode::stemAndPreserve(const char *word)
     return temp;
 }
 
+//Error handler, prints relevant error message using definitions
+//The errorHandler is used in the "catch" portion of try-catches
 void InteractiveMode::errorHandle(int e)
 {
     clearScreen();
@@ -517,18 +525,21 @@ void InteractiveMode::errorHandle(int e)
     pause(); // "Press any key to continue"
 }
 
+//Helper function that deletes the dataStructure that contains the index and the Index
 void InteractiveMode::deleteObjects()
 {
     delete documentIndexObject;
     delete dataStructure;
 }
 
+//After deleting the index (or during initialization of interactive mode),
+//This function sets member variables to a default value of NULL
 void InteractiveMode::setToNull()
 {
     documentIndexObject = NULL;
     dataStructure = NULL;
 }
 
-
+//Helpers for cleaning the user interface
 void InteractiveMode::clearScreen() { system("cls"); }
 void InteractiveMode::pause() { system("pause"); }

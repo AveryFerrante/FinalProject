@@ -1,5 +1,6 @@
 #include "documentandfrequency.h"
 
+//
 DocumentAndFrequency::DocumentAndFrequency(int docNumb, int freq)
 {
     documentNumber = docNumb;
