@@ -5,6 +5,13 @@
 
 
 
+	-The first menu will give the choice of three modes of interaction with the program, and a choice of '0' to terminate.
+	-The modes are:
+		>Maintenance
+		>Interactive
+		>Stress Testing
+	-Choose one of these modes of operation by pressing the number that corresponds to that mode
+	-Once you have selected one of the options, you will be unable to switch to the others. To do so, the program must be terminated and restarted.
 
 -------------------------------------------MAINTENANCE MODE-------------------------------------------
 This mode has three main functionalities:
@@ -59,13 +66,36 @@ This mode has three main functionalities:
 
 
 -------------------------------------------INTERACTIVE MODE-------------------------------------------
+This mode has three main functionalities:
+  1. Load from index  (option 1)
+  2. Boolean query search (option 2)
+  3. Delete the current data structure  (option 3)
 
+  ****Option 1**** 
 
+	Loads the index from the disk into a data structure of the user's choosing, either an AVL tree or a HashTable that uses seperate chaining.
+	This must be the first action taken in interactive mode, so that the other operations can be carried out. 
 
+  ****Option 2****
+
+	Searches for any number of words chained together by boolean keywords. The words are "NOT", "AND", and "OR".
+	Searching for words "a AND b' will return documents that contain BOTH of the words. Entering "a NOT b" will return documents that contain the word a,
+	but NOT the word b. Entering "a OR b" will return words that contain either word. 15 documents will be displayed after an entry, sorted by relevancy.
+	The document with the highest occurence of the word(s) would be first.
+		
+	
+  ****Option 3****
+
+	Clears the datastructure, although the index that was stored to the disk still exists and can be used to rebuild the data structure on 
+	the next run of the program. It shoudl be noted that if the index was loaded into a hashTable, cleared, then loaded into an AVL tree and deleted again,
+	the program may unexpectedly hit runtime errors, so doing things in this order is inadvisable.
 
 
 
 -------------------------------------------STRESS TEST MODE-------------------------------------------
+This mode has 5 functionalities, including those from the other modes:
+
+  ****Option 1****
 
 
 
