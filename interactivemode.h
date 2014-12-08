@@ -8,9 +8,9 @@
 #include <windows.h>
 
 #define EXIT_VALUE 0
-#define MAX_INTERACTIVE_MODE_NUMBER 3
+#define MAX_INTERACTIVE_MODE_NUMBER 2
 #define LOAD_FROM_INDEX 1
-#define DELETE_CURRENT_INDEX 3
+//#define DELETE_CURRENT_INDEX 3
 #define BOOLEAN_QUERY 2
 
 #define AVL_TREE 1
@@ -47,7 +47,7 @@ protected: // Stress Test Mode inherits from this so all of these are protected
     void loadFromIndex(int structure = 0);
     bool getDataStruct();
     void search();
-    void deleteCurrentIndex();
+    //void deleteCurrentIndex();
 
     void andQuery(std::vector<char *> &userQuery);
     void orQuery(std::vector<char *> &userQuery);

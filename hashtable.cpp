@@ -14,7 +14,6 @@ HashTable::HashTable()
 //Deletes the hashtable
 HashTable::~HashTable()
 {
-    cout << "Deleting Hash Table." << endl;
     for(size_t i = 0; i < tablesize; ++i)
     {
         HashNode *temp = table[i];
@@ -27,7 +26,6 @@ HashTable::~HashTable()
             temp = next;
         }
     }
-    cout << "Successfully deleted." << endl;
 }
 
 //Hashfunction -- taken from http://www.cse.yorku.ca/~oz/hash.html
@@ -38,7 +36,7 @@ unsigned int HashTable::hash(char* key)
         unsigned int hashIndex = 5381;
         int c;
 
-        while (c = *(key++))
+        while (c = *key++)
             hashIndex = ((hashIndex << 5) + hashIndex) + c; /* hash * 33 + c */
 
         //Mod by tableSize for proper index values

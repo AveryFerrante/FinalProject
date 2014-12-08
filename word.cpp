@@ -28,11 +28,9 @@ Word::~Word()
 {
     delete [] word;
 
-    cout << "Deleting information " << endl;
     for(size_t i = 0; i < information->size(); ++i)
         delete (*information)[i];
     delete information;
-    cout << "Successful Delete" << endl;
 }
 
 void Word::addInfo(int docId, int freq) // Used when building from the index
@@ -44,7 +42,8 @@ void Word::addInfo(int docId, int freq) // Used when building from the index
 
 void Word::sortRelevancy()
 {
-    // SORT BY DOCUMENT ID VALUE HERE, NOT BY FREQUENCY VALUE!
+    // SORT BY DOCUMENT ID VALUE HERE, NOT BY FREQUENCY VALUE! IT WILL BE SORTED BY FREQUENCY VALUE
+    // WHEN THE TITLES ARE BEING DISPLAYED
     std::sort(information->begin(), information->end(), DocumentAndFrequency::ascendingByDocID);
 }
 
