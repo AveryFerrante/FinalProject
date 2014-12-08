@@ -32,11 +32,10 @@ void StressTestMode::run()
             else if(instruction == "add")
                 addCommand(inputFile);
             else if(instruction == "del")
-                delCommand(inputFile);
+                delCommand();
             else
                 throw UNFORMATTED_ERROR;
         }
-
     }
     catch(int e)
     {
@@ -60,9 +59,23 @@ void StressTestMode::loadCommand(ifstream &inputFile)
     try
     {
         if(instruction == "ht") // Load into hash table
+        {
+            chrono::time_point<std::chrono::system_clock> start, end;
+            start = chrono::system_clock::now();
             loadFromIndex(HASH_TABLE);
+            end = chrono::system_clock::now();
+            chrono::duration<double> elapsed_seconds = end-start;
+            cout << "Elapsed sorting time: " << elapsed_seconds.count() << endl;
+        }
         else if(instruction == "avlt")
+        {
+            chrono::time_point<std::chrono::system_clock> start, end;
+            start = chrono::system_clock::now();
             loadFromIndex(AVL_TREE);
+            end = chrono::system_clock::now();
+            chrono::duration<double> elapsed_seconds = end-start;
+            cout << "Elapsed sorting time: " << elapsed_seconds.count() << endl;
+        }
         else
             throw UNFORMATTED_ERROR;
     }
@@ -128,7 +141,7 @@ void StressTestMode::addCommand(ifstream &inputFile)
     }
 }
 
-void StressTestMode::delCommand(ifstream &inputFile)
+void StressTestMode::delCommand()
 {
     clearScreen();
     remove(WORD_INDEX_FILE_PATH);

@@ -59,14 +59,37 @@ This mode has three main functionalities:
 
 
 -------------------------------------------INTERACTIVE MODE-------------------------------------------
+This mode has three main functionalities:
+  1. Load from index  (option 1)
+  2. Boolean query search (option 2)
+  3. Delete the current data structure  (option 3)
 
+  ****Option 1**** 
+	Loads the index from the disk into a data structure of the user's choosing, either an AVL tree or a HashTable that uses seperate chaining.
+	This must be the first action taken in interactive mode, so that the other operations can be carried out. 
 
+  ****Option 2****
+	Searches for any number of words chained together by boolean keywords. The words are "NOT", "AND", and "OR".
+	Searching for words 'AND a b' will return documents that contain BOTH a and b. Entering "NOT a b" will return documents that do not contain the word a
+	or b. Entering "OR a b" will return documents that contain either word. 15 documents will be displayed after an entry, sorted by relevancy.
+	The document with the highest occurence of the word(s) would be first. The NOT keyword may be chained on the end of any form of search. AND & OR MUST be
+	at the beginning of each search. The user may also do single word queries.
 
+	Examples:
+	AND dog cat mouse NOT farm zoo		- All documents that have atleast one occurance of dog, cat, and mouse, but does not contain farm or zoo
+	OR movie popcorn			- Documents that contain either, or both, of the words
+	happy NOT anger emotions		- Documents that contain happy, but not anger or emotions
 
-
-
+	OR happy sad AND laugh			- This will throw an error for the user to see
+	
+	The user is responsible for proper spelling/formatting. All words should be lower cased (that is how they are sorted). Also, numeric characters are not
+	sorted so if the user enters any as a search term, the engine will return no results.
+ 
 -------------------------------------------STRESS TEST MODE-------------------------------------------
 
+	This Mode only requires a stop words list as a command line argument. It will ask the user to input the name of a file that contains the commands list.
+	This file must be inside the working directory and be of file type .txt. See Appendix B for commands / structuring
+	
 
 
 
@@ -100,13 +123,27 @@ Formatting and Instructions for Stress Test Mode:
 
 
   Parsing XML files( prse )
-	The 'prse' command is used to parse and index a variable amount of properly formatted XML files. This will override the existing index.
+	The 'prse' command is used to parse and index a variable amount of properly formatted XML files. This will override the existing index. After the command, the
+	user may follow with a space delimited list of .xml files that should be parsed / indexed.
+	
+	Example: prse file1.xml file2.xml file3.xml random.xml
+	This would parse all 4 files, index them, and write this new index to file (overwriting any currently existing index).
+
+  Deleteing Current Index( del )
+	This deletes all files that currently make up the index. This has no chance to ever throw an error.
+
+  Adding to the current Index( add )
+	This allows the user to enter a space delimited list of .xml files to add to the current index. This will not overwrite the current index. If the user has
+	specified a ld command prior to this command, the search engine will parse and index the new files and also add them to the users current structure. If the
+	user has not performed a ld command prior, this operation will not leave a data structure in memory, and thus the user must specifiy else where to load a
+	data structure.
+
+	Example: add new_file.xml
 
 
-
-
-
-
+	**Order DOES play a role in this. If the user attempts to perform commands that require set up, but have not instructed the proper setup, the engine will
+	throw errors. Examples of this include attempting to boolean search when there is no structure loaded. Attempting to load from an index when one does not
+	exist. Attempting to add to an index when one does not exist.
 
 
 

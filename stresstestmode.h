@@ -6,6 +6,8 @@
 #include "documentindex.h"
 #include <windows.h>
 #include "interactivemode.h" // This has the most functionality, can't / don't want to copy all of the code into here
+#include <chrono>
+#include <ctime>
 
 //Inherits from interactive mode to inherit its functionality
 class StressTestMode : public InteractiveMode
@@ -19,7 +21,7 @@ private:
     void parseCommand(std::ifstream &inputFile);
     void queryCommand(std::ifstream &inputFile);
     void addCommand(std::ifstream &inputFile);
-    void delCommand(std::ifstream &inputFile);
+    void delCommand();
 
     void setToNull();
     void deleteObjects();
